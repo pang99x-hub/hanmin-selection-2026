@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "authApiVersion": 2,
+  "schoolName": "한민고등학교",
+  "currentCohort": 2026,
+  "cohorts": {
+    "2025": {
+      "href": "../2025/",
+      "currentGrade": 2,
+      "grades": [
+        3
+      ]
+    },
+    "2026": {
+      "href": "../2026/",
+      "currentGrade": 1,
+      "grades": [
+        2,
+        3
+      ]
+    }
+  },
+  "googleClientId": "817402337132-buq4v80hslbv80d2ajteaj8h5664hod2.apps.googleusercontent.com",
+  "submitUrl": "https://script.google.com/macros/s/AKfycbx8r66SmJkTOjgxF-n_LTgd833ZQhqQW1hynjpDg6xsfDWgf9mM6x5u_3fCkEn3HL6f/exec",
+  "slidesHref": "../../../slides.html"
+}

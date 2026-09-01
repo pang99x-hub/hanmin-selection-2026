@@ -1,0 +1,92 @@
+{
+  "groups": [
+    {
+      "id": "g2-국영수 선택",
+      "label": "국영수 선택",
+      "grade": 2,
+      "isFixed": false,
+      "pickMin": 2,
+      "pickMax": 2
+    },
+    {
+      "id": "g3-수학선택",
+      "label": "수학선택",
+      "grade": 3,
+      "isFixed": false,
+      "pickMin": 1,
+      "pickMax": 1
+    },
+    {
+      "id": "g2-탐구 선택",
+      "label": "탐구 선택",
+      "grade": 2,
+      "isFixed": false,
+      "pickMin": 3,
+      "pickMax": 3
+    },
+    {
+      "id": "g3-심화 탐구",
+      "label": "심화 탐구",
+      "grade": 3,
+      "isFixed": false,
+      "pickMin": 1,
+      "pickMax": 1
+    },
+    {
+      "id": "g2-수학 선택",
+      "label": "수학 선택",
+      "grade": 2,
+      "isFixed": false,
+      "pickMin": 1,
+      "pickMax": 1
+    },
+    {
+      "id": "g3-고급 탐구",
+      "label": "고급 탐구",
+      "grade": 3,
+      "isFixed": false,
+      "pickMin": 1,
+      "pickMax": 1
+    },
+    {
+      "id": "g3-수학 선택",
+      "label": "수학 선택",
+      "grade": 3,
+      "isFixed": false,
+      "pickMin": 1,
+      "pickMax": 1
+    },
+    {
+      "id": "g2-과제연구 선택",
+      "label": "과제연구 선택",
+      "grade": 2,
+      "isFixed": false,
+      "pickMin": 1,
+      "pickMax": 1
+    },
+    {
+      "id": "g2-심화 탐구 선택",
+      "label": "심화 탐구 선택",
+      "grade": 2,
+      "isFixed": false,
+      "pickMin": 2,
+      "pickMax": 2
+    },
+    {
+      "id": "g2-fixed",
+      "label": "학교지정 필수",
+      "grade": 2,
+      "isFixed": true,
+      "pickMin": 0,
+      "pickMax": 0
+    },
+    {
+      "id": "g3-fixed",
+      "label": "학교지정 필수",
+      "grade": 3,
+      "isFixed": true,
+      "pickMin": 0,
+      "pickMax": 0
+    }
+  ]
+}

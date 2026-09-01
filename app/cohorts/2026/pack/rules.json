@@ -1,0 +1,161 @@
+{
+  "rules": [
+    {
+      "kind": "requires",
+      "subject": "g2-fusion-earth-system",
+      "all": [
+        "g2-explore-earth"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "requires",
+      "subject": "g2-fusion-planetary",
+      "all": [
+        "g2-explore-earth"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "requires",
+      "subject": "g2-fusion-genetics",
+      "all": [
+        "g2-explore-biology"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "requires",
+      "subject": "g2-fusion-cell-metabolism",
+      "all": [
+        "g2-explore-biology"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "requires",
+      "subject": "g2-fusion-matter-energy",
+      "all": [
+        "g2-explore-chemistry"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "requires",
+      "subject": "g2-fusion-chemical-reaction",
+      "all": [
+        "g2-explore-chemistry"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "requires",
+      "subject": "g2-fusion-mechanics",
+      "all": [
+        "g2-explore-physics"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "requires",
+      "subject": "g2-fusion-electromagnetism",
+      "all": [
+        "g2-explore-physics"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "requires",
+      "subject": "subj-g3-s1-고급_물리학-2022",
+      "all": [
+        "subj-g3-s1-역학과_에너지-2022",
+        "subj-g3-s1-전자기와_양자-2022"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "requires",
+      "subject": "subj-g3-s1-고급_화학-2022",
+      "all": [
+        "g2-fusion-matter-energy",
+        "g2-fusion-chemical-reaction"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "requires",
+      "subject": "subj-g3-s1-고급_생명과학-2022",
+      "all": [
+        "g2-fusion-cell-metabolism",
+        "g2-fusion-genetics"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "requires",
+      "subject": "subj-g3-s1-고급_지구과학-2022",
+      "all": [
+        "g2-fusion-earth-system",
+        "g2-fusion-planetary"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "pair",
+      "subject": "g2-fusion-mechanics",
+      "partners": [
+        "g2-fusion-electromagnetism"
+      ]
+    },
+    {
+      "kind": "pair",
+      "subject": "g2-fusion-matter-energy",
+      "partners": [
+        "g2-fusion-chemical-reaction"
+      ]
+    },
+    {
+      "kind": "pair",
+      "subject": "g2-fusion-cell-metabolism",
+      "partners": [
+        "g2-fusion-genetics"
+      ]
+    },
+    {
+      "kind": "pair",
+      "subject": "g2-fusion-earth-system",
+      "partners": [
+        "g2-fusion-planetary"
+      ]
+    },
+    {
+      "kind": "pair",
+      "subject": "g2-fusion-data-science",
+      "partners": [
+        "g2-fusion-mechanics",
+        "g2-fusion-electromagnetism"
+      ]
+    },
+    {
+      "kind": "pair",
+      "subject": "g2-basic-kor-dokseo",
+      "partners": [
+        "g2-basic-kor-munhakYeong"
+      ]
+    },
+    {
+      "kind": "pair",
+      "subject": "g2-basic-eng-dokhaejagmun",
+      "partners": [
+        "g2-basic-eng-sekyemunhwa"
+      ]
+    },
+    {
+      "kind": "pair",
+      "subject": "g2-basic-math-geometry",
+      "partners": [
+        "g2-basic-math-advanced-algebra"
+      ]
+    }
+  ]
+}

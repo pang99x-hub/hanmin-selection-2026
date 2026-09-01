@@ -1,0 +1,54 @@
+name: 학생 선택 웹앱 배포
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: 저장소 받기
+        uses: actions/checkout@v4
+
+      - name: 배포 파일 확인
+        shell: bash
+        run: |
+          test -f index.html
+          test -f .nojekyll
+          test -f site-manifest.json
+          test -f app/index.html
+          test -n "$(find app/cohorts -name deployment.json -print -quit)"
+          test -n "$(find app/cohorts -path '*/pack/school.json' -print -quit)"
+
+      - name: 공개 사이트만 묶기
+        shell: bash
+        run: |
+          mkdir -p _site
+          cp index.html slides.html site-manifest.json .nojekyll _site/
+          cp -R app _site/app
+
+      - name: GitHub Pages 준비
+        uses: actions/configure-pages@v5
+
+      - name: 사이트 업로드
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: GitHub Pages 배포
+        id: deployment
+        uses: actions/deploy-pages@v4

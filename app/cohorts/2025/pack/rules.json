@@ -1,0 +1,264 @@
+{
+  "rules": [
+    {
+      "kind": "classify",
+      "groupId": "g2-탐구",
+      "families": {
+        "sci": {
+          "pools": [
+            [
+              "g2-explore-physics",
+              "g2-explore-chemistry",
+              "g2-explore-biology",
+              "g2-explore-earth",
+              "g2-explore-ai"
+            ]
+          ],
+          "minima": [
+            3
+          ]
+        },
+        "hum": {
+          "pools": [
+            [
+              "g2-explore-social-culture",
+              "g2-explore-ethics",
+              "g2-explore-geography",
+              "g2-explore-world-history",
+              "g2-explore-chinese-classics"
+            ]
+          ],
+          "minima": [
+            3
+          ]
+        }
+      }
+    },
+    {
+      "kind": "pair",
+      "subject": "g2-fusion-mechanics",
+      "partners": [
+        "g2-fusion-electromagnetism",
+        "g2-fusion-data-science"
+      ]
+    },
+    {
+      "kind": "pair",
+      "subject": "g2-fusion-electromagnetism",
+      "partners": [
+        "g2-fusion-mechanics",
+        "g2-fusion-data-science"
+      ]
+    },
+    {
+      "kind": "pair",
+      "subject": "g2-fusion-matter-energy",
+      "partners": [
+        "g2-fusion-chemical-reaction",
+        "g2-fusion-data-science"
+      ]
+    },
+    {
+      "kind": "pair",
+      "subject": "g2-fusion-chemical-reaction",
+      "partners": [
+        "g2-fusion-matter-energy",
+        "g2-fusion-data-science"
+      ]
+    },
+    {
+      "kind": "pair",
+      "subject": "g2-fusion-cell-metabolism",
+      "partners": [
+        "g2-fusion-genetics",
+        "g2-fusion-data-science"
+      ]
+    },
+    {
+      "kind": "pair",
+      "subject": "g2-fusion-genetics",
+      "partners": [
+        "g2-fusion-cell-metabolism",
+        "g2-fusion-data-science"
+      ]
+    },
+    {
+      "kind": "pair",
+      "subject": "g2-fusion-earth-system",
+      "partners": [
+        "g2-fusion-planetary",
+        "g2-fusion-data-science"
+      ]
+    },
+    {
+      "kind": "pair",
+      "subject": "g2-fusion-planetary",
+      "partners": [
+        "g2-fusion-earth-system",
+        "g2-fusion-data-science"
+      ]
+    },
+    {
+      "kind": "pair",
+      "subject": "g2-fusion-data-science",
+      "partners": [
+        "g2-fusion-mechanics",
+        "g2-fusion-electromagnetism",
+        "g2-fusion-matter-energy",
+        "g2-fusion-chemical-reaction",
+        "g2-fusion-cell-metabolism",
+        "g2-fusion-genetics",
+        "g2-fusion-earth-system",
+        "g2-fusion-planetary"
+      ]
+    },
+    {
+      "kind": "requires",
+      "subject": "g2-fusion-earth-system",
+      "all": [
+        "g2-explore-earth"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "requires",
+      "subject": "g2-fusion-planetary",
+      "all": [
+        "g2-explore-earth"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "requires",
+      "subject": "g2-fusion-genetics",
+      "all": [
+        "g2-explore-biology"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "requires",
+      "subject": "g2-fusion-cell-metabolism",
+      "all": [
+        "g2-explore-biology"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "requires",
+      "subject": "g2-fusion-matter-energy",
+      "all": [
+        "g2-explore-chemistry"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "requires",
+      "subject": "g2-fusion-chemical-reaction",
+      "all": [
+        "g2-explore-chemistry"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "requires",
+      "subject": "g2-fusion-mechanics",
+      "all": [
+        "g2-explore-physics"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "requires",
+      "subject": "g2-fusion-electromagnetism",
+      "all": [
+        "g2-explore-physics"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "requires",
+      "subject": "subj-g3-s1-고급_물리학-2022",
+      "all": [
+        "subj-g3-s1-역학과_에너지-2022",
+        "subj-g3-s1-전자기와_양자-2022"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "requires",
+      "subject": "subj-g3-s1-고급_화학-2022",
+      "all": [
+        "g2-fusion-matter-energy",
+        "g2-fusion-chemical-reaction"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "requires",
+      "subject": "subj-g3-s1-고급_생명과학-2022",
+      "all": [
+        "g2-fusion-cell-metabolism",
+        "g2-fusion-genetics"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "requires",
+      "subject": "subj-g3-s1-고급_지구과학-2022",
+      "all": [
+        "g2-fusion-earth-system",
+        "g2-fusion-planetary"
+      ],
+      "mode": "required"
+    },
+    {
+      "kind": "pair",
+      "subject": "g2-fusion-mechanics",
+      "partners": [
+        "g2-fusion-electromagnetism"
+      ]
+    },
+    {
+      "kind": "pair",
+      "subject": "g2-fusion-matter-energy",
+      "partners": [
+        "g2-fusion-chemical-reaction"
+      ]
+    },
+    {
+      "kind": "pair",
+      "subject": "g2-fusion-cell-metabolism",
+      "partners": [
+        "g2-fusion-genetics"
+      ]
+    },
+    {
+      "kind": "pair",
+      "subject": "g2-fusion-earth-system",
+      "partners": [
+        "g2-fusion-planetary"
+      ]
+    },
+    {
+      "kind": "cascade",
+      "if": [],
+      "then": [
+        "subj-g3-s1-창의적_디자인_사고와_비즈니스_모델-2022"
+      ],
+      "when": {
+        "family": "sci"
+      }
+    },
+    {
+      "kind": "cascade",
+      "if": [],
+      "then": [
+        "subj-g3-s1-창의적_디자인_사고와_비즈니스_모델-2022"
+      ],
+      "when": {
+        "family": "hum"
+      }
+    }
+  ]
+}

@@ -1,0 +1,2498 @@
+Warning: truncated output (original token count: 53997)
+Total output lines: 2701
+
+<!DOCTYPE html>
+<html class="light" lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+<title>한민고등학교 교육과정 설명회</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect" />
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "surface-container-highest": "#e3e2e6",
+        "secondary-container": "#d1e1f4",
+        "outline-variant": "#c4c6cf",
+        "outline": "#74777f",
+        "inverse-surface": "#2f3033",
+        "surface-variant": "#e3e2e6",
+        "primary": "#000a1e",
+        "primary-container": "#002147",
+        "error-container": "#ffdad6",
+        "on-tertiary-fixed-variant": "#005047",
+        "surface-tint": "#465f88",
+        "on-background": "#1a1b1e",
+        "error": "#ba1a1a",
+        "on-tertiary-container": "#379889",
+        "on-primary-container": "#708ab5",
+        "surface-container": "#efedf1",
+        "on-tertiary": "#ffffff",
+        "background": "#faf9fd",
+        "on-surface": "#1a1b1e",
+        "on-error": "#ffffff",
+        "on-primary": "#ffffff",
+        "surface-dim": "#dad9dd",
+        "on-primary-fixed-variant": "#2d476f",
+        "primary-fixed-dim": "#aec7f6",
+        "on-surface-variant": "#44474e",
+        "tertiary-fixed": "#97f3e2",
+        "surface-container-low": "#f4f3f7",
+        "tertiary-fixed-dim": "#7ad7c6",
+        "tertiary": "#000e0b",
+        "secondary-fixed-dim": "#b8c8da",
+        "on-primary-fixed": "#001b3d",
+        "surface-bright": "#faf9fd",
+        "secondary-fixed": "#d4e4f6",
+        "surface-container-lowest": "#ffffff",
+        "surface": "#faf9fd",
+        "on-secondary-container": "#556474",
+        "primary-fixed": "#d6e3ff",
+        "on-secondary-fixed": "#0d1d2a",
+        "secondary": "#50606f",
+        "inverse-on-surface": "#f1f0f4",
+        "inverse-primary": "#aec7f6",
+        "tertiary-container": "#002721",
+        "on-secondary": "#ffffff",
+        "on-tertiary-fixed": "#00201b",
+        "on-secondary-fixed-variant": "#394857",
+        "surface-container-high": "#e9e7eb",
+        "on-error-container": "#93000a"
+      },
+      borderRadius: {
+        DEFAULT: "0.125rem",
+        lg: "0.25rem",
+        xl: "0.5rem",
+        full: "0.75rem"
+      },
+      fontFamily: {
+        headline: ["Inter", "system-ui", "Malgun Gothic", "Pretendard", "sans-serif"],
+        body: ["Inter", "system-ui", "Malgun Gothic", "Pretendard", "sans-serif"],
+        label: ["Inter", "system-ui", "Malgun Gothic", "Pretendard", "sans-serif"]
+      }
+    }
+  }
+};
+</script>
+<style>
+  html {
+    font-size: 18px;  /* presentation scale — was 16px; Tailwind rem sizes scale 12.5% */
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', system-ui, 'Malgun Gothic', 'Pretendard', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #1a1b1e;
+    background: #1a1b1e;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+  #slides-container {
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    height: 100vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+  }
+  #slides-container::-webkit-scrollbar { display: none; }
+  .slide-frame {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    flex-shrink: 0;
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    background: #faf9fd;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .slide-main {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  .top-nav {
+    flex: 0 0 auto;
+    background: #002147;
+    z-index: 20;
+  }
+  .slide-footer {
+    flex: 0 0 auto;
+    background: #faf9fd;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    z-index: 20;
+  }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .icon-fill {
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .shadow-ambient {
+    box-shadow: 0px 12px 32px rgba(26, 27, 30, 0.06);
+  }
+  .hero-gradient {
+    background: linear-gradient(135deg, rgba(0,10,30,0.9) 0%, rgba(0,33,71,0.7) 100%);
+  }
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  /* Slide index modal */
+  #slide-index-modal {
+    display: none;
+  }
+  #slide-index-modal.open {
+    display: flex;
+  }
+  /* Nav chip active */
+  .nav-chip-active {
+    background: #002147;
+    color: #fff;
+  }
+
+  /* ============================================================ */
+  /* 반응형 — 노트북·태블릿·휴대폰 대응                            */
+  /* ============================================================ */
+  /* 태블릿·소형 노트북 (≤1024px) */
+  @media (max-width: 1024px) {
+    .slide-main > main,
+    .slide-main {
+      padding-left: 1.5rem !important;
+      padding-right: 1.5rem !important;
+    }
+    /* 좌우 분할 슬라이드의 좌측 패널 폭 축소 */
+    .slide-main.flex-row > div:first-child {
+      width: 38%;
+      padding: 2rem !important;
+    }
+    .slide-main.flex-row > div:last-child {
+      padding: 1.5rem !important;
+    }
+    /* 고급 특화 5열 → 3열 */
+    .slide-frame .grid-cols-5 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      row-gap: 0.75rem;
+    }
+    /* 제목 폰트 축소 */
+    .slide-frame h1.text-4xl { font-size: 1.75rem !important; }
+    .slide-frame h1.text-\[2rem\],
+    .slide-frame h1.text-\[2\.1rem\],
+    .slide-frame h1.text-\[1\.9rem\],
+    .slide-frame h1.text-\[1\.8rem\] { font-size: 1.5rem !important; }
+  }
+
+  /* 태블릿 세로·모바일 가로 (≤768px) */
+  @media (max-width: 768px) {
+    /* 좌우 분할 → 상하 스택 */
+    .slide-main.flex-row {
+      flex-direction: column !important;
+    }
+    .slide-main.flex-row > div:first-child {
+      width: 100% !important;
+      padding: 1.25rem 1.5rem !important;
+      border-right: none !important;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      flex-shrink: 0;
+    }
+    .slide-main.flex-row > div:last-child {
+      padding: 1rem 1.25rem !important;
+    }
+    /* 좌측 패널 Key Insight 박스는 세로 모드에서 숨김 */
+    .slide-main.flex-row > div:first-child > div.p-5 {
+      display: none;
+    }
+    .slide-main.flex-row > div:first-child h1 {
+      font-size: 1.5rem !important;
+      margin-bottom: 0.5rem !important;
+    }
+    .slide-main.flex-row > div:first-child > p {
+      font-size: 0.8rem !important;
+      margin-bottom: 0 !important;
+    }
+    /* 슬라이드 13·14 2열 → 1열 */
+    #slide-13 .grid-cols-2,
+    #slide-14 .grid-cols-2 {
+      grid-template-columns: 1fr;
+      gap: 0.75rem !important;
+    }
+    /* 슬라이드 14 5열 → 2열 */
+    .slide-frame .grid-cols-5 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    /* 슬라이드 7·8·9·10·16·17 카드 그리드 축소 */
+    .slide-frame .grid-cols-3 {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+    .slide-frame .grid-cols-4 {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+    /* top-nav·footer 패딩 축소 */
+    .top-nav, .slide-footer { padding-left: 1rem !important; padding-right: 1rem !important; }
+    /* 모바일에서는 슬라이드를 세로로 흐르게 — 각 슬라이드 자연 높이 + 전체 페이지 세로 스크롤 */
+    html, body {
+      height: auto !important;
+      min-height: 100vh;
+      overflow-x: hidden !important;
+      overflow-y: auto !important;
+      overscroll-behavior: auto !important;
+      touch-action: pan-y !important;
+      -webkit-overflow-scrolling: touch;
+      position: static !important;
+    }
+    body {
+      width: 100%;
+    }
+    #slides-container {
+      display: block !important;
+      width: 100% !important;
+      height: auto !important;
+      overflow-x: hidden !important;
+      overflow-y: visible !important;
+      scroll-snap-type: none !important;
+    }
+    .slide-frame {
+      width: 100% !important;
+      height: auto !important;
+      min-height: 100vh;
+      scroll-snap-align: none;
+      overflow: visible !important;
+    }
+    .slide-main {
+      overflow: visible !important;
+      flex: 1 1 auto;
+    }
+    /* grid/flex 자식이 parent 높이에 묶여 찌그러지지 않도록 */
+    .slide-main .flex-1 {
+      flex: 0 0 auto !important;
+      min-height: 0 !important;
+    }
+    /* 슬라이드 좌우 패딩 축소 */
+    .slide-main[class*="px-12"] {
+      padding-left: 1.25rem !important;
+      padding-right: 1.25rem !important;
+    }
+  }
+
+  /* 모바일 세로 (≤480px) */
+  @media (max-width: 480px) {
+    /* 테이블 행을 카드 리스트처럼 재배치 */
+    .slide-frame .grid.grid-cols-12 {
+      display: flex !important;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.25rem 0.5rem;
+      padding: 0.7rem 1rem !important;
+      font-size: 0.82rem;
+    }
+    /* 테이블 헤더는 모바일에서 숨김 */
+    .slide-frame .grid.grid-cols-12.uppercase {
+      display: none !important;
+    }
+    .slide-frame .grid.grid-cols-12 > [class*="col-span-"] {
+      flex: 0 0 auto;
+      text-align: left !important;
+    }
+    /* 빈 셀(연속 행의 중복 제거 용)은 숨김 */
+    .slide-frame .grid.grid-cols-12 > [class*="col-span-"]:empty {
+      display: none !important;
+    }
+    /* 과목명(넓은 col-span)은 전체 너비로 강조 */
+    .slide-frame .grid.grid-cols-12 > .col-span-4,
+    .slide-frame .grid.grid-cols-12 > .col-span-5 {
+      flex: 1 1 100%;
+      font-weight: 700;
+      color: #002147;
+      margin-top: 0.15rem;
+    }
+    /* 학기/학점 숫자는 라벨과 함께 작은 뱃지로 */
+    .slide-frame .grid.grid-cols-12 > .col-span-1 {
+      font-size: 0.72rem;
+      color: #475569;
+      background: #f1f5f9;
+      padding: 0.1rem 0.5rem;
+      border-radius: 4px;
+    }
+    /* 학기/학점 라벨 — 슬라이드 ID 무관, 직전 셀 폭으로 식별
+       - col-span-4 (과목명) 다음 col-span-1 = 학기 (슬라이드 5·11 : 6-col 행)
+       - col-span-5 (과목명) 다음 col-span-1 = 학기 (슬라이드 6·12 : 5-col 행)
+       - 위 col-span-1 다음 col-span-1 = 학점 (6-col 행 전용) */
+    .slide-frame .grid.grid-cols-12 > .col-span-4 + .col-span-1::before,
+    .slide-frame .grid.grid-cols-12 > .col-span-5 + .col-span-1::before {
+      content: "학기 ";
+      opacity: 0.7;
+    }
+    .slide-frame .grid.grid-cols-12 > .col-span-1 + .col-span-1::before {
+      content: "학점 ";
+      opacity: 0.7;
+    }
+    /* 평가 컬럼 */
+    .slide-frame .grid.grid-cols-12 > .col-span-2:last-child {
+      font-size: 0.72rem;
+      color: #64748B;
+    }
+    /* 모든 카드 그리드 한 열로 — 폰에서는 2열도 좁아서 세로 글자로 찌그러짐 */
+    .slide-frame .grid-cols-2,
+    .slide-frame .grid-cols-3,
+    .slide-frame .grid-cols-4,
+    .slide-frame .grid-cols-5 {
+      grid-template-columns: 1fr !important;
+    }
+    /* col-span-* 요소가 암묵적 추가 칼럼을 만들어 2열 배치를 유지시키므로 해제 */
+    .slide-frame [class*="grid-cols-"] > [class*="col-span-"] {
+      grid-column: span 1 / span 1 !important;
+    }
+    /* whitespace-nowrap 제목은 모바일에서 잘리므로 줄바꿈 허용 */
+    .slide-frame .whitespace-nowrap {
+      white-space: normal !important;
+      word-break: keep-all;
+    }
+    /* justify-between 으로 양끝 정렬된 flex 행은 모바일에서 세로 쌓기 */
+    .slide-frame .flex.justify-between.items-end {
+      flex-direction: column;
+      align-items: flex-start !important;
+      gap: 0.25rem;
+    }
+    /* w-1/3 + w-2/3 등 비율 기반 좌우 분할 패턴 → 세로 스택 (Q&A, 과제연구 로드맵 등) */
+    .slide-frame .flex.flex-row,
+    .slide-frame .flex.items-center.gap-5 {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      height: auto !important;
+    }
+    /* 좌측 border-r 구분선은 모바일에서 가로선으로 변환 */
+    .slide-frame .flex.items-center.gap-5 > .border-r {
+      border-right: none !important;
+      padding-right: 0 !important;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      padding-bottom: 0.5rem !important;
+      margin-bottom: 0.5rem !important;
+      width: 100%;
+    }
+    .slide-frame [class*="w-1/3"],
+    .slide-frame [class*="w-2/3"],
+    .slide-frame [class*="w-1/2"],
+    .slide-frame [class*="w-1/4"],
+    .slide-frame [class*="w-3/4"],
+    .slide-frame [class*="w-["] {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    /* 예외: 슬라이드 0 커버의 작은 통계 블록 등은 유지 */
+    #slide-0 .grid-cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+    #slide-0 .grid-cols-2 > [class*="col-span-2"] {
+      grid-column: span 2 / span 2 !important;
+    }
+    /* 폰트 전반 축소 */
+    .slide-frame h1.text-4xl,
+    .slide-frame h1.text-5xl,
+    .slide-frame h1.text-6xl,
+    .slide-frame h1.text-7xl,
+    .slide-frame h1.lg\:text-7xl,
+    .slide-frame h1.md\:text-6xl { font-size: 1.5rem !important; line-height: 1.2 !important; }
+    .slide-frame h1.text-\[2rem\],
+    .slide-frame h1.text-\[2\.1rem\],
+    .slide-frame h1.text-\[1\.9rem\],
+    .slide-frame h1.text-\[1\.8rem\] { font-size: 1.25rem !important; }
+    /* 슬라이드 네비게이션 footer 더 작게 */
+    .slide-footer { font-size: 0.65rem !important; padding: 0.5rem 0.75rem !important; }
+    .slide-footer span { display: none; }
+    .slide-footer span.text-primary-container { display: inline; }
+    /* 13·14 카드 내부 패딩 축소 */
+    #slide-13 .p-5, #slide-14 .p-5 { padding: 0.75rem !important; }
+    /* 14 카드 내부 선수과목 박스도 줄임 */
+    #slide-14 article .p-3 { padding: 0.5rem !important; }
+  }
+
+  /* 공통: 모바일에서 당겨서 새로고침 방지 */
+  body { overscroll-behavior: contain; }
+</style>
+</head>
+<body>
+
+<!-- ===== Slide Index Modal ===== -->
+<div id="slide-index-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-[100] items-center justify-center p-8">
+  <div class="bg-white rounded-xl max-w-5xl w-full max-h-[80vh] overflow-y-auto p-10 shadow-2xl">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <div class="text-xs font-bold tracking-widest uppercase text-tertiary-fixed-dim mb-1">Slide Index</div>
+        <h2 class="text-3xl font-extrabold text-primary-container tracking-tight">전체 슬라이드 목록</h2>
+      </div>
+      <button onclick="closeIndex()" class="w-10 h-10 rounded-full bg-surface-container-high hover:bg-surface-container-highest transition flex items-center justify-center">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div id="slide-index-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDES (0~20) — 수평 레이아웃                                 -->
+<!-- Each .slide-frame contains: top-nav + slide-main + footer    -->
+<!-- ============================================================ -->
+
+<div id="slides-container">
+<!-- slide-0: Cover -->
+<section id="slide-0" class="slide-frame" data-title="커버">
+  <main class="slide-main bg-surface flex items-center justify-center relative">
+    <div class="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-primary-container opacity-5 blur-3xl"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-tertiary-container opacity-[0.04] blur-3xl"></div>
+    <div class="relative z-10 w-full max-w-5xl mx-auto px-8 flex flex-col items-center text-center">
+      <span class="font-label text-xs uppercase tracking-[0.3em] text-tertiary-fixed-dim mb-5">The Scholarly Horizon · 2026</span>
+      <h1 class="font-headline font-black text-5xl md:text-6xl lg:text-7xl text-primary-container tracking-[-0.03em] leading-tight mb-6">
+        한민고등학교<br/>교육과정시스템
+      </h1>
+      <p class="text-lg md:text-xl text-on-surface-variant max-w-2xl mx-auto mb-14 tracking-tight">
+        나와 세상을 잇는 3년의 설계 — 한민고의 깊이 있는 교육과정
+      </p>
+      <div class="flex flex-col sm:flex-row gap-5 items-center justify-center w-full max-w-xl mx-auto">
+        <button onclick="goTo(1)" class="group relative w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 bg-primary-container text-on-primary font-semibold text-lg tracking-wide rounded-md hover:bg-[#2d476f] transition-colors shadow-[0px_12px_32px_rgba(0,33,71,0.2)]">
+          <span class="mr-2">교육과정 안내</span>
+          <span class="material-symbols-outlined text-xl transition-transform group-hover:translate-x-1">arrow_forward</span>
+        </button>
+        <a href="./app/index.html#career-guide" class="group relative w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 bg-tertiary-fixed-dim text-on-tertiary-fixed border border-tertiary-fixed-dim font-semibold text-lg tracking-wide rounded-md hover:bg-tertiary-fixed transition-colors shadow-[0px_12px_32px_rgba(122,215,198,0.3)] no-underline">
+          <span class="mr-2">교육과정 설계</span>
+          <span class="material-symbols-outlined text-xl transition-transform group-hover:translate-x-1">check_circle</span>
+        </a>
+      </div>
+    </div>
+  </main>
+  <footer class="slide-footer flex justify-between items-center px-12 py-4 text-xs tracking-widest uppercase font-medium">
+    <span class="text-slate-400">— 시작 —</span>
+    <span class="text-primary-container font-bold">한민고등학교 교육과정 설명</span>
+    <button onclick="goTo(1)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2">
+      다음 <span class="material-symbols-outlined text-sm">arrow_forward</span>
+    </button>
+  </footer>
+</section>
+<!-- slide-1: Vision -->
+<section id="slide-1" class="slide-frame" data-title="비전·교육목표">
+  <header class="top-nav flex justify-between items-center px-12 py-4">
+    <div class="text-xl font-bold tracking-[0.3em] text-white">HANMIN&nbsp;&nbsp;ACADEMY</div>
+    <div class="flex items-center gap-3">
+      <button onclick="openIndex()" class="text-slate-300 hover:text-white transition-all hover:bg-white/5 px-3 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold"><span class="material-symbols-outlined text-lg">grid_view</span><span class="hidden md:inline">Slide Index</span></button>
+      <button class="bg-[#7ad7c6] text-[#002147] px-5 py-2 rounded-md font-bold tracking-tight hover:bg-white transition-colors text-sm">Contact Admissions</button>
+    </div>
+  </header>
+  <main class="slide-main bg-surface px-16 pt-10 pb-6">
+    <div class="absolute inset-0 bg-gradient-to-br from-surface to-surface-container-low opacity-50 z-0 pointer-events-none"></div>
+    <div class="relative z-10 flex flex-col h-full">
+      <div class="mb-6">
+        <span class="font-label text-xs uppercase tracking-[0.3em] text-tertiary-fixed-dim">Vision &amp; Goals · 비전과 교육목표</span>
+      </div>
+      <div class="mb-10 max-w-7xl">
+        <h1 class="font-headline text-4xl font-extrabold tracking-tight leading-tight text-primary-container mb-4 whitespace-nowrap">
+          나라를 사랑하고 함께 나누며 미래를 준비하는 한민인
+        </h1>
+        <p class="text-lg text-on-surface-variant leading-relaxed max-w-3xl">
+          깊이 있는 교육과정·평가·기록의 일체화를 통해 세 가지 인재상을 길러냅니다.
+        </p>
+      </div>
+      <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6 min-h-0">
+        <!-- Pillar 1: 올바른 국가관 -->
+        <div class="bg-surface-container-low rounded-xl p-6 flex flex-col relative overflow-hidden group hover:bg-surface-container transition-colors">
+          <div class="absolute right-0 top-0 w-32 h-32 bg-primary-container opacity-5 rounded-bl-full transform translate-x-8 -translate-y-8"></div>
+          <div class="relative flex items-center gap-4 mb-5">
+            <div class="w-14 h-14 rounded-full bg-primary-container flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-3xl text-white">public</span>
+            </div>
+            <div>
+              <div class="text-[12px] font-bold tracking-widest uppercase text-on-secondary-container">Pillar I</div>
+              <h3 class="font-headline text-xl font-bold text-primary-container">올바른 국가관</h3>
+            </div>
+          </div>
+          <p class="relative text-sm text-on-surface-variant leading-relaxed mb-4">
+            한국사·세계사·지리·정치 등 깊이 있는 탐구로 우리나라와 세계를 바라보는 균형 잡힌 시각을 기릅니다.
+          </p>
+          <div class="relative flex-1 flex flex-col">
+            <div class="text-[12px] font-bold tracking-widest uppercase text-on-secondary-container mb-2">관련 과목</div>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="bg-surface-container-lowest px-2.5 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-primary-container">한국사1·2</span>
+              <span class="bg-surface-container-lowest px-2.5 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-primary-container">통합사회1·2</span>
+              <span class="bg-surface-container-lowest px-2.5 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-primary-container">세계사</span>
+              <span class="bg-surface-container-lowest px-2.5 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-primary-container">세계시민과 지리</span>
+              <span class="bg-surface-container-lowest px-2.5 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-primary-container">정치와 사회</span>
+              <span class="bg-surface-container-lowest px-2.5 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-primary-container">한국사 심화 탐구</span>
+            </div>
+          </div>
+        </div>
+        <!-- Pillar 2: 인성을 갖춘 인재 -->
+        <div class="bg-surface-container-low rounded-xl p-6 flex flex-col relative overflow-hidden group hover:bg-surface-container transition-colors">
+          <div class="absolute right-0 top-0 w-32 h-32 bg-tertiary-container opacity-5 rounded-bl-full transform translate-x-8 -translate-y-8"></div>
+          <div class="relative flex items-center gap-4 mb-5">
+            <div class="w-14 h-14 rounded-full bg-tertiary-container flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-3xl text-tertiary-fixed-dim">diversity_1</span>
+            </div>
+            <div>
+              <div class="text-[12px] font-bold tracking-widest uppercase text-on-secondary-container">Pillar II</div>
+              <h3 class="font-headline text-xl font-bold text-primary-container">인성을 갖춘 인재</h3>
+            </div>
+          </div>
+          <p class="relative text-sm text-on-surface-variant leading-relaxed mb-4">
+            문학·윤리·철학·한문 과목을 통해 자신을 성찰하고 타인과 세상을 이해하는 성숙한 인격을 키웁니다.
+          </p>
+          <div class="relative flex-1 flex flex-col">
+            <div class="text-[12px] font-bold tracking-widest uppercase text-on-secondary-container mb-2">관련 과목</div>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="bg-surface-container-lowest px-2.5 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-tertiary-container">문학</span>
+              <span class="bg-surface-container-lowest px-2.5 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-tertiary-container">현대사회와 윤리</span>
+              <span class="bg-surface-container-lowest px-2.5 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-tertiary-container">현대 사회와 철학</span>
+              <span class="bg-surface-container-lowest px-2.5 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-tertiary-container">고전과 윤리</span>
+              <span class="bg-surface-container-lowest px-2.5 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-tertiary-container">독서토론과 글쓰기</span>
+              <span class="bg-surface-container-lowest px-2.5 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-tertiary-container">철학</span>
+              <span class="bg-surface-container-lowest px-2.5 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-tertiary-container">한문</span>
+            </div>
+          </div>
+        </div>
+        <!-- Pillar 3: 창의적 인재 -->
+        <div class="bg-surface-container-low rounded-xl p-6 flex flex-col relative overflow-hidden group hover:bg-surface-container transition-colors">
+          <div class="absolute right-0 top-0 w-32 h-32 bg-secondary-container opacity-20 rounded-bl-full transform translate-x-8 -translate-y-8"></div>
+          <div class="relative flex items-center gap-4 mb-5">
+            <div class="w-14 h-14 rounded-full bg-surface-tint flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-3xl text-white">lightbulb</span>
+            </div>
+            <div>
+              <div class="text-[12px] font-bold tracking-widest uppercase text-on-secondary-container">Pillar III</div>
+              <h3 class="font-headline text-xl font-bold text-primary-container">창의적 인재</h3>
+            </div>
+          </div>
+          <p class="relative text-sm text-on-surface-variant leading-relaxed mb-4">
+            고급 수학·과학·정보와 국제 계열 심화 과목으로 지식의 경계를 확장하고, 과제연구로 스스로 탐구하는 힘을 기릅니다.
+          </p>
+          <div class="relative flex-1 flex flex-col">
+            <div class="text-[12px] font-bold tracking-widest uppercase text-on-secondary-container mb-2">관련 과목</div>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="bg-surface-container-lowest px-2 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-surface-tint">미적분</span>
+              <span class="bg-surface-container-lowest px-2 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-surface-tint">기하</span>
+              <span class="bg-surface-container-lowest px-2 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-surface-tint">고급수학</span>
+              <span class="bg-surface-container-lowest px-2 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-surface-tint">고급 물·화·생·지</span>
+              <span class="bg-surface-container-lowest px-2 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-surface-tint">인공지능 기초</span>
+              <span class="bg-surface-container-lowest px-2 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-surface-tint">컴퓨터 구조</span>
+              <span class="bg-surface-container-lowest px-2 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-surface-tint">정보과학</span>
+              <span class="bg-surface-container-lowest px-2 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-surface-tint">과제연구</span>
+              <span class="bg-surface-container-lowest px-2 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-surface-tint">국제 경제</span>
+              <span class="bg-surface-container-lowest px-2 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-surface-tint">지역 이해</span>
+              <span class="bg-surface-container-lowest px-2 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-surface-tint">국제 관계와 국제기구</span>
+              <span class="bg-surface-container-lowest px-2 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-surface-tint">역사학으로 국제사회 읽기</span>
+              <span class="bg-surface-container-lowest px-2 py-1 rounded-md border border-outline-variant/20 text-[13px] font-semibold text-surface-tint">현대정치철학의 이해</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="slide-footer flex justify-between items-center px-12 py-3 text-xs tracking-widest uppercase font-medium">
+    <button onclick="goTo(0)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2"><span class="material-symbols-outlined text-sm">arrow_back</span> 이전</button>
+    <span class="text-primary-container font-bold">슬라이드 01 / 20 — 한민고등학교 교육과정 설명</span>
+    <button onclick="goTo(2)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2">다음 <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+  </footer>
+</section>
+<!-- slide-2: 3-Year Roadmap -->
+<section id="slide-2" class="slide-frame" data-title="3년 성장 로드맵">
+  <header class="top-nav flex justify-between items-center px-12 py-4">
+    <div class="text-xl font-bold tracking-[0.3em] text-white">HANMIN&nbsp;&nbsp;ACADEMY</div>
+    <div class="flex items-center gap-3">
+      <button onclick="openIndex()" class="text-slate-300 hover:text-white transition-all hover:bg-white/5 px-3 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold"><span class="material-symbols-outlined text-lg">grid_view</span><span class="hidden md:inline">Slide Index</span></button>
+      <button class="bg-[#7ad7c6] text-[#002147] px-5 py-2 rounded-md font-bold tracking-tight hover:bg-white transition-colors text-sm">Contact Admissions</button>
+    </div>
+  </header>
+  <main class="slide-main bg-surface px-16 pt-8 pb-4">
+    <div class="mb-8">
+      <span class="font-label text-xs uppercase tracking-[0.3em] text-tertiary-fixed-dim mb-2 block">Curriculum Strategy</span>
+      <h1 class="font-headline text-[2.2rem] font-extrabold tracking-tight text-on-surface">3년 성장 로드맵</h1>
+      <p class="text-base text-on-surface-variant leading-relaxed mt-2">1학년 탐색에서 시작해 3학년 심화 도전으로 이어지는 3년 성장 경로</p>
+    </div>
+    <div class="flex-1 grid grid-cols-3 gap-6 items-stretch min-h-0">
+      <!-- 1학년 -->
+      <div class="bg-surface-container-low rounded-xl p-7 flex flex-col relative overflow-hidden hover:bg-surface-container-lowest transition-all">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-primary-container rounded-bl-full opacity-10 -mr-10 -mt-10"></div>
+        <div class="text-primary-container mb-4"><span class="material-symbols-outlined text-5xl">explore</span></div>
+        <div class="text-xs font-bold tracking-widest uppercase text-on-secondary-container mb-1">STAGE 01</div>
+        <h3 class="font-headline text-3xl font-extrabold text-on-surface mb-1">1학년</h3>
+        <h4 class="font-headline text-lg text-primary-container mb-5 font-semibold">탐색</h4>
+        <p class="text-sm text-on-surface-variant leading-relaxed flex-grow mb-5">
+          공통 교육과정을 바탕으로 적성과 진로를 탐색하며, 창의적 문제해결 연습 프로그램으로 탐구의 첫발을 뗍니다.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="inline-block bg-primary text-on-primary text-[12px] font-bold uppercase tracking-wider py-1 px-2.5 rounded-md">공통과목</span>
+          <span class="inline-block bg-surface-container-high text-on-surface-variant text-[12px] font-bold uppercase tracking-wider py-1 px-2.5 rounded-md">진로 탐색</span>
+          <span class="inline-block bg-surface-container-high text-on-surface-variant text-[12px] font-bold uppercase tracking-wider py-1 px-2.5 rounded-md">기초 역량</span>
+        </div>
+      </div>
+      <!-- 2학년 -->
+      <div class="bg-surface-container-low rounded-xl p-7 flex flex-col relative overflow-hidden hover:bg-surface-container-lowest transition-all">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-secondary rounded-bl-full opacity-10 -mr-10 -mt-10"></div>
+        <div class="text-secondary mb-4"><span class="material-symbols-outlined text-5xl">menu_book</span></div>
+        <div class="text-xs font-bold tracking-widest uppercase text-on-secondary-container mb-1">STAGE 02</div>
+        <h3 class="font-headline text-3xl font-extrabold text-on-surface mb-1">2학년</h3>
+        <h4 class="font-headline text-lg text-secondary mb-5 font-semibold">자기주도적 탐구</h4>
+        <p class="text-sm text-on-surface-variant leading-relaxed flex-grow mb-5">
+          계열별 선택과목과 융합·심화 과목으로 전공 기초를 다지고, 창의융합 과제연구로 소논문을 기획·실행합니다.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="inline-block bg-secondary text-on-secondary text-[12px] font-bold uppercase tracking-wider py-1 px-2.5 rounded-md">전공 기초</span>
+          <span class="inline-block bg-surface-container-high text-on-surface-variant text-[12px] font-bold uppercase tracking-wider py-1 px-2.5 rounded-md">과제연구</span>
+          <span class="inline-block bg-surface-container-high text-on-surface-variant text-[12px] font-bold uppercase tracking-wider py-1 px-2.5 rounded-md">계열별 심화</span>
+        </div>
+      </div>
+      <!-- 3학년 -->
+      <div class="bg-tertiary-container rounded-xl p-7 flex flex-col relative overflow-hidden transition-all">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-tertiary-fixed-dim rounded-bl-full opacity-20 -mr-10 -mt-10"></div>
+        <div class="text-tertiary-fixed-dim mb-4"><span class="material-symbols-outlined text-5xl">rocket_launch</span></div>
+        <div class="text-xs font-bold tracking-widest uppercase text-tertiary-fixed-dim mb-1">STAGE 03</div>
+        <h3 class="font-headline text-3xl font-extrabold text-white mb-1">3학년</h3>
+        <h4 class="font-headline text-lg text-tertiary-fixed-dim mb-5 font-semibold">심화 및 도전</h4>
+        <p class="text-sm text-white/80 leading-relaxed flex-grow mb-5">
+          고급·국제 과목으로 대학 수준의 깊이를 경험하며 입시에 집중합니다.
+          <br/><span class="text-tertiary-fixed-dim">※ 한민 학술제는 2학년 말 진행 — 3년 탐구의 정점을 미리 세웁니다.</span>
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="inline-block bg-tertiary-fixed-dim text-on-tertiary-fixed text-[12px] font-bold uppercase tracking-wider py-1 px-2.5 rounded-md">고급·국제</span>
+          <span class="inline-block bg-white/10 text-tertiary-fixed-dim text-[12px] font-bold uppercase tracking-wider py-1 px-2.5 rounded-md">최상위 탐구</span>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="slide-footer flex justify-between items-center px-12 py-3 text-xs tracking-widest uppercase font-medium">
+    <button onclick="goTo(1)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2"><span class="material-symbols-outlined text-sm">arrow_back</span> 이전</button>
+    <span class="text-primary-container font-bold">슬라이드 02 / 20 — 한민고등학교 교육과정 설명</span>
+    <button onclick="goTo(3)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2">다음 <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+  </footer>
+</section>
+<!-- slide-3: Integrated System -->
+<section id="slide-3" class="slide-frame" data-title="일체화된 시스템">
+  <header class="top-nav flex justify-between items-center px-12 py-4">
+    <div class="text-xl font-bold tracking-[0.3em] text-white">HANMIN&nbsp;&nbsp;ACADEMY</div>
+    <div class="flex items-center gap-3">
+      <button onclick="openIndex()" class="text-slate-300 hover:text-white transition-all hover:bg-white/5 px-3 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold"><span class="material-symbols-outlined text-lg">grid_view</span><span class="hidden md:inline">Slide Index</span></button>
+      <button class="bg-[#7ad7c6] text-[#002147] px-5 py-2 rounded-md font-bold tracking-tight hover:bg-white transition-colors text-sm">Contact Admissions</button>
+    </div>
+  </header>
+  <main class="slide-main bg-surface px-16 pt-8 pb-4 relative">
+    <div class="absolute -top-40 -right-40 w-[600px] h-[600px] bg-primary-container opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="relative z-10 flex flex-col h-full">
+      <div class="mb-6">
+        <span class="font-label text-xs uppercase tracking-[0.3em] text-tertiary-fixed-dim mb-2 block">Integrated System · 일체화된 시스템</span>
+        <h1 class="font-headline text-[2rem] font-extrabold text-primary tracking-tight leading-tight max-w-4xl">
+          배운 것이 그대로 평가되고, 평가된 것이 그대로 기록되는<br/>완전한 일체화
+        </h1>
+      </div>
+      <div class="flex-1 grid grid-cols-2 grid-rows-2 gap-5 min-h-0">
+        <!-- 1. 교육과정 -->
+        <div class="bg-surface-container-low rounded-xl p-8 flex flex-col items-center justify-center text-center group hover:bg-surface-container transition-colors relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+          <div class="absolute -right-16 -bottom-16 w-48 h-48 bg-primary-container/5 rounded-full"></div>
+          <div class="relative flex items-center gap-5 mb-4 w-[380px]">
+            <div class="w-20 h-20 bg-primary-container rounded-2xl flex items-center justify-center shrink-0 shadow-ambient flex-shrink-0">
+              <span class="material-symbols-outlined text-white icon-fill" style="font-size: 44px;">menu_book</span>
+            </div>
+            <div class="text-left">
+              <div class="text-xs font-bold tracking-widest uppercase text-on-secondary-container mb-1">Pillar 01</div>
+              <h2 class="font-headline text-3xl font-extrabold text-primary-container leading-tight">교육과정</h2>
+            </div>
+          </div>
+          <p class="relative text-base text-on-surface-variant leading-relaxed max-w-md">
+            학생 선택 기반의 다양한 과목 구성<br/>
+            <span class="font-bold text-primary-container">심화·융합·고급 트랙</span> 운영
+          </p>
+        </div>
+        <!-- 2. 깊이 있는 수업 -->
+        <div class="bg-surface-container-low rounded-xl p-8 flex flex-col items-center justify-center text-center group hover:bg-surface-container transition-colors relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-1 h-full bg-tertiary-fixed-dim"></div>
+          <div class="absolute -right-16 -bottom-16 w-48 h-48 bg-tertiary-container/8 rounded-full"></div>
+          <div class="relative flex items-center gap-5 mb-4 w-[380px]">
+            <div class="w-20 h-20 bg-tertiary-container rounded-2xl flex items-center justify-center shrink-0 shadow-ambient">
+              <span class="material-symbols-outlined text-tertiary-fixed-dim icon-fill" style="font-size: 44px;">school</span>
+            </div>
+            <div class="text-left">
+              <div class="text-xs font-bold tracking-widest uppercase text-on-secondary-container mb-1">Pillar 02</div>
+              <h2 class="font-headline text-3xl font-extrabold text-primary-container leading-tight">깊이 있는 수업</h2>
+            </div>
+          </div>
+          <p class="relative text-base text-on-surface-variant leading-relaxed max-w-md">
+            탐구·토론·프로젝트 중심의 활동형 수업<br/>
+            <span class="font-bold text-primary-container">교사-학생 공동 탐구</span>
+          </p>
+        </div>
+        <!-- 3. 역량 중심 평가 -->
+        <div class="bg-surface-container-low rounded-xl p-8 flex flex-col items-center justify-center text-center group hover:bg-surface-container transition-colors relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-1 h-full bg-secondary"></div>
+          <div class="absolute -right-16 -bottom-16 w-48 h-48 bg-secondary-container/30 rounded-full"></div>
+          <div class="relative flex items-center gap-5 mb-4 w-[380px]">
+            <div class="w-20 h-20 bg-surface-tint rounded-2xl flex items-center justify-center shrink-0 shadow-ambient">
+              <span class="material-symbols-outlined text-white icon-fill" style="font-size: 44px;">analytics</span>
+            </div>
+            <div class="text-left">
+              <div class="text-xs font-bold tracking-widest uppercase text-on-secondary-container mb-1">Pillar 03</div>
+              <h2 class="font-headline text-3xl font-extrabold text-primary-container leading-tight">역량 중심 평가</h2>
+            </div>
+          </div>
+          <p class="relative text-base text-on-surface-variant leading-relaxed max-w-md">
+            절대평가·성취기준 기반 피드백<br/>
+            <span class="font-bold text-primary-container">점수보다 성장</span>에 집중
+          </p>
+        </div>
+        <!-- 4. 개별화된 기록 -->
+        <div class="bg-surface-container-low rounded-xl p-8 flex flex-col items-center justify-center text-center group hover:bg-surface-container transition-colors relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-1 h-full bg-primary-fixed-dim"></div>
+          <div class="absolute -right-16 -bottom-16 w-48 h-48 bg-primary-fixed/30 rounded-full"></div>
+          <div class="relative flex items-center gap-5 mb-4 w-[380px]">
+            <div class="w-20 h-20 bg-primary rounded-2xl flex items-center justify-center shrink-0 shadow-ambient">
+              <span class="material-symbols-outlined text-primary-fixed-dim icon-fill" style="font-size: 44px;">folder_managed</span>
+            </div>
+            <div class="text-left">
+              <div class="text-xs font-bold tracking-widest uppercase text-on-secondary-container mb-1">Pillar 04</div>
+              <h2 class="font-headline text-3xl font-extrabold text-primary-container leading-tight">개별화된 기록</h2>
+            </div>
+          </div>
+          <p class="relative text-base text-on-surface-variant leading-relaxed max-w-md">
+            세부능력 및 특기사항(세특) 중심 기록<br/>
+            <span class="font-bold text-primary-container">학종 최적화</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="slide-footer flex justify-between items-center px-12 py-3 text-xs tracking-widest uppercase font-medium">
+    <button onclick="goTo(2)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2"><span class="material-symbols-outlined text-sm">arrow_back</span> 이전</button>
+    <span class="text-primary-container font-bold">슬라이드 03 / 20 — 한민고등학교 교육과정 설명</span>
+    <button onclick="goTo(4)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2">다음 <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+  </footer>
+</section>
+<!-- slide-4: Advanced Tracks -->
+<section id="slide-4" class="slide-frame" data-title="심화 선택권 보장">
+  <header class="top-nav flex justify-between items-center px-12 py-4">
+    <div class="text-xl font-bold tracking-[0.3em] text-white">HANMIN&nbsp;&nbsp;ACADEMY</div>
+    <div class="flex items-center gap-3">
+      <button onclick="openIndex()" class="text-slate-300 hover:text-white transition-all hover:bg-white/5 px-3 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold"><span class="material-symbols-outlined text-lg">grid_view</span><span class="hidden md:inline">Slide Index</span></button>
+      <button class="bg-[#7ad7c6] text-[#002147] px-5 py-2 rounded-md font-bold tracking-tight hover:bg-white transition-colors text-sm">Contact Admissions</button>
+    </div>
+  </header>
+  <main class="slide-main bg-surface px-16 pt-8 pb-4">
+    <div class="mb-6 max-w-5xl">
+      <span class="font-label text-xs uppercase tracking-[0.3em] text-tertiary-fixed-dim mb-3 block">Specialized Tracks · 심화 선택권 보장</span>
+      <h1 class="font-headline text-[2.2rem] font-extrabold tracking-tight leading-tight text-primary-container mb-3">
+        특목고 수준의 고시 외 과목과 최상위 심화 트랙
+      </h1>
+      <p class="text-base text-on-surface-variant leading-relaxed max-w-3xl">
+        일반고의 틀을 깨고 학생 스스로 자신의 비전에 맞는 도전적인 과목 조합을 설계합니다.
+        <span class="inline-block ml-2 text-tertiary-fixed-dim font-semibold">핵심 원칙 — 자기주도 학습 문화</span>
+      </p>
+    </div>
+    <div class="flex-1 grid grid-cols-2 gap-6 min-h-0">
+      <!-- 자연 최상위 심화 트랙 -->
+      <article class="bg-surface-container-low rounded-xl flex flex-col overflow-hidden relative group border border-outline-variant/10">
+        <div class="absolute inset-0 z-0 opacity-[0.08] bg-[radial-gradient(circle_at_80%_20%,#7ad7c6_0%,transparent_50%)]"></div>
+        <div class="relative z-10 p-8 flex flex-col h-full">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-14 h-14 rounded-lg bg-tertiary-container flex items-center justify-center">
+              <span class="material-symbols-outlined text-tertiary-fixed-dim text-3xl">science</span>
+            </div>
+            <div>
+              <div class="text-[12px] font-bold tracking-widest uppercase text-tertiary-fixed-dim">Track 01</div>
+              <h2 class="font-headline text-2xl font-bold text-primary-container">자연 최상위 심화 트랙</h2>
+            </div>
+          </div>
+          <p class="text-sm text-on-surface-variant leading-relaxed mb-5 pb-4 border-b border-outline-variant/15">
+            올림피아드·최상위 이공계 진학을 준비하는 학생을 위한 대학 수준 과목.
+            2학년 진로선택 과목을 선수로 3학년에 도전합니다.
+          </p>
+          <div class="flex-1 grid grid-cols-2 gap-2 content-start">
+            <div class="bg-surface-container-lowest p-3 rounded-lg border border-outline-variant/15 flex items-center gap-2"><span class="material-symbols-outlined text-tertiary-container text-base icon-fill">bolt</span><span class="text-sm font-semibold text-on-surface">고급 물리학</span></div>
+            <div class="bg-surface-container-lowest p-3 rounded-lg border border-outline-variant/15 flex items-center gap-2"><span class="material-symbols-outlined text-tertiary-container text-base icon-fill">experiment</span><span class="text-sm font-semibold text-on-surface">고급 화학</span></div>
+            <div class="bg-surface-container-lowest p-3 rounded-lg border border-outline-variant/15 flex items-center gap-2"><span class="material-symbols-outlined text-tertiary-container text-base icon-fill">biotech</span><span class="text-sm font-semibold text-on-surface">고급 생명과학</span></div>
+            <div class="bg-surface-container-lowest p-3 rounded-lg border border-outline-variant/15 flex items-center gap-2"><span class="material-symbols-outlined text-tertiary-container text-base icon-fill">public</span><span class="text-sm font-semibold text-on-surface">고급 지구과학</span></div>
+            <div class="col-span-2 bg-surface-container-lowest p-3 rounded-lg border border-outline-variant/15 flex items-center gap-2"><span class="material-symbols-outlined text-tertiary-container text-base icon-fill">smart_toy</span><span class="text-sm font-semibold text-on-surface">정보과학</span></div>
+          </div>
+        </div>
+      </article>
+      <!-- 인문 최상위 심화 트랙 -->
+      <article class="bg-surface-container-low rounded-xl flex flex-col overflow-hidden relative group border border-outline-variant/10">
+        <div class="absolute inset-0 z-0 opacity-[0.08] bg-[radial-gradient(circle_at_20%_20%,#002147_0%,transparent_50%)]"></div>
+        <div class="relative z-10 p-8 flex flex-col h-full">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-14 h-14 rounded-lg bg-primary-container flex items-center justify-center">
+              <span class="material-symbols-outlined text-primary-fixed-dim text-3xl">history_edu</span>
+            </div>
+            <div>
+              <div class="text-[12px] font-bold tracking-widest uppercase text-primary-container">Track 02</div>
+              <h2 class="font-headline text-2xl font-bold text-primary-container">인문 최상위 심화 트랙</h2>
+            </div>
+          </div>
+          <p class="text-sm text-on-surface-variant leading-relaxed mb-5 pb-4 border-b border-outline-variant/15">
+            국제·사회계열 최상위권 대학과 해외 진학을 목표로 하는 학생을 위한 <span class="font-semibold text-primary-container">5단위 심화 과목</span> 트랙.
+          </p>
+          <div class="flex-1 grid grid-cols-1 gap-2 content-start">
+            <div class="bg-surface-container-lowest p-3 rounded-lg border border-outline-variant/15 flex items-center gap-2"><span class="material-symbols-outlined text-primary-container text-base icon-fill">payments</span><span class="text-sm font-semibold text-on-surface">국제 경제</span></div>
+            <div class="bg-surface-container-lowest p-3 rounded-lg border border-outline-variant/15 flex items-center gap-2"><span class="material-symbols-outlined text-primary-container text-base icon-fill">travel_explore</span><span class="text-sm font-semibold text-on-surface">지역 이해</span></div>
+            <div class="bg-surface-container-lowest p-3 rounded-lg border border-outline-variant/15 flex items-center gap-2"><span class="material-symbols-outlined text-primary-container text-base icon-fill">handshake</span><span class="text-sm font-semibold text-on-surface">국제 관계와 국제기구</span></div>
+            <div class="bg-surface-container-lowest p-3 rounded-lg border border-outline-variant/15 flex items-center gap-2"><span class="material-symbols-outlined text-primary-container text-base icon-fill">menu_book</span><span class="text-sm font-semibold text-on-surface">역사학으로 국제사회 읽기</span></div>
+            <div class="bg-surface-container-lowest p-3 rounded-lg border border-outline-variant/15 flex items-center gap-2"><span class="material-symbols-outlined text-primary-container text-base icon-fill">psychology</span><span class="text-sm font-semibold text-on-surface">현대정치철학의 이해</span></div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </main>
+  <footer class="slide-footer flex justify-between items-center px-12 py-3 text-xs tracking-widest uppercase font-medium">
+    <button onclick="goTo(3)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2"><span class="material-symbols-outlined text-sm">arrow_back</span> 이전</button>
+    <span class="text-primary-container font-bold">슬라이드 04 / 20 — 한민고등학교 교육과정 설명</span>
+    <button onclick="goTo(5)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2">다음 <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+  </footer>
+</section>
+<!-- slide-5: Capstone Roadmap -->
+<section id="slide-5" class="slide-frame" data-title="과제연구 로드맵">
+  <header class="top-nav flex justify-between items-center px-12 py-4">
+    <div class="text-xl font-bold tracking-[0.3em] text-white">HANMIN&nbsp;&nbsp;ACADEMY</div>
+    <div class="flex items-center gap-3">
+      <button onclick="openIndex()" class="text-slate-300 hover:text-white transition-all hover:bg-white/5 px-3 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold"><span class="material-symbols-outlined text-lg">grid_view</span><span class="hidden md:inline">Slide Index</span></button>
+      <button class="bg-[#7ad7c6] text-[#002147] px-5 py-2 rounded-md font-bold tracking-tight hover:bg-white transition-colors text-sm">Contact Admissions</button>
+    </div>
+  </header>
+  <main class="slide-main bg-surface px-12 pt-8 pb-4">
+    <div class="mb-6">
+      <span class="font-label text-[12px] uppercase tracking-[0.3em] text-tertiary-fixed-dim mb-1 block">Research Roadmap · 과제연구 로드맵</span>
+      <h1 class="font-headline text-[2rem] font-extrabold tracking-tight text-primary-container leading-tight">연구 방법론을 체득하는 4단계 장기 프로젝트</h1>
+      <p class="text-sm text-on-surface-variant mt-2">1학년 2학기부터 2학년 말까지, 연구의 시작에서 학술제까지의 전 과정</p>
+    </div>
+    <div class="flex-1 relative min-h-0">
+      <!-- Horizontal connector line -->
+      <div class="absolute left-0 right-0 top-[90px] h-0.5 bg-gradient-to-r from-primary-container/20 via-primary to-tertiary-fixed-dim/40 z-0"></div>
+      <div class="relative grid grid-cols-4 gap-4 z-10 h-full">
+        <!-- Stage 1 -->
+        <div class="bg-surface-container-low rounded-xl p-5 flex flex-col relative overflow-hidden border border-outline-variant/10">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-lg shrink-0">1</div>
+            <div class="flex-1">
+              <div class="text-[12px] font-bold tracking-widest uppercase text-on-secondary-container">Stage 01</div>
+              <div class="text-sm font-bold text-primary-container">1학년 2학기</div>
+            </div>
+          </div>
+          <div class="bg-primary-container text-white rounded-lg px-3 py-2.5 mb-3 shadow-ambient">
+            <h3 class="font-headline text-lg font-extrabold leading-tight">창의적 문제해결 연습</h3>
+            <div class="text-[11px] text-tertiary-fixed-dim mt-1 uppercase tracking-wider font-bold">프로그램 · 비교과</div>
+          </div>
+          <p class="text-xs text-on-surface-variant leading-relaxed mb-3">
+            과학·인문 융합 탐구의 첫 관문. 문제 발굴에서 가설 설정까지 <span class="font-bold text-primary-container">연구의 기초 문법</span>을 익힙니다.
+          </p>
+          <div class="mt-2 w-full">
+            <div class="bg-surface-container-lowest rounded-md p-2 border-l-2 border-primary-container w-full">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant mb-0.5">핵심 활동</div>
+              <div class="text-[13px] font-semibold text-on-surface">연구 설계 · 문헌 조사 · 가설 수립</div>
+            </div>
+          </div>
+          <div class="mt-auto pt-3 flex items-center gap-1 text-[12px] text-primary-container font-bold uppercase tracking-wider">
+            <span class="material-symbols-outlined text-sm">play_arrow</span>
+            <span>탐구의 시작</span>
+          </div>
+        </div>
+        <!-- Stage 2 -->
+        <div class="bg-surface-container-low rounded-xl p-5 flex flex-col relative overflow-hidden border border-outline-variant/10">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-lg shrink-0">2</div>
+            <div class="flex-1">
+              <div class="text-[12px] font-bold tracking-widest uppercase text-on-secondary-container">Stage 02</div>
+              <div class="text-sm font-bold text-primary-container">2학년 1학기</div>
+            </div>
+          </div>
+          <div class="bg-primary-container text-white rounded-lg px-3 py-2.5 mb-3 shadow-ambient">
+            <h3 class="font-headline text-lg font-extrabold leading-tight">창의융합 과제연구</h3>
+            <div class="text-[11px] text-tertiary-fixed-dim mt-1 uppercase tracking-wider font-bold">전계열 공통 · P/F</div>
+          </div>
+          <p class="text-xs text-on-surface-variant leading-relaxed mb-3">
+            본격적인 연구 방법론 수업. 주제 확정 후 실험·조사 설계와 <span class="font-bold text-primary-container">소논문 초안</span>을 작성합니다.
+          </p>
+          <div class="mt-2 w-full">
+            <div class="bg-surface-container-lowest rounded-md p-2 border-l-2 border-primary-container w-full">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant mb-0.5">핵심 활동</div>
+              <div class="text-[13px] font-semibold text-on-surface">주제 확정 · 실험 설계 · 초안</div>
+            </div>
+          </div>
+          <div class="mt-auto pt-3 flex items-center gap-1 text-[12px] text-primary-container font-bold uppercase tracking-wider">
+            <span class="material-symbols-outlined text-sm">edit_note</span>
+            <span>기획·설계</span>
+          </div>
+        </div>
+        <!-- Stage 3 -->
+        <div class="bg-gradient-to-br from-primary-container to-[#2d476f] text-white rounded-xl p-5 flex flex-col relative overflow-hidden border border-transparent">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,#7ad7c6_0%,transparent_60%)] opacity-25"></div>
+          <div class="flex items-center gap-2 mb-4 relative z-10">
+            <div class="w-12 h-12 rounded-full bg-white text-primary-container flex items-center justify-center font-bold text-lg shrink-0 shadow-ambient">3</div>
+            <div class="flex-1">
+              <div class="text-[12px] font-bold tracking-widest uppercase text-tertiary-fixed-dim">Stage 03</div>
+              <div class="text-sm font-bold text-white">2학년 2학기</div>
+            </div>
+          </div>
+          <div class="bg-white/15 border border-white/20 rounded-lg px-3 py-2.5 mb-3 relative z-10 backdrop-blur-sm">
+            <h3 class="font-headline text-lg font-extrabold leading-tight text-white">분과별 과제연구</h3>
+            <div class="text-[11px] text-tertiary-fixed-dim mt-1 uppercase tracking-wider font-bold">과학 · 정보 · 사회</div>
+          </div>
+          <p class="text-xs text-white/85 leading-relaxed mb-3 relative z-10">
+            계열별 전공 트랙에서 실증 탐구 진행. <span class="font-bold text-tertiary-fixed-dim">심층 실험·데이터 분석</span>과 함께 소논문을 최종 완성합니다.
+          </p>
+          <div class="mt-2 w-full relative z-10">
+            <div class="bg-white/10 rounded-md p-2 border-l-2 border-tertiary-fixed-dim w-full">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-tertiary-fixed-dim mb-0.5">핵심 활동</div>
+              <div class="text-[13px] font-semibold text-white">실험·분석 · 소논문 완성</div>
+            </div>
+          </div>
+          <div class="mt-auto pt-3 flex items-center gap-1 text-[12px] text-tertiary-fixed-dim font-bold uppercase tracking-wider relative z-10">
+            <span class="material-symbols-outlined text-sm">science</span>
+            <span>실행·완성</span>
+          </div>
+        </div>
+        <!-- Stage 4 -->
+        <div class="bg-gradient-to-br from-tertiary-container to-[#005047] text-white rounded-xl p-5 flex flex-col relative overflow-hidden border border-transparent">
+          <div class="absolute top-0 right-0 w-20 h-20 bg-tertiary-fixed-dim/20 rounded-bl-full"></div>
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,#97f3e2_0%,transparent_60%)] opacity-25"></div>
+          <div class="flex items-center gap-2 mb-4 relative z-10">
+            <div class="w-12 h-12 rounded-full bg-white text-tertiary-container flex items-center justify-center font-bold text-lg shrink-0 shadow-ambient">4</div>
+            <div class="flex-1">
+              <div class="text-[12px] font-bold tracking-widest uppercase text-tertiary-fixed-dim">Stage 04</div>
+              <div class="text-sm font-bold text-white">2학년 말</div>
+            </div>
+          </div>
+          <div class="bg-white/15 border border-white/20 rounded-lg px-3 py-2.5 mb-3 relative z-10 backdrop-blur-sm">
+            <h3 class="font-headline text-lg font-extrabold leading-tight text-white">한민 학술제</h3>
+            <div class="text-[11px] text-tertiary-fixed-dim mt-1 uppercase tracking-wider font-bold">발표 · 학술 검증</div>
+          </div>
+          <p class="text-xs text-white/85 leading-relaxed mb-3 relative z-10">
+            연구 성과를 포스터·구두로 발표하고 학생·교사·외부 전문가 피드백을 받는 <span class="font-bold text-tertiary-fixed-dim">공식 학술 무대</span>입니다.
+          </p>
+          <div class="mt-2 w-full relative z-10">
+            <div class="bg-white/10 rounded-md p-2 border-l-2 border-tertiary-fixed-dim w-full">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-tertiary-fixed-dim mb-0.5">핵심 활동</div>
+              <div class="text-[13px] font-semibold text-white">발표 · 검증 · 포트폴리오</div>
+            </div>
+          </div>
+          <div class="mt-auto pt-3 flex items-center gap-1 text-[12px] text-tertiary-fixed-dim font-bold uppercase tracking-wider relative z-10">
+            <span class="material-symbols-outlined text-sm">celebration</span>
+            <span>학술제 발표</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="slide-footer flex justify-between items-center px-12 py-3 text-xs tracking-widest uppercase font-medium">
+    <button onclick="goTo(4)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2"><span class="material-symbols-outlined text-sm">arrow_back</span> 이전</button>
+    <span class="text-primary-container font-bold">슬라이드 05 / 20 — 한민고등학교 교육과정 설명</span>
+    <button onclick="goTo(6)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2">다음 <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+  </footer>
+</section>
+<!-- slide-6: 2028 CSAT -->
+<section id="slide-6" class="slide-frame" data-title="2028 수능·2022 개정">
+  <header class="top-nav flex justify-between items-center px-12 py-4">
+    <div class="text-xl font-bold tracking-[0.3em] text-white">HANMIN&nbsp;&nbsp;ACADEMY</div>
+    <div class="flex items-center gap-3">
+      <button onclick="openIndex()" class="text-slate-300 hover:text-white transition-all hover:bg-white/5 px-3 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold"><span class="material-symbols-outlined text-lg">grid_view</span><span class="hidden md:inline">Slide Index</span></button>
+      <button class="bg-[#7ad7c6] text-[#002147] px-5 py-2 rounded-md font-bold tracking-tight hover:bg-white transition-colors text-sm">Contact Admissions</button>
+    </div>
+  </header>
+  <main class="slide-main bg-surface px-12 pt-5 pb-3 relative">
+    <div class="absolute inset-0 pointer-events-none opacity-40 z-0">
+      <div class="absolute top-[-10%] right-[-5%] w-1/2 h-full bg-gradient-to-bl from-secondary-container/50 to-transparent rounded-full blur-3xl mix-blend-multiply"></div>
+      <div class="absolute bottom-[-20%] left-[-10%] w-2/3 h-2/3 bg-gradient-to-tr from-surface-container-high/60 to-transparent rounded-full blur-3xl mix-blend-multiply"></div>
+    </div>
+    <div class="relative z-10 flex flex-col h-full">
+      <div class="flex justify-between items-end mb-3 pb-3 border-b border-outline-variant/15">
+        <div class="max-w-3xl">
+          <div class="text-tertiary-fixed-dim text-[11px] font-bold tracking-widest uppercase mb-1 flex items-center gap-2">
+            <span class="material-symbols-outlined text-sm">trending_up</span>
+            2022 개정 교육과정 · 2028 수능 개편
+          </div>
+          <h1 class="text-[1.6rem] leading-tight font-extrabold text-primary tracking-tight">내신 5등급제 전환과 2028 수능 통합 평가</h1>
+          <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">
+            9등급 → <span class="font-bold text-primary">5등급제</span> · 진로/융합 선택 <span class="font-bold text-primary">절대평가 확대</span> · 탐구 통합형 수능
+          </p>
+        </div>
+        <div class="hidden lg:flex flex-col items-stretch gap-2 w-[220px]">
+          <div class="bg-surface-container-lowest px-3 py-1.5 rounded-lg shadow-sm border border-outline-variant/15 flex items-center gap-2 text-xs h-9">
+            <span class="material-symbols-outlined text-primary-container text-base">info</span>
+            <span class="font-medium text-on-surface">시행: 2028학년도</span>
+          </div>
+          <div class="bg-tertiary-container text-white px-3 py-1.5 rounded-lg shadow-sm flex items-center gap-2 text-xs h-9">
+            <span class="material-symbols-outlined text-tertiary-fixed-dim text-base">verified</span>
+            <span class="font-medium">세특 관리 중요도 ↑</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex-1 grid grid-cols-12 gap-3 min-h-0 mb-3">
+        <!-- 국어 -->
+        <div class="col-span-4 bg-surface-container-lowest rounded-xl p-4 shadow-sm border border-outline-variant/10 flex flex-col relative overflow-hidden group">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-primary-container/5 rounded-bl-full -mr-10 -mt-10"></div>
+          <h3 class="text-base font-bold text-primary-container mb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-tertiary-fixed-dim">menu_book</span>국어
+          </h3>
+          <div class="space-y-1.5 flex-1">
+            <div>
+              <div class="text-[12px] font-bold tracking-wider text-outline uppercase mb-1.5">현행 수능</div>
+              <div class="bg-surface-container-low p-2.5 rounded-lg text-xs">
+                <div class="font-semibold text-on-surface">공통 + 선택 1</div>
+                <div class="text-on-surface-variant mt-1">독서·문학(공통) + 언어와 매체 / 화법과 작문(택1)</div>
+              </div>
+            </div>
+            <div class="flex justify-center"><div class="bg-tertiary-fixed-dim/20 px-1.5 py-0.5 rounded-full text-tertiary-fixed-dim"><span class="material-symbols-outlined text-sm">arrow_downward</span></div></div>
+            <div>
+              <div class="text-[12px] font-bold tracking-wider text-tertiary-fixed-dim uppercase mb-1.5">2028 개편</div>
+              <div class="bg-primary-container/5 p-2.5 rounded-lg border border-primary-container/10 text-xs">
+                <div class="font-bold text-primary-container">공통 통합형</div>
+                <div class="text-on-surface-variant mt-1 leading-relaxed">화법과 언어 · 독서와 작문 · 문학 (선택 없음)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 수학 -->
+        <div class="col-span-4 bg-surface-container-lowest rounded-xl p-4 shadow-sm border border-outline-variant/10 flex flex-col relative overflow-hidden group">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-primary-container/5 rounded-bl-full -mr-10 -mt-10"></div>
+          <h3 class="text-base font-bold text-primary-container mb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-tertiary-fixed-dim">calculate</span>수학
+          </h3>
+          <div class="space-y-1.5 flex-1">
+            <div>
+              <div class="text-[12px] font-bold tracking-wider text-outline uppercase mb-1.5">현행 수능</div>
+              <div class="bg-surface-container-low p-2.5 rounded-lg text-xs">
+                <div class="font-semibold text-on-surface">공통 + 선택 1</div>
+                <div class="text-on-surface-variant mt-1">수학Ⅰ·Ⅱ(공통) + 미적분 / 기하 / 확률과 통계(택1)</div>
+              </div>
+            </div>
+            <div class="flex justify-center"><div class="bg-tertiary-fixed-dim/20 px-1.5 py-0.5 rounded-full text-tertiary-fixed-dim"><span class="material-symbols-outlined text-sm">arrow_downward</span></div></div>
+            <div>
+              <div class="text-[12px] font-bold tracking-wider text-tertiary-fixed-dim uppercase mb-1.5">2028 개편</div>
+              <div class="bg-primary-container/5 p-2.5 rounded-lg border border-primary-container/10 text-xs">
+                <div class="font-bold text-primary-container">공통 통합형</div>
+                <div class="text-on-surface-variant mt-1 leading-relaxed">대수 · 미적분Ⅰ · 확률과 통계</div>
+                <div class="mt-2 pt-2 border-t border-primary-container/10 text-[12px] text-tertiary-fixed-dim font-semibold">
+                  ※ 미적분Ⅱ·기하는 수능 범위에서 제외
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 탐구 -->
+        <div class="col-span-4 bg-primary-container text-white rounded-xl p-4 shadow-ambient flex flex-col relative overflow-hidden group">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-bl-full -mr-12 -mt-12"></div>
+          <h3 class="text-base font-bold text-white mb-2 flex items-center gap-2 relative z-10">
+            <span class="material-symbols-outlined text-tertiary-fixed-dim">science</span>탐구 (사회·과학)
+          </h3>
+          <div class="space-y-1.5 flex-1 relative z-10">
+            <div>
+              <div class="text-[12px] font-bold tracking-wider text-tertiary-fixed-dim uppercase mb-1.5">현행 수능</div>
+              <div class="bg-white/5 p-2.5 rounded-lg text-xs">
+                <div class="font-semibold text-white">최대 2과목 택 2</div>
+                <div class="text-slate-300 mt-1">사회 · 과학 17개 과목 중 선택</div>
+              </div>
+            </div>
+            <div class="flex justify-center"><div class="bg-tertiary-fixed-dim/20 px-1.5 py-0.5 rounded-full text-tertiary-fixed-dim"><span class="material-symbols-outlined text-sm">arrow_downward</span></div></div>
+            <div>
+              <div class="text-[12px] font-bold tracking-wider text-tertiary-fixed-dim uppercase mb-1.5">2028 개편</div>
+              <div class="bg-white/10 p-2.5 rounded-lg backdrop-blur-sm border border-white/10 text-xs">
+                <div class="font-bold text-white text-sm">통합사회 · 통합과학 공통</div>
+                <div class="text-slate-200 mt-1 leading-relaxed">선택 없음 · 모든 수험생 동일</div>
+                <div class="mt-2 flex items-center gap-1.5 text-tertiary-fixed-dim text-[12px] font-bold">
+                  <span class="material-symbols-outlined text-xs">psychology</span>
+                  <span>융합·횡단 사고 중심</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 등급제 비교 막대 그래프 -->
+      <div class="bg-surface-container-lowest rounded-xl p-2.5 shadow-sm border border-outline-variant/15 flex-shrink-0">
+        <div class="flex items-center justify-between mb-1.5">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-tertiary-fixed-dim text-base">bar_chart</span>
+            <h3 class="text-sm font-bold text-primary-container">내신 평가 등급제 개편 — 9등급 → 5등급</h3>
+          </div>
+          <span class="text-[12px] font-bold tracking-widest uppercase text-on-surface-variant">등급별 비율 (단위: %)</span>
+        </div>
+        <div class="grid grid-cols-2 gap-5">
+          <!-- 현행 9등급 -->
+          <div>
+            <div class="flex items-baseline justify-between mb-1.5">
+              <span class="text-[13px] font-bold text-outline uppercase tracking-wider">현행 9등급제</span>
+              <span class="text-[12px] text-on-surface-variant">1등급 <span class="font-bold text-on-surface">4%</span> · 상위 11%까지 2등급</span>
+            </div>
+            <div class="flex h-5 rounded-md overflow-hidden border border-outline-variant/20">
+              <div class="bg-primary flex items-center justify-center text-white text-[12px] font-bold" style="width: 4%">1</div>
+              <div class="bg-[#2d476f] flex items-center justify-center text-white text-[12px] font-bold" style="width: 7%">2</div>
+              <div class="bg-[#465f88] flex items-center justify-center text-white text-[12px] font-bold" style="width: 12%">3</div>
+              <div class="bg-[#708ab5] flex items-center justify-center text-white text-[12px] font-bold" style="width: 17%">4</div>
+              <div class="bg-[#aec7f6] flex items-center justify-center text-primary text-[12px] font-bold" style="width: 20%">5</div>
+              <div class="bg-[#d6e3ff] flex items-center justify-center text-primary text-[12px] font-bold" style="width: 17%">6</div>
+              <div class="bg-surface-container-high flex items-center justify-center text-on-surface text-[12px] font-bold" style="width: 12%">7</div>
+              <div class="bg-surface-container flex items-center justify-center text-on-surface text-[12px] font-bold" style="width: 7%">8</div>
+              <div class="bg-surface-container-low flex items-center justify-center text-on-surface-variant text-[12px] font-bold" style="width: 4%">9</div>
+            </div>
+            <div class="flex mt-1 text-[11px] text-on-surface-variant font-medium">
+              <span style="width:4%" class="text-center">4</span>
+              <span style="width:7%" class="text-center">7</span>
+              <span style="width:12%" class="text-center">12</span>
+              <span style="width:17%" class="text-center">17</span>
+              <span style="width:20%" class="text-center">20</span>
+              <span style="width:17%" class="text-center">17</span>
+              <span style="width:12%" class="text-center">12</span>
+              <span style="width:7%" class="text-center">7</span>
+              <span style="width:4%" class="text-center">4</span>
+            </div>
+          </div>
+          <!-- 2028 5등급 -->
+          <div>
+            <div class="flex items-baseline justify-between mb-1.5">
+              <span class="text-[13px] font-bold text-tertiary-container uppercase tracking-wider">2028 5등급제</span>
+              <span class="text-[12px] text-on-surface-variant">1등급 <span class="font-bold text-tertiary-container">10%</span> · 상위 34%까지 2등급 — <span class="font-bold text-tertiary-container">경쟁 완화</span></span>
+            </div>
+            <div class="flex h-5 rounded-md overflow-hidden border border-outline-variant/20">
+              <div class="bg-tertiary-container flex items-center justify-center text-tertiary-fixed-dim text-xs font-bold" style="width: 10%">1</div>
+              <div class="bg-[#005047] flex items-center justify-center text-tertiary-fixed-dim text-xs font-bold" style="width: 24%">2</div>
+              <div class="bg-[#379889] flex items-center justify-center text-white text-xs font-bold" style="width: 32%">3</div>
+              <div class="bg-[#7ad7c6] flex items-center justify-center text-tertiary-container text-xs font-bold" style="width: 24%">4</div>
+              <div class="bg-[#97f3e2] flex items-center justify-center text-tertiary-container text-xs font-bold" style="width: 10%">5</div>
+            </div>
+            <div class="flex mt-1 text-[11px] text-on-surface-variant font-medium">
+              <span style="width:10%" class="text-center">10</span>
+              <span style="width:24%" class="text-center">24</span>
+              <span style="width:32%" class="text-center">32</span>
+              <span style="width:24%" class="text-center">24</span>
+              <span style="width:10%" class="text-center">10</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="slide-footer flex justify-between items-center px-12 py-3 text-xs tracking-widest uppercase font-medium">
+    <button onclick="goTo(5)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2"><span class="material-symbols-outlined text-sm">arrow_back</span> 이전</button>
+    <span class="text-primary-container font-bold">슬라이드 06 / 20 — 한민고등학교 교육과정 설명</span>
+    <button onclick="goTo(7)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2">다음 <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+  </footer>
+</section>
+<!-- slide-7: Grade 2 Kor/Math/Eng Table -->
+<section id="slide-7" class="slide-frame" data-title="2학년 국·수·영">
+  <header class="top-nav flex justify-between items-center px-12 py-4">
+    <div class="text-xl font-bold tracking-[0.3em] text-white">HANMIN&nbsp;&nbsp;ACADEMY</div>
+    <div class="flex items-center gap-3">
+      <button onclick="openIndex()" class="text-slate-300 hover:text-white transition-all hover:bg-white/5 px-3 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold"><span class="material-symbols-outlined text-lg">grid_view</span><span class="hidden md:inline">Slide Index</span></button>
+      <button class="bg-[#7ad7c6] text-[#002147] px-5 py-2 rounded-md font-bold tracking-tight hover:bg-white transition-colors text-sm">Contact Admissions</button>
+    </div>
+  </header>
+  <main class="slide-main bg-surface flex-row flex">
+    <!-- Left Panel -->
+    <div class="w-1/3 p-12 flex flex-col justify-center bg-surface-container-low border-r border-outline-variant/15">
+      <span class="inline-block py-1 px-3 bg-tertiary-container text-on-tertiary-container rounded-sm text-[12px] font-bold uppercase tracking-widest w-fit mb-4">Curriculum Mapping</span>
+      <h1 class="text-4xl font-extrabold tracking-tight text-primary-container leading-tight mb-3">
+        2학년 전체 교과목 안내<br/><span class="text-on-secondary-container">국어 · 수학 · 영어</span>
+      </h1>
+      <p class="text-sm text-on-surface-variant leading-relaxed mb-6">
+        공통 필수 + 기초·심화 세트 + 학교지정 수학 전체
+      </p>
+      <div class="p-5 bg-surface-container-lowest rounded-lg border border-outline-variant/15 shadow-sm">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="material-symbols-outlined text-tertiary-fixed-dim text-lg">info</span>
+          <h3 class="font-bold text-primary-container text-sm">Key Insight</h3>
+        </div>
+        <p class="text-xs text-on-surface-variant leading-snug">
+          기초·심화 세트(국·영·수 중 1세트)에서 2과목(1학기+2학기)을 함께 이수 — 교과 간 교차 선택 불가. 공통 필수는 문학·화법과 언어·영어Ⅰ·Ⅱ·미적분Ⅰ·확률과 통계이며, 2학기 수학 선택에서 자연·정보 계열은 미적분Ⅱ 자동 배정됩니다.
+        </p>
+      </div>
+    </div>
+    <!-- Right Panel: Table -->
+    <div class="flex-1 p-10 bg-surface flex flex-col">
+      <div class="flex-1 bg-surface-container-lowest rounded-xl shadow-ambient border border-outline-variant/15 overflow-hidden flex flex-col">
+        <div class="grid grid-cols-12 gap-3 bg-surface-container py-3 px-5 border-b border-outline-variant/15 font-bold text-[13px] text-on-surface uppercase tracking-widest">
+          <div class="col-span-2">구분</div>
+          <div class="col-span-2">영역</div>
+          <div class="col-span-4">과목명</div>
+          <div class="col-span-1 text-center">학기</div>
+          <div class="col-span-1 text-center">학점</div>
+          <div class="col-span-2 text-center">평가</div>
+        </div>
+        <div class="flex-1 flex flex-col overflow-y-auto text-[13px]">
+          <!-- 공통 국어 (학교지정 필수) -->
+          <div class="grid grid-cols-12 gap-3 py-2 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-primary-container/5"><div class="col-span-2"><span class="inline-block bg-primary-container text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">공통</span></div><div class="col-span-2 font-bold text-primary-container">국어</div><div class="col-span-4">문학</div><div class="col-span-1 text-center">1</div><div class="col-span-1 text-center font-medium">4</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <div class="grid grid-cols-12 gap-3 py-2 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-primary-container/5"><div class="col-span-2"></div><div class="col-span-2"></div><div class="col-span-4">화법과 언어</div><div class="col-span-1 text-center">2</div><div class="col-span-1 text-center font-medium">4</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <!-- 공통 영어 (학교지정 필수) -->
+          <div class="grid grid-cols-12 gap-3 py-2 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-primary-container/5"><div class="col-span-2"><span class="inline-block bg-primary-container text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">공통</span></div><div class="col-span-2 font-bold text-primary-container">영어</div><div class="col-span-4">영어Ⅰ</div><div class="col-span-1 text-center">1</div><div class="col-span-1 text-center font-medium">3</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <div class="grid grid-cols-12 gap-3 py-2 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-primary-container/5"><div class="col-span-2"></div><div class="col-span-2"></div><div class="col-span-4">영어Ⅱ</div><div class="col-span-1 text-center">2</div><div class="col-span-1 text-center font-medium">3</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <!-- 기초·심화 국어 세트 (3학점 택2 · 교차 불가) -->
+          <div class="grid grid-cols-12 gap-3 py-2 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low"><div class="col-span-2"><span class="inline-block bg-surface-tint text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">선택</span></div><div class="col-span-2 font-bold text-primary-container">국어 세트</div><div class="col-span-4">독서 토론과 글쓰기</div><div class="col-span-1 text-center">1</div><div class="col-span-1 text-center font-medium">3</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <div class="grid grid-cols-12 gap-3 py-2 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low"><div class="col-span-2"></div><div class="col-span-2"></div><div class="col-span-4">문학과 영상</div><div class="col-span-1 text-center">2</div><div class="col-span-1 text-center font-medium">3</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <!-- 기초·심화 영어 세트 -->
+          <div class="grid grid-cols-12 gap-3 py-2 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-surface-container-lowest/50"><div class="col-span-2"><span class="inline-block bg-surface-tint text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">선택</span></div><div class="col-span-2 font-bold text-primary-container">영어 세트</div><div class="col-span-4">영어 독해와 작문</div><div class="col-span-1 text-center">1</div><div class="col-span-1 text-center font-medium">3</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <div class="grid grid-cols-12 gap-3 py-2 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-surface-container-lowest/50"><div class="col-span-2"></div><div class="col-span-2"></div><div class="col-span-4">세계 문화와 영어</div><div class="col-span-1 text-center">2</div><div class="col-span-1 text-center font-medium">3</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <!-- 기초·심화 수학 세트 -->
+          <div class="grid grid-cols-12 gap-3 py-2 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low"><div class="col-span-2"><span class="inline-block bg-surface-tint text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">선택</span></div><div class="col-span-2 font-bold text-primary-container">수학 세트</div><div class="col-span-4">기하</div><div class="col-span-1 text-center">1</div><div class="col-span-1 text-center font-medium">3</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <div class="grid grid-cols-12 gap-3 py-2 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low"><div class="col-span-2"></div><div class="col-span-2"></div><div class="col-span-4">고급 대수</div><div class="col-span-1 text-center">2</div><div class="col-span-1 text-center font-medium">3</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <!-- 학교지정 수학 (필수) -->
+          <div class="grid grid-cols-12 gap-3 py-2 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-tertiary-container/5"><div class="col-span-2"><span class="inline-block bg-tertiary-fixed-dim text-on-tertiary-fixed text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">학교지정</span></div><div class="col-span-2 font-bold text-tertiary-fixed-dim">수학</div><div class="col-span-4">미적분Ⅰ</div><div class="col-span-1 text-center">1</div><div class="col-span-1 text-center font-medium">4</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <div class="grid grid-cols-12 gap-3 py-2 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-tertiary-container/5"><div class="col-span-2"></div><div class="col-span-2"></div><div class="col-span-4">확률과 통계</div><div class="col-span-1 text-center">2</div><div class="col-span-1 text-center font-medium">4</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <!-- 학교지정 수학 선택 (2학기 · 택1) -->
+          <div class="grid grid-cols-12 gap-3 py-2 px-5 items-center hover:bg-surface-container-low"><div class="col-span-2"><span class="inline-block bg-surface-tint text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">선택</span></div><div class="col-span-2 font-bold text-primary-container">수학 선택</div><div class="col-span-4">경제 수학 또는 미적분Ⅱ <span class="text-xs text-on-surface-variant">(자연·정보: 미적분Ⅱ 자동 / 인문: 택1)</span></div><div class="col-span-1 text-center">2</div><div class="col-span-1 text-center font-medium">3</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="slide-footer flex justify-between items-center px-12 py-3 text-xs tracking-widest uppercase font-medium">
+    <button onclick="goTo(6)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2"><span class="material-symbols-outlined text-sm">arrow_back</span> 이전</button>
+    <span class="text-primary-container font-bold">슬라이드 07 / 20 — 한민고등학교 교육과정 설명</span>
+    <button onclick="goTo(8)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2">다음 <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+  </footer>
+</section>
+<!-- slide-8: Grade 2 Sci/Soc/Info Table -->
+<section id="slide-8" class="slide-frame" data-title="2학년 과·사·정">
+  <header class="top-nav flex justify-between items-center px-12 py-4">
+    <div class="text-xl font-bold tracking-[0.3em] text-white">HANMIN&nbsp;&nbsp;ACADEMY</div>
+    <div class="flex items-center gap-3">
+      <button onclick="openIndex()" class="text-slate-300 hover:text-white transition-all hover:bg-white/5 px-3 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold"><span class="material-symbols-outlined text-lg">grid_view</span><span class="hidden md:inline">Slide Index</span></button>
+      <button class="bg-[#7ad7c6] text-[#002147] px-5 py-2 rounded-md font-bold tracking-tight hover:bg-white transition-colors text-sm">Contact Admissions</button>
+    </div>
+  </header>
+  <main class="slide-main bg-surface flex-row flex">
+    <div class="w-1/3 p-12 flex flex-col justify-center bg-surface-container-low border-r border-outline-variant/15">
+      <span class="inline-block py-1 px-3 bg-tertiary-container text-on-tertiary-container rounded-sm text-[12px] font-bold uppercase tracking-widest w-fit mb-4">Curriculum Mapping</span>
+      <h1 class="text-4xl font-extrabold tracking-tight text-primary-container leading-tight mb-3">
+        2학년 전체 교과목 안내<br/><span class="text-on-secondary-container">과학 · 사회 · 정보 · 체육 · 예술 · 교양</span>
+      </h1>
+      <p class="text-sm text-on-surface-variant leading-relaxed mb-6">
+        공통 필수 + 탐구·일반 선택 + 과제연구 + 심화탐구 전체
+      </p>
+      <div class="p-5 bg-surface-container-lowest rounded-lg border border-outline-variant/15 shadow-sm">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="material-symbols-outlined text-tertiary-fixed-dim text-lg">info</span>
+          <h3 class="font-bold text-primary-container text-sm">Key Insight</h3>
+        </div>
+        <p class="text-xs text-on-surface-variant leading-snug">
+          1학기 탐구·일반 선택이 계열을 결정합니다. 2학기 심화탐구 과목은 3학년 고급 트랙의 선수과목입니다.
+        </p>
+      </div>
+    </div>
+    <div class="flex-1 p-10 bg-surface flex flex-col">
+      <div class="flex-1 bg-surface-container-lowest rounded-xl shadow-ambient border border-outline-variant/15 overflow-hidden flex flex-col">
+        <div class="grid grid-cols-12 gap-3 bg-surface-container py-3 px-5 border-b border-outline-variant/15 font-bold text-[13px] text-on-surface uppercase tracking-widest">
+          <div class="col-span-2">구분</div>
+          <div class="col-span-2">영역</div>
+          <div class="col-span-5">과목명</div>
+          <div class="col-span-1 text-center">학기</div>
+          <div class="col-span-2 text-center">평가</div>
+        </div>
+        <div class="flex-1 flex flex-col overflow-y-auto text-[12px]">
+          <!-- 공통 체육 -->
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-primary-container/5"><div class="col-span-2"><span class="inline-block bg-primary-container text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">공통</span></div><div class="col-span-2 font-bold text-primary-container">체육</div><div class="col-span-5">체육1</div><div class="col-span-1 text-center">1</div><div class="col-span-2 text-center text-xs">성취도(3단계)</div></div>
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-primary-container/5"><div class="col-span-2"></div><div class="col-span-2"></div><div class="col-span-5">체육2</div><div class="col-span-1 text-center">2</div><div class="col-span-2 text-center text-xs">성취도(3단계)</div></div>
+          <!-- 공통 예술 -->
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-primary-container/5"><div class="col-span-2"><span class="inline-block bg-primary-container text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">공통</span></div><div class="col-span-2 font-bold text-primary-container">예술</div><div class="col-span-5">음악 선택</div><div class="col-span-1 text-center">1</div><div class="col-span-2 text-center text-xs">성취도(3단계)</div></div>
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-primary-container/5"><div class="col-span-2"></div><div class="col-span-2"></div><div class="col-span-5">미술 선택</div><div class="col-span-1 text-center">2</div><div class="col-span-2 text-center text-xs">성취도(3단계)</div></div>
+          <!-- 공통 교양 -->
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-primary-container/5"><div class="col-span-2"><span class="inline-block bg-primary-container text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">공통</span></div><div class="col-span-2 font-bold text-primary-container">교양</div><div class="col-span-5">창의융합과제연구</div><div class="col-span-1 text-center">1</div><div class="col-span-2 text-center text-xs">P/F</div></div>
+          <!-- 과학 탐구 -->
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low"><div class="col-span-2"><span class="inline-block bg-surface-tint text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">선택</span></div><div class="col-span-2 font-bold text-primary-container">과학(탐구)</div><div class="col-span-5">물리학 / 화학 / 생명과학 / 지구과학</div><div class="col-span-1 text-center">1</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <!-- 사회 탐구 -->
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low"><div class="col-span-2"><span class="inline-block bg-surface-tint text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">선택</span></div><div class="col-span-2 font-bold text-primary-container">사회(탐구)</div><div class="col-span-5 leading-snug">사회와 문화 · 현대 사회와 윤리 · 세계시민과 지리 · 세계사 · 한문 고전 읽기</div><div class="col-span-1 text-center">1</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <!-- 정보 탐구 -->
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-tertiary-container/5"><div class="col-span-2"><span class="inline-block bg-surface-tint text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">선택</span></div><div class="col-span-2 font-bold text-tertiary-fixed-dim">정보(탐구)</div><div class="col-span-5">인공지능 기초</div><div class="col-span-1 text-center">1</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <!-- 과제연구 (계열별 택1) -->
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low"><div class="col-span-2"><span class="inline-block bg-surface-tint text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">선택</span></div><div class="col-span-2 font-bold text-primary-container">과제연구</div><div class="col-span-5 leading-snug">과학창의연구 / 과학창의연구(정보) / 미래주제탐구Ⅰ <span class="text-[10px] text-on-surface-variant">(계열별 택1)</span></div><div class="col-span-1 text-center">2</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <!-- 과학 심화탐구 -->
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-surface-container-lowest/50"><div class="col-span-2"><span class="inline-block bg-surface-tint text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">선택</span></div><div class="col-span-2 font-bold text-primary-container">과학(심화탐구)</div><div class="col-span-5">역학과 에너지 / 전자기와 양자</div><div class="col-span-1 text-center">2</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-surface-container-lowest/50"><div class="col-span-2"></div><div class="col-span-2"></div><div class="col-span-5">물질과 에너지 / 화학 반응의 세계</div><div class="col-span-1 text-center">2</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-surface-container-lowest/50"><div class="col-span-2"></div><div class="col-span-2"></div><div class="col-span-5">세포와 물질대사 / 생물의 유전</div><div class="col-span-1 text-center">2</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-surface-container-lowest/50"><div class="col-span-2"></div><div class="col-span-2"></div><div class="col-span-5">지구시스템과학 / 행성우주과학</div><div class="col-span-1 text-center">2</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <!-- 사회 심화탐구 -->
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low"><div class="col-span-2"><span class="inline-block bg-surface-tint text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">선택</span></div><div class="col-span-2 font-bold text-primary-container">사회(심화탐구)</div><div class="col-span-5 leading-snug">현대 사회와 철학 · 정치와 사회 · 경제학 개론 탐구 · 도시의 미래탐구 · 한국사 심화 탐구 · 언어생활과 한자</div><div class="col-span-1 text-center">2</div><div class="col-span-2 text-cen…3997 tokens truncated…container-low text-sm"><span class="material-symbols-outlined text-surface-tint text-base icon-fill">bolt</span><span>물리학</span></div>
+            <div class="flex items-center gap-2 p-2.5 rounded-md bg-surface-container-low text-sm"><span class="material-symbols-outlined text-surface-tint text-base icon-fill">experiment</span><span>화학</span></div>
+            <div class="flex items-center gap-2 p-2.5 rounded-md bg-surface-container-low text-sm"><span class="material-symbols-outlined text-surface-tint text-base icon-fill">biotech</span><span>생명과학</span></div>
+            <div class="flex items-center gap-2 p-2.5 rounded-md bg-surface-container-low text-sm"><span class="material-symbols-outlined text-surface-tint text-base icon-fill">public</span><span>지구과학</span></div>
+          </div>
+          <div class="mt-3 p-3 bg-tertiary-container/5 rounded-md text-xs text-on-surface-variant">
+            <span class="font-bold text-tertiary-fixed-dim">TIP</span> · 2학기 융합 과목의 선수 역할
+          </div>
+        </div>
+      </article>
+      <!-- 정보계열 -->
+      <article class="bg-surface-container-lowest rounded-xl shadow-ambient flex flex-col overflow-hidden border border-outline-variant/10 relative">
+        <div class="absolute top-0 right-0 w-20 h-20 bg-tertiary-fixed-dim/10 rounded-bl-full z-20"></div>
+        <div class="h-20 relative flex items-center p-5 bg-gradient-to-br from-tertiary-container to-[#005047]">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,#7ad7c6_0%,transparent_60%)] opacity-25"></div>
+          <div class="relative z-10 flex justify-between items-center w-full">
+            <div>
+              <div class="text-[12px] font-bold text-tertiary-fixed-dim tracking-widest uppercase">계열 C</div>
+              <h2 class="text-xl font-bold text-white tracking-tight">정보계열 탐구</h2>
+            </div>
+            <span class="material-symbols-outlined text-tertiary-fixed-dim text-3xl">smart_toy</span>
+          </div>
+        </div>
+        <div class="p-5 flex-1 flex flex-col">
+          <p class="text-xs text-on-surface-variant leading-relaxed mb-4 pb-3 border-b border-outline-variant/15">
+            AI·데이터 기반 학문에 필수인 물리학 포함. <span class="font-bold text-tertiary-container">AI기초 1 + 물리 1 + 과학 1</span>
+          </p>
+          <div class="flex flex-col gap-1.5 flex-1">
+            <div class="flex items-center gap-2 p-2.5 rounded-md bg-tertiary-container/8 border border-tertiary-container/20 text-sm"><span class="material-symbols-outlined text-tertiary-container text-base icon-fill">smart_toy</span><span class="flex-1">인공지능 기초</span><span class="text-[12px] font-bold bg-tertiary-fixed-dim text-on-tertiary-fixed px-2 py-0.5 rounded">필수</span></div>
+            <div class="flex items-center gap-2 p-2.5 rounded-md bg-tertiary-container/8 border border-tertiary-container/20 text-sm"><span class="material-symbols-outlined text-tertiary-container text-base icon-fill">bolt</span><span class="flex-1">물리학</span><span class="text-[12px] font-bold bg-tertiary-fixed-dim text-on-tertiary-fixed px-2 py-0.5 rounded">필수</span></div>
+            <div class="flex items-center gap-2 p-2.5 rounded-md bg-surface-container-low border border-outline-variant/20 text-sm text-on-surface-variant"><span class="material-symbols-outlined text-surface-tint text-base">add_circle</span><span class="flex-1">화학 / 생명과학 / 지구과학 중 1택</span></div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </main>
+  <footer class="slide-footer flex justify-between items-center px-12 py-3 text-xs tracking-widest uppercase font-medium">
+    <button onclick="goTo(9)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2"><span class="material-symbols-outlined text-sm">arrow_back</span> 이전</button>
+    <span class="text-primary-container font-bold">슬라이드 10 / 20 — 한민고등학교 교육과정 설명</span>
+    <button onclick="goTo(11)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2">다음 <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+  </footer>
+</section>
+<!-- slide-11: Grade 2 Convergence -->
+<section id="slide-11" class="slide-frame" data-title="2학년 심화탐구(2학기)">
+  <header class="top-nav flex justify-between items-center px-12 py-4">
+    <div class="text-xl font-bold tracking-[0.3em] text-white">HANMIN&nbsp;&nbsp;ACADEMY</div>
+    <div class="flex items-center gap-3">
+      <button onclick="openIndex()" class="text-slate-300 hover:text-white transition-all hover:bg-white/5 px-3 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold"><span class="material-symbols-outlined text-lg">grid_view</span><span class="hidden md:inline">Slide Index</span></button>
+      <button class="bg-[#7ad7c6] text-[#002147] px-5 py-2 rounded-md font-bold tracking-tight hover:bg-white transition-colors text-sm">Contact Admissions</button>
+    </div>
+  </header>
+  <main class="slide-main bg-surface px-12 pt-7 pb-4">
+    <div class="mb-5 max-w-5xl">
+      <span class="font-label text-[12px] uppercase tracking-[0.3em] text-tertiary-fixed-dim mb-1 block">Advanced Inquiry · 심화탐구 특화</span>
+      <h1 class="font-headline text-[1.8rem] font-extrabold tracking-tight text-primary-container leading-tight">2학년 심화탐구 (2학기) — 계열별 택 2</h1>
+    </div>
+    <div class="flex-1 grid grid-cols-2 gap-5 min-h-0">
+      <!-- 자연·이공계 트랙 -->
+      <article class="bg-surface-container-low rounded-xl p-6 flex flex-col relative overflow-hidden border border-outline-variant/10">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-tertiary-container opacity-10 rounded-bl-full -mr-6 -mt-6"></div>
+        <div class="relative flex items-start gap-3 mb-4">
+          <div class="w-10 h-10 rounded-lg bg-tertiary-container flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-tertiary-fixed-dim text-xl">science</span>
+          </div>
+          <div>
+            <div class="text-[12px] font-bold tracking-widest uppercase text-tertiary-fixed-dim">Track 01</div>
+            <h2 class="font-headline text-lg font-bold text-primary-container">자연·이공계 트랙 <span class="text-xs font-normal text-on-surface-variant">(쌍으로 선택)</span></h2>
+          </div>
+        </div>
+        <div class="flex-1 flex flex-col gap-2 text-xs">
+          <div class="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/15"><div class="text-[12px] font-bold text-primary-container tracking-wider uppercase mb-1">공학 · 물리</div>역학과 에너지 + 전자기와 양자</div>
+          <div class="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/15"><div class="text-[12px] font-bold text-primary-container tracking-wider uppercase mb-1">화학 · 약학</div>물질과 에너지 + 화학 반응의 세계</div>
+          <div class="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/15"><div class="text-[12px] font-bold text-primary-container tracking-wider uppercase mb-1">의학 · 생명</div>세포와 물질대사 + 생물의 유전</div>
+          <div class="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/15"><div class="text-[12px] font-bold text-primary-container tracking-wider uppercase mb-1">지구 · 우주</div>지구시스템과학 + 행성우주과학</div>
+          <div class="p-3 rounded-lg bg-tertiary-container text-white"><div class="text-[12px] font-bold text-tertiary-fixed-dim tracking-wider uppercase mb-1">정보계열</div>컴퓨터 구조(권장) + 과학 융합 페어 — 컴퓨터 구조은 선택, 정보과학(3-1)은 필수 이수</div>
+        </div>
+        <div class="mt-3 text-[13px] text-tertiary-fixed-dim font-semibold">※ 각 쌍은 3학년 고급 과목(고급 물/화/생/지)의 선수 요건</div>
+      </article>
+      <!-- 인문·사회·경영 트랙 -->
+      <article class="bg-surface-container-low rounded-xl p-6 flex flex-col relative overflow-hidden border border-outline-variant/10">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-primary-container opacity-10 rounded-bl-full -mr-6 -mt-6"></div>
+        <div class="relative flex items-start gap-3 mb-4">
+          <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-primary-fixed-dim text-xl">groups</span>
+          </div>
+          <div>
+            <div class="text-[12px] font-bold tracking-widest uppercase text-primary-container">Track 02</div>
+            <h2 class="font-headline text-lg font-bold text-primary-container">인문·사회·경영 트랙 <span class="text-xs font-normal text-on-surface-variant">(6택 2)</span></h2>
+          </div>
+        </div>
+        <div class="flex-1 grid grid-cols-2 gap-2 text-xs content-start">
+          <div class="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/15 flex items-center gap-2"><span class="material-symbols-outlined text-primary-container text-sm icon-fill">psychology</span>현대 사회와 철학</div>
+          <div class="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/15 flex items-center gap-2"><span class="material-symbols-outlined text-primary-container text-sm icon-fill">gavel</span>정치와 사회</div>
+          <div class="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/15 flex items-center gap-2"><span class="material-symbols-outlined text-primary-container text-sm icon-fill">payments</span>경제학 개론 탐구</div>
+          <div class="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/15 flex items-center gap-2"><span class="material-symbols-outlined text-primary-container text-sm icon-fill">location_city</span>도시의 미래탐구</div>
+          <div class="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/15 flex items-center gap-2"><span class="material-symbols-outlined text-primary-container text-sm icon-fill">account_balance</span>한국사 심화 탐구</div>
+          <div class="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/15 flex items-center gap-2"><span class="material-symbols-outlined text-primary-container text-sm icon-fill">translate</span>언어생활과 한자</div>
+        </div>
+        <div class="mt-3 text-[13px] text-primary-container font-semibold">※ 철학·사회·경제·역사·지리·어문을 아우르는 인문 심화 선택지</div>
+      </article>
+    </div>
+    <!-- 하단 수학 심화 -->
+    <div class="mt-4 bg-primary text-white rounded-xl p-4 flex items-center gap-5">
+      <div class="flex items-center gap-3 pr-5 border-r border-white/20">
+        <span class="material-symbols-outlined text-tertiary-fixed-dim">calculate</span>
+        <div>
+          <div class="text-[12px] font-bold tracking-widest uppercase text-tertiary-fixed-dim">수학 심화 선택 (2학기)</div>
+          <div class="text-sm font-bold">계열별 자동 배정 / 택1</div>
+        </div>
+      </div>
+      <div class="flex-1 grid grid-cols-2 gap-4 text-sm">
+        <div><span class="text-tertiary-fixed-dim font-bold">자연·정보계열</span> · 미적분Ⅱ <span class="text-white/60 text-xs">(자동 배정)</span></div>
+        <div><span class="text-tertiary-fixed-dim font-bold">인문계열</span> · 미적분Ⅱ 또는 경제 수학 <span class="text-white/60 text-xs">(경영·경제 진로 시 미적분Ⅱ 강력 권장)</span></div>
+      </div>
+    </div>
+  </main>
+  <footer class="slide-footer flex justify-between items-center px-12 py-3 text-xs tracking-widest uppercase font-medium">
+    <button onclick="goTo(10)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2"><span class="material-symbols-outlined text-sm">arrow_back</span> 이전</button>
+    <span class="text-primary-container font-bold">슬라이드 11 / 20 — 한민고등학교 교육과정 설명</span>
+    <button onclick="goTo(12)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2">다음 <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+  </footer>
+</section>
+<!-- slide-12: Capstone Groups -->
+<section id="slide-12" class="slide-frame" data-title="과제연구 그룹">
+  <header class="top-nav flex justify-between items-center px-12 py-4">
+    <div class="text-xl font-bold tracking-[0.3em] text-white">HANMIN&nbsp;&nbsp;ACADEMY</div>
+    <div class="flex items-center gap-3">
+      <button onclick="openIndex()" class="text-slate-300 hover:text-white transition-all hover:bg-white/5 px-3 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold"><span class="material-symbols-outlined text-lg">grid_view</span><span class="hidden md:inline">Slide Index</span></button>
+      <button class="bg-[#7ad7c6] text-[#002147] px-5 py-2 rounded-md font-bold tracking-tight hover:bg-white transition-colors text-sm">Contact Admissions</button>
+    </div>
+  </header>
+  <main class="slide-main bg-surface px-14 pt-8 pb-4">
+    <div class="mb-6">
+      <span class="font-label text-[12px] uppercase tracking-[0.3em] text-tertiary-fixed-dim mb-2 block">Capstone Research · 과제연구 그룹</span>
+      <h1 class="font-headline text-[2rem] font-extrabold tracking-tight text-primary-container leading-tight">2학년 과제연구 — 공통에서 계열별로</h1>
+    </div>
+    <!-- 1학기 공통 배너 -->
+    <div class="bg-primary text-white rounded-xl p-5 mb-6 flex items-center gap-5 shadow-ambient">
+      <div class="w-14 h-14 rounded-lg bg-tertiary-container flex items-center justify-center shrink-0">
+        <span class="material-symbols-outlined text-tertiary-fixed-dim text-3xl">hub</span>
+      </div>
+      <div class="flex-1">
+        <div class="flex items-center gap-3 mb-1">
+          <span class="text-[12px] font-bold tracking-widest uppercase text-tertiary-fixed-dim">1학기 · 전계열 공통</span>
+          <span class="text-[12px] font-bold tracking-wider uppercase bg-tertiary-fixed-dim text-on-tertiary-fixed px-2 py-0.5 rounded">P/F 평가</span>
+        </div>
+        <h3 class="text-xl font-bold">창의융합 과제연구</h3>
+        <p class="text-sm text-white/70 mt-1">연구 방법론 기초 · 소논문 기획 · 실험 설계</p>
+      </div>
+    </div>
+    <!-- 2학기 계열별 -->
+    <div class="mb-3 flex items-end justify-between">
+      <div class="text-sm font-bold text-on-surface-variant">2학기 · 계열별 택 1 (자동 분류)</div>
+      <div class="text-xs text-on-surface-variant">1학기 창의융합 과제연구에서 이어지는 분야별 심층 탐구</div>
+    </div>
+    <div class="flex-1 grid grid-cols-3 gap-5 min-h-0">
+      <!-- 자연 -->
+      <div class="bg-surface-container-low rounded-xl p-6 flex flex-col relative overflow-hidden hover:bg-surface-container-lowest transition-all">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-primary-container rounded-bl-full opacity-10 -mr-6 -mt-6"></div>
+        <div class="text-primary-container mb-3"><span class="material-symbols-outlined text-4xl">science</span></div>
+        <div class="text-[12px] font-bold tracking-widest uppercase text-on-secondary-container mb-1">자연계열</div>
+        <h3 class="font-headline text-xl font-extrabold text-on-surface mb-2">과학창의연구</h3>
+        <p class="text-sm text-on-surface-variant leading-relaxed flex-grow mb-4">
+          4대 과학 영역 중 관심 분야를 택해 소논문을 완성합니다.
+        </p>
+        <div class="flex flex-wrap gap-1.5">
+          <span class="text-[12px] font-bold uppercase tracking-wider py-1 px-2 rounded bg-primary text-on-primary">물리</span>
+          <span class="text-[12px] font-bold uppercase tracking-wider py-1 px-2 rounded bg-surface-container-high text-on-surface-variant">화학</span>
+          <span class="text-[12px] font-bold uppercase tracking-wider py-1 px-2 rounded bg-surface-container-high text-on-surface-variant">생명</span>
+          <span class="text-[12px] font-bold uppercase tracking-wider py-1 px-2 rounded bg-surface-container-high text-on-surface-variant">지구</span>
+        </div>
+      </div>
+      <!-- 정보 -->
+      <div class="bg-tertiary-container text-white rounded-xl p-6 flex flex-col relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-tertiary-fixed-dim rounded-bl-full opacity-20 -mr-6 -mt-6"></div>
+        <div class="text-tertiary-fixed-dim mb-3"><span class="material-symbols-outlined text-4xl">memory</span></div>
+        <div class="text-[12px] font-bold tracking-widest uppercase text-tertiary-fixed-dim mb-1">정보계열</div>
+        <h3 class="font-headline text-xl font-extrabold text-white mb-2">과학창의연구(정보)</h3>
+        <p class="text-sm text-white/80 leading-relaxed flex-grow mb-4">
+          AI·데이터·알고리즘 주제로 파이썬 기반 실증 연구를 수행합니다.
+        </p>
+        <div class="flex flex-wrap gap-1.5">
+          <span class="text-[12px] font-bold uppercase tracking-wider py-1 px-2 rounded bg-tertiary-fixed-dim text-on-tertiary-fixed">AI</span>
+          <span class="text-[12px] font-bold uppercase tracking-wider py-1 px-2 rounded bg-white/10 text-tertiary-fixed-dim">데이터</span>
+          <span class="text-[12px] font-bold uppercase tracking-wider py-1 px-2 rounded bg-white/10 text-tertiary-fixed-dim">알고리즘</span>
+        </div>
+      </div>
+      <!-- 인문 -->
+      <div class="bg-surface-container-low rounded-xl p-6 flex flex-col relative overflow-hidden hover:bg-surface-container-lowest transition-all">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-secondary rounded-bl-full opacity-10 -mr-6 -mt-6"></div>
+        <div class="text-secondary mb-3"><span class="material-symbols-outlined text-4xl">groups</span></div>
+        <div class="text-[12px] font-bold tracking-widest uppercase text-on-secondary-container mb-1">인문계열</div>
+        <h3 class="font-headline text-xl font-extrabold text-on-surface mb-2">미래주제탐구Ⅰ</h3>
+        <p class="text-sm text-on-surface-variant leading-relaxed flex-grow mb-4">
+          사회·경제·정치·문화 현상을 연구 문제로 설정하는 분과별 탐구입니다.
+        </p>
+        <div class="flex flex-wrap gap-1.5">
+          <span class="text-[12px] font-bold uppercase tracking-wider py-1 px-2 rounded bg-secondary text-on-secondary">사회</span>
+          <span class="text-[12px] font-bold uppercase tracking-wider py-1 px-2 rounded bg-surface-container-high text-on-surface-variant">경제</span>
+          <span class="text-[12px] font-bold uppercase tracking-wider py-1 px-2 rounded bg-surface-container-high text-on-surface-variant">정치</span>
+          <span class="text-[12px] font-bold uppercase tracking-wider py-1 px-2 rounded bg-surface-container-high text-on-surface-variant">문화</span>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="slide-footer flex justify-between items-center px-12 py-3 text-xs tracking-widest uppercase font-medium">
+    <button onclick="goTo(11)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2"><span class="material-symbols-outlined text-sm">arrow_back</span> 이전</button>
+    <span class="text-primary-container font-bold">슬라이드 12 / 20 — 한민고등학교 교육과정 설명</span>
+    <button onclick="goTo(13)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2">다음 <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+  </footer>
+</section>
+<!-- slide-13: Grade 3 전체 교과목 국·수·영 -->
+<section id="slide-13" class="slide-frame" data-title="3학년 국·수·영">
+  <header class="top-nav flex justify-between items-center px-12 py-4">
+    <div class="text-xl font-bold tracking-[0.3em] text-white">HANMIN&nbsp;&nbsp;ACADEMY</div>
+    <div class="flex items-center gap-3">
+      <button onclick="openIndex()" class="text-slate-300 hover:text-white transition-all hover:bg-white/5 px-3 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold"><span class="material-symbols-outlined text-lg">grid_view</span><span class="hidden md:inline">Slide Index</span></button>
+      <button class="bg-[#7ad7c6] text-[#002147] px-5 py-2 rounded-md font-bold tracking-tight hover:bg-white transition-colors text-sm">Contact Admissions</button>
+    </div>
+  </header>
+  <main class="slide-main bg-surface flex-row flex">
+    <!-- Left Panel -->
+    <div class="w-1/3 p-12 flex flex-col justify-center bg-surface-container-low border-r border-outline-variant/15">
+      <span class="inline-block py-1 px-3 bg-tertiary-container text-on-tertiary-container rounded-sm text-[12px] font-bold uppercase tracking-widest w-fit mb-4">Curriculum Mapping</span>
+      <h1 class="text-4xl font-extrabold tracking-tight text-primary-container leading-tight mb-3">
+        3학년 전체 교과목 안내<br/><span class="text-on-secondary-container">국어 · 수학 · 영어</span>
+      </h1>
+      <p class="text-sm text-on-surface-variant leading-relaxed mb-6">
+        공통 학교지정 과목 + 계열별 수학 구조
+      </p>
+      <div class="p-5 bg-surface-container-lowest rounded-lg border border-outline-variant/15 shadow-sm">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="material-symbols-outlined text-tertiary-fixed-dim text-lg">info</span>
+          <h3 class="font-bold text-primary-container text-sm">Key Insight</h3>
+        </div>
+        <p class="text-xs text-on-surface-variant leading-snug">
+          국어·영어는 전학생 공통 학교지정. 수학은 계열 구분 없이 1학기 4과목 중 택1 → 2학기 자동 (세트 ①②③: 통합수학Ⅰ · 세트 ④: 전문 수학). 상세는 다음 슬라이드 참조.
+        </p>
+      </div>
+    </div>
+    <!-- Right Panel: Table -->
+    <div class="flex-1 p-10 bg-surface flex flex-col">
+      <div class="flex-1 bg-surface-container-lowest rounded-xl shadow-ambient border border-outline-variant/15 overflow-hidden flex flex-col">
+        <div class="grid grid-cols-12 gap-3 bg-surface-container py-3 px-5 border-b border-outline-variant/15 font-bold text-[13px] text-on-surface uppercase tracking-widest">
+          <div class="col-span-2">구분</div>
+          <div class="col-span-2">영역</div>
+          <div class="col-span-4">과목명</div>
+          <div class="col-span-1 text-center">학기</div>
+          <div class="col-span-1 text-center">학점</div>
+          <div class="col-span-2 text-center">평가</div>
+        </div>
+        <div class="flex-1 flex flex-col overflow-y-auto text-[13px]">
+          <!-- 공통 국어 -->
+          <div class="grid grid-cols-12 gap-3 py-2 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-primary-container/5"><div class="col-span-2"><span class="inline-block bg-primary-container text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">공통</span></div><div class="col-span-2 font-bold text-primary-container">국어</div><div class="col-span-4">독서와 작문</div><div class="col-span-1 text-center">1</div><div class="col-span-1 text-center font-medium">4</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <div class="grid grid-cols-12 gap-3 py-2 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-primary-container/5"><div class="col-span-2"></div><div class="col-span-2"></div><div class="col-span-4">주제 탐구 독서</div><div class="col-span-1 text-center">2</div><div class="col-span-1 text-center font-medium">4</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <!-- 공통 영어 -->
+          <div class="grid grid-cols-12 gap-3 py-2 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-primary-container/5"><div class="col-span-2"><span class="inline-block bg-primary-container text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">공통</span></div><div class="col-span-2 font-bold text-primary-container">영어</div><div class="col-span-4">심화 영어</div><div class="col-span-1 text-center">1</div><div class="col-span-1 text-center font-medium">4</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <div class="grid grid-cols-12 gap-3 py-2 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-primary-container/5"><div class="col-span-2"></div><div class="col-span-2"></div><div class="col-span-4">심화 영어 독해와 작문</div><div class="col-span-1 text-center">2</div><div class="col-span-1 text-center font-medium">4</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <!-- 수학 (전 계열 공통 4세트) -->
+          <div class="grid grid-cols-12 gap-3 py-2 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-tertiary-container/5"><div class="col-span-2"><span class="inline-block bg-tertiary-fixed-dim text-on-tertiary-fixed text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">학교지정</span></div><div class="col-span-2 font-bold text-tertiary-fixed-dim">수학</div><div class="col-span-4 leading-snug">고급 미적분 · 실용 통계 · 인공지능 수학 · 통합수학Ⅰ <span class="text-xs text-on-surface-variant">(4세트 중 택1)</span></div><div class="col-span-1 text-center">1</div><div class="col-span-1 text-center font-medium">5</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <div class="grid grid-cols-12 gap-3 py-2 px-5 items-center hover:bg-surface-container-low bg-tertiary-container/5"><div class="col-span-2"></div><div class="col-span-2"></div><div class="col-span-4">통합수학Ⅰ 또는 전문 수학 <span class="text-xs text-on-surface-variant">(1학기 선택에 따라 자동)</span></div><div class="col-span-1 text-center">2</div><div class="col-span-1 text-center font-medium">5</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="slide-footer flex justify-between items-center px-12 py-3 text-xs tracking-widest uppercase font-medium">
+    <button onclick="goTo(12)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2"><span class="material-symbols-outlined text-sm">arrow_back</span> 이전</button>
+    <span class="text-primary-container font-bold">슬라이드 13 / 20 — 한민고등학교 교육과정 설명</span>
+    <button onclick="goTo(14)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2">다음 <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+  </footer>
+</section>
+<!-- slide-14: Grade 3 전체 교과목 과·사·정·체·교 -->
+<section id="slide-14" class="slide-frame" data-title="3학년 과·사·정·체·교">
+  <header class="top-nav flex justify-between items-center px-12 py-4">
+    <div class="text-xl font-bold tracking-[0.3em] text-white">HANMIN&nbsp;&nbsp;ACADEMY</div>
+    <div class="flex items-center gap-3">
+      <button onclick="openIndex()" class="text-slate-300 hover:text-white transition-all hover:bg-white/5 px-3 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold"><span class="material-symbols-outlined text-lg">grid_view</span><span class="hidden md:inline">Slide Index</span></button>
+      <button class="bg-[#7ad7c6] text-[#002147] px-5 py-2 rounded-md font-bold tracking-tight hover:bg-white transition-colors text-sm">Contact Admissions</button>
+    </div>
+  </header>
+  <main class="slide-main bg-surface flex-row flex">
+    <!-- Left Panel -->
+    <div class="w-1/3 p-12 flex flex-col justify-center bg-surface-container-low border-r border-outline-variant/15">
+      <span class="inline-block py-1 px-3 bg-tertiary-container text-on-tertiary-container rounded-sm text-[12px] font-bold uppercase tracking-widest w-fit mb-4">Curriculum Mapping</span>
+      <h1 class="text-4xl font-extrabold tracking-tight text-primary-container leading-tight mb-3">
+        3학년 전체 교과목 안내<br/><span class="text-on-secondary-container">과학 · 사회 · 정보 · 체육 · 교양</span>
+      </h1>
+      <p class="text-sm text-on-surface-variant leading-relaxed mb-6">
+        공통 필수 + 계열별 선택 + 고급·국제 특화
+      </p>
+      <div class="p-5 bg-surface-container-lowest rounded-lg border border-outline-variant/15 shadow-sm">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="material-symbols-outlined text-tertiary-fixed-dim text-lg">info</span>
+          <h3 class="font-bold text-primary-container text-sm">Key Insight</h3>
+        </div>
+        <p class="text-xs text-on-surface-variant leading-snug">
+          기후변화 2과목은 전학생 공통 필수. 3-2학기는 전 계열 자동 고정(선택 없음). 상세 선택 과목은 슬라이드 14·15 참조.
+        </p>
+      </div>
+    </div>
+    <!-- Right Panel: Table -->
+    <div class="flex-1 p-10 bg-surface flex flex-col">
+      <div class="flex-1 bg-surface-container-lowest rounded-xl shadow-ambient border border-outline-variant/15 overflow-hidden flex flex-col">
+        <div class="grid grid-cols-12 gap-3 bg-surface-container py-3 px-5 border-b border-outline-variant/15 font-bold text-[13px] text-on-surface uppercase tracking-widest">
+          <div class="col-span-2">구분</div>
+          <div class="col-span-2">영역</div>
+          <div class="col-span-5">과목명</div>
+          <div class="col-span-1 text-center">학기</div>
+          <div class="col-span-2 text-center">평가</div>
+        </div>
+        <div class="flex-1 flex flex-col overflow-y-auto text-[12px]">
+          <!-- 공통 사회 (기후변화) -->
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-primary-container/5"><div class="col-span-2"><span class="inline-block bg-primary-container text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">공통</span></div><div class="col-span-2 font-bold text-primary-container">사회</div><div class="col-span-5">기후변화와 지속가능한 세계</div><div class="col-span-1 text-center">2</div><div class="col-span-2 text-center text-xs">성취도(5단계)</div></div>
+          <!-- 공통 과학 (기후변화) -->
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-primary-container/5"><div class="col-span-2"><span class="inline-block bg-primary-container text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">공통</span></div><div class="col-span-2 font-bold text-primary-container">과학</div><div class="col-span-5">기후변화와 환경생태</div><div class="col-span-1 text-center">2</div><div class="col-span-2 text-center text-xs">성취도(5단계)</div></div>
+          <!-- 공통 체육 -->
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-primary-container/5"><div class="col-span-2"><span class="inline-block bg-primary-container text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">공통</span></div><div class="col-span-2 font-bold text-primary-container">체육</div><div class="col-span-5">스포츠 생활1</div><div class="col-span-1 text-center">1</div><div class="col-span-2 text-center text-xs">성취도(3단계)</div></div>
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-primary-container/5"><div class="col-span-2"></div><div class="col-span-2"></div><div class="col-span-5">스포츠 생활2</div><div class="col-span-1 text-center">2</div><div class="col-span-2 text-center text-xs">성취도(3단계)</div></div>
+          <!-- 공통 교양 -->
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-primary-container/5"><div class="col-span-2"><span class="inline-block bg-primary-container text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">공통</span></div><div class="col-span-2 font-bold text-primary-container">교양</div><div class="col-span-5">진로와 직업</div><div class="col-span-1 text-center">2</div><div class="col-span-2 text-center text-xs">P/F</div></div>
+          <!-- 교양 선택 -->
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low"><div class="col-span-2"><span class="inline-block bg-primary-container text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">공통</span></div><div class="col-span-2 font-bold text-primary-container">교양</div><div class="col-span-5 leading-snug">창의적 디자인 사고와 비즈니스 모델</div><div class="col-span-1 text-center">1</div><div class="col-span-2 text-center text-xs">P/F</div></div>
+          <!-- 과학탐구 선택 (자연·정보) -->
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low"><div class="col-span-2"><span class="inline-block bg-surface-tint text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">선택</span></div><div class="col-span-2 font-bold text-primary-container">과학탐구</div><div class="col-span-5 leading-snug">자연·정보: 과학탐구 8과목 중 택1 <span class="text-[10px] text-on-surface-variant">(상세 슬라이드 14)</span></div><div class="col-span-1 text-center">1</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <!-- 사회탐구 선택 (인문·사회) -->
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low"><div class="col-span-2"><span class="inline-block bg-surface-tint text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">선택</span></div><div class="col-span-2 font-bold text-primary-container">사회탐구</div><div class="col-span-5 leading-snug">인문·사회: 사회탐구 5과목 중 택1 <span class="text-[10px] text-on-surface-variant">(상세 슬라이드 14)</span></div><div class="col-span-1 text-center">1</div><div class="col-span-2 text-center text-xs">성취도(5단계)</div></div>
+          <!-- 고급·국제 특화 자연 -->
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 border-b border-surface-container-high items-center hover:bg-surface-container-low bg-tertiary-container/5"><div class="col-span-2"><span class="inline-block bg-surface-tint text-white text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wider">선택</span></div><div class="col-span-2 font-bold text-tertiary-fixed-dim">고급·국제</div><div class="col-span-5 leading-snug">자연·정보: 고급 물리/화학/생명/지구과학 · 정보과학 중 택1 <span class="text-[10px] text-on-surface-variant">(5학점, 상세 슬라이드 15)</span></div><div class="col-span-1 text-center">1</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+          <!-- 고급·국제 특화 인문 -->
+          <div class="grid grid-cols-12 gap-3 py-1.5 px-5 items-center hover:bg-surface-container-low bg-tertiary-container/5"><div class="col-span-2"></div><div class="col-span-2"></div><div class="col-span-5 leading-snug">인문·사회: 국제 경제 · 지역 이해 · 국제 관계와 국제기구 · 역사학으로 국제사회 읽기 · 현대정치철학의 이해 중 택1 <span class="text-[10px] text-on-surface-variant">(5학점, 상세 슬라이드 15)</span></div><div class="col-span-1 text-center">1</div><div class="col-span-2 text-center text-xs">상대평가</div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="slide-footer flex justify-between items-center px-12 py-3 text-xs tracking-widest uppercase font-medium">
+    <button onclick="goTo(13)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2"><span class="material-symbols-outlined text-sm">arrow_back</span> 이전</button>
+    <span class="text-primary-container font-bold">슬라이드 14 / 20 — 한민고등학교 교육과정 설명</span>
+    <button onclick="goTo(15)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2">다음 <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+  </footer>
+</section>
+<!-- slide-15: 3학년 수학 4세트 상세 -->
+<section id="slide-15" class="slide-frame" data-title="3학년 수학 4세트">
+  <header class="top-nav flex justify-between items-center px-12 py-4">
+    <div class="text-xl font-bold tracking-[0.3em] text-white">HANMIN&nbsp;&nbsp;ACADEMY</div>
+    <div class="flex items-center gap-3">
+      <button onclick="openIndex()" class="text-slate-300 hover:text-white transition-all hover:bg-white/5 px-3 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold"><span class="material-symbols-outlined text-lg">grid_view</span><span class="hidden md:inline">Slide Index</span></button>
+      <button class="bg-[#7ad7c6] text-[#002147] px-5 py-2 rounded-md font-bold tracking-tight hover:bg-white transition-colors text-sm">Contact Admissions</button>
+    </div>
+  </header>
+  <main class="slide-main bg-surface px-12 pt-8 pb-4">
+    <div class="flex justify-between items-end mb-5 shrink-0">
+      <div class="max-w-3xl">
+        <span class="font-label text-[12px] uppercase tracking-[0.3em] text-tertiary-fixed-dim mb-1 block">Grade 3 · Math Sets</span>
+        <h1 class="font-headline text-[2rem] font-extrabold tracking-tight text-primary-container leading-tight">3학년 수학 선택 (4세트 중 택 1)</h1>
+        <p class="text-sm text-on-surface-variant leading-relaxed mt-1">전 계열 공통 · <span class="font-bold text-primary">1학기 선택 → 2학기 자동 배정 · 각 5학점</span></p>
+      </div>
+      <div class="bg-primary text-white rounded-xl px-5 py-3 flex items-center gap-3 shadow-ambient">
+        <span class="material-symbols-outlined text-tertiary-fixed-dim text-2xl">calculate</span>
+        <div>
+          <div class="text-[12px] text-tertiary-fixed-dim uppercase tracking-widest font-bold">Rule</div>
+          <div class="font-bold text-base">4세트 · 택 1</div>
+        </div>
+      </div>
+    </div>
+    <p class="text-xs text-on-surface-variant mb-4 max-w-4xl">
+      계열 구분 없이 모든 학생이 동일한 4개 세트 중 1개를 선택합니다. 1학기에 고른 과목에 따라 2학기 과목이 자동으로 배정됩니다.
+    </p>
+    <div class="flex-1 grid grid-cols-2 gap-5 min-h-0 content-start">
+      <!-- 세트 ① 고급 미적분 -->
+      <article class="bg-surface-container-lowest rounded-xl shadow-ambient overflow-hidden flex flex-col border border-outline-variant/15">
+        <div class="h-20 relative flex items-center p-5 bg-gradient-to-br from-primary-container to-[#2d476f]">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,#7ad7c6_0%,transparent_60%)] opacity-25"></div>
+          <div class="relative z-10 flex justify-between items-center w-full">
+            <div>
+              <div class="text-[12px] font-bold text-tertiary-fixed-dim tracking-widest uppercase">세트 ①</div>
+              <h2 class="text-xl font-bold text-white tracking-tight">고급 미적분 → 통합수학Ⅰ</h2>
+            </div>
+            <span class="material-symbols-outlined text-tertiary-fixed-dim text-3xl">functions</span>
+          </div>
+        </div>
+        <div class="p-4 flex-1 flex flex-col gap-2 text-[13px]">
+          <div class="bg-surface-container-low rounded-md p-3 border-l-2 border-primary-container flex items-center gap-2">
+            <span class="inline-block bg-primary-container text-white text-[10px] font-bold px-1.5 py-0.5 rounded">1학기</span>
+            <span class="font-semibold">고급 미적분</span>
+            <span class="ml-auto text-[11px] text-on-surface-variant">다변수·급수·미분방정식</span>
+          </div>
+          <div class="bg-surface-container-low rounded-md p-3 border-l-2 border-tertiary-fixed-dim flex items-center gap-2">
+            <span class="inline-block bg-tertiary-fixed-dim text-on-tertiary-fixed text-[10px] font-bold px-1.5 py-0.5 rounded">2학기 자동</span>
+            <span class="font-semibold">통합수학Ⅰ</span>
+          </div>
+        </div>
+        <div class="px-4 py-2.5 bg-tertiary-container/5 border-t border-outline-variant/15 text-[11px] text-on-surface-variant">
+          <span class="font-bold text-tertiary-fixed-dim">TIP</span> · 이공계 최상위권 대학 권장 · 5등급제 + A~E
+        </div>
+      </article>
+      <!-- 세트 ② 실용 통계 -->
+      <article class="bg-surface-container-lowest rounded-xl shadow-ambient overflow-hidden flex flex-col border border-outline-variant/15">
+        <div class="h-20 relative flex items-center p-5 bg-gradient-to-br from-primary-container to-[#2d476f]">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,#7ad7c6_0%,transparent_60%)] opacity-25"></div>
+          <div class="relative z-10 flex justify-between items-center w-full">
+            <div>
+              <div class="text-[12px] font-bold text-tertiary-fixed-dim tracking-widest uppercase">세트 ②</div>
+              <h2 class="text-xl font-bold text-white tracking-tight">실용 통계 → 통합수학Ⅰ</h2>
+            </div>
+            <span class="material-symbols-outlined text-tertiary-fixed-dim text-3xl">analytics</span>
+          </div>
+        </div>
+        <div class="p-4 flex-1 flex flex-col gap-2 text-[13px]">
+          <div class="bg-surface-container-low rounded-md p-3 border-l-2 border-primary-container flex items-center gap-2">
+            <span class="inline-block bg-primary-container text-white text-[10px] font-bold px-1.5 py-0.5 rounded">1학기</span>
+            <span class="font-semibold">실용 통계</span>
+            <span class="ml-auto text-[11px] text-on-surface-variant">실제 데이터 통계 방법론</span>
+          </div>
+          <div class="bg-surface-container-low rounded-md p-3 border-l-2 border-tertiary-fixed-dim flex items-center gap-2">
+            <span class="inline-block bg-tertiary-fixed-dim text-on-tertiary-fixed text-[10px] font-bold px-1.5 py-0.5 rounded">2학기 자동</span>
+            <span class="font-semibold">통합수학Ⅰ</span>
+          </div>
+        </div>
+        <div class="px-4 py-2.5 bg-tertiary-container/5 border-t border-outline-variant/15 text-[11px] text-on-surface-variant">
+          <span class="font-bold text-tertiary-fixed-dim">TIP</span> · 데이터사이언스·경제·사회과학 진로 권장
+        </div>
+      </article>
+      <!-- 세트 ③ 인공지능 수학 -->
+      <article class="bg-surface-container-lowest rounded-xl shadow-ambient overflow-hidden flex flex-col border border-outline-variant/15">
+        <div class="h-20 relative flex items-center p-5 bg-gradient-to-br from-primary-container to-[#2d476f]">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,#7ad7c6_0%,transparent_60%)] opacity-25"></div>
+          <div class="relative z-10 flex justify-between items-center w-full">
+            <div>
+              <div class="text-[12px] font-bold text-tertiary-fixed-dim tracking-widest uppercase">세트 ③</div>
+              <h2 class="text-xl font-bold text-white tracking-tight">인공지능 수학 → 통합수학Ⅰ</h2>
+            </div>
+            <span class="material-symbols-outlined text-tertiary-fixed-dim text-3xl">smart_toy</span>
+          </div>
+        </div>
+        <div class="p-4 flex-1 flex flex-col gap-2 text-[13px]">
+          <div class="bg-surface-container-low rounded-md p-3 border-l-2 border-primary-container flex items-center gap-2">
+            <span class="inline-block bg-primary-container text-white text-[10px] font-bold px-1.5 py-0.5 rounded">1학기</span>
+            <span class="font-semibold">인공지능 수학</span>
+            <span class="ml-auto text-[11px] text-on-surface-variant">선형대수·확률론·최적화</span>
+          </div>
+          <div class="bg-surface-container-low rounded-md p-3 border-l-2 border-tertiary-fixed-dim flex items-center gap-2">
+            <span class="inline-block bg-tertiary-fixed-dim text-on-tertiary-fixed text-[10px] font-bold px-1.5 py-0.5 rounded">2학기 자동</span>
+            <span class="font-semibold">통합수학Ⅰ</span>
+          </div>
+        </div>
+        <div class="px-4 py-2.5 bg-tertiary-container/5 border-t border-outline-variant/15 text-[11px] text-on-surface-variant">
+          <span class="font-bold text-tertiary-fixed-dim">TIP</span> · AI·컴퓨터공학 진로 권장
+        </div>
+      </article>
+      <!-- 세트 ④ 통합수학Ⅰ -->
+      <article class="bg-surface-container-lowest rounded-xl shadow-ambient overflow-hidden flex flex-col border border-outline-variant/15">
+        <div class="h-20 relative flex items-center p-5 bg-gradient-to-br from-surface-tint to-[#2d476f]">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,#aec7f6_0%,transparent_60%)] opacity-25"></div>
+          <div class="relative z-10 flex justify-between items-center w-full">
+            <div>
+              <div class="text-[12px] font-bold text-tertiary-fixed-dim tracking-widest uppercase">세트 ④</div>
+              <h2 class="text-xl font-bold text-white tracking-tight">통합수학Ⅰ → 전문 수학</h2>
+            </div>
+            <span class="material-symbols-outlined text-tertiary-fixed-dim text-3xl">school</span>
+          </div>
+        </div>
+        <div class="p-4 flex-1 flex flex-col gap-2 text-[13px]">
+          <div class="bg-surface-container-low rounded-md p-3 border-l-2 border-surface-tint flex items-center gap-2">
+            <span class="inline-block bg-surface-tint text-white text-[10px] font-bold px-1.5 py-0.5 rounded">1학기</span>
+            <span class="font-semibold">통합수학Ⅰ</span>
+            <span class="ml-auto text-[11px] text-on-surface-variant">수능 범위 통합 심화</span>
+          </div>
+          <div class="bg-surface-container-low rounded-md p-3 border-l-2 border-tertiary-fixed-dim flex items-center gap-2">
+            <span class="inline-block bg-tertiary-fixed-dim text-on-tertiary-fixed text-[10px] font-bold px-1.5 py-0.5 rounded">2학기 자동</span>
+            <span class="font-semibold">전문 수학</span>
+          </div>
+        </div>
+        <div class="px-4 py-2.5 bg-primary-container/5 border-t border-outline-variant/15 text-[11px] text-on-surface-variant">
+          <span class="font-bold text-primary-container">TIP</span> · 인문·사회·경영 진로 권장 (수능 기반 안정 루트)
+        </div>
+      </article>
+    </div>
+  </main>
+  <footer class="slide-footer flex justify-between items-center px-12 py-3 text-xs tracking-widest uppercase font-medium">
+    <button onclick="goTo(14)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2"><span class="material-symbols-outlined text-sm">arrow_back</span> 이전</button>
+    <span class="text-primary-container font-bold">슬라이드 15 / 20 — 한민고등학교 교육과정 설명</span>
+    <button onclick="goTo(16)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2">다음 <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+  </footer>
+</section>
+<!-- slide-16: 3학년 과학탐구·사회탐구 선택 상세 -->
+<section id="slide-16" class="slide-frame" data-title="과학·사회탐구 선택 상세">
+  <header class="top-nav flex justify-between items-center px-12 py-4">
+    <div class="text-xl font-bold tracking-[0.3em] text-white">HANMIN&nbsp;&nbsp;ACADEMY</div>
+    <div class="flex items-center gap-3">
+      <button onclick="openIndex()" class="text-slate-300 hover:text-white transition-all hover:bg-white/5 px-3 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold"><span class="material-symbols-outlined text-lg">grid_view</span><span class="hidden md:inline">Slide Index</span></button>
+      <button class="bg-[#7ad7c6] text-[#002147] px-5 py-2 rounded-md font-bold tracking-tight hover:bg-white transition-colors text-sm">Contact Admissions</button>
+    </div>
+  </header>
+  <main class="slide-main bg-surface px-12 pt-8 pb-4">
+    <div class="flex justify-between items-end mb-5 shrink-0">
+      <div class="max-w-3xl">
+        <span class="font-label text-[12px] uppercase tracking-[0.3em] text-tertiary-fixed-dim mb-1 block">Grade 3 · Inquiry Selection</span>
+        <h1 class="font-headline text-[2rem] font-extrabold tracking-tight text-primary-container leading-tight">과학탐구·사회탐구 선택 (3-1학기)</h1>
+        <p class="text-sm text-on-surface-variant leading-relaxed mt-1">계열별 <span class="font-bold text-primary">택 1 · 3학점</span> — 자연·정보는 과학탐구에서, 인문·사회는 사회탐구에서</p>
+      </div>
+      <div class="bg-primary text-white rounded-xl px-5 py-3 flex items-center gap-3 shadow-ambient">
+        <span class="material-symbols-outlined text-tertiary-fixed-dim text-2xl">fork_right</span>
+        <div>
+          <div class="text-[12px] text-tertiary-fixed-dim uppercase tracking-widest font-bold">Rule</div>
+          <div class="font-bold text-base">계열별 택 1</div>
+        </div>
+      </div>
+    </div>
+    <p class="text-xs text-on-surface-variant mb-4 max-w-4xl">
+      2학년 심화탐구에서 이미 이수한 과목은 <span class="font-bold text-primary-container">중복 수강 불가</span>. 자연계는 아직 안 들은 과학 1과목, 인문계는 사회탐구 5과목 중 1과목을 선택합니다.
+    </p>
+    <div class="flex-1 grid grid-cols-2 gap-5 min-h-0">
+      <!-- 자연·정보 — 과학탐구 8과목 -->
+      <article class="bg-surface-container-lowest rounded-xl shadow-ambient overflow-hidden flex flex-col border border-outline-variant/15">
+        <div class="h-20 relative flex items-center p-5 bg-gradient-to-br from-primary-container to-[#2d476f]">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,#7ad7c6_0%,transparent_60%)] opacity-25"></div>
+          <div class="relative z-10 flex justify-between items-center w-full">
+            <div>
+              <div class="text-[12px] font-bold text-tertiary-fixed-dim tracking-widest uppercase">자연·정보 계열</div>
+              <h2 class="text-xl font-bold text-white tracking-tight">과학탐구 (8과목 중 택 1)</h2>
+            </div>
+            <span class="material-symbols-outlined text-tertiary-fixed-dim text-3xl">science</span>
+          </div>
+        </div>
+        <div class="p-4 flex-1 grid grid-cols-2 gap-2 text-[13px] content-start">
+          <div class="bg-surface-container-low rounded-md p-2.5 border-l-2 border-primary-container flex items-center gap-2"><span class="material-symbols-outlined text-primary-container text-sm icon-fill">bolt</span><span class="font-semibold">역학과 에너지</span></div>
+          <div class="bg-surface-container-low rounded-md p-2.5 border-l-2 border-primary-container flex items-center gap-2"><span class="material-symbols-outlined text-primary-container text-sm icon-fill">flash_on</span><span class="font-semibold">전자기와 양자</span></div>
+          <div class="bg-surface-container-low rounded-md p-2.5 border-l-2 border-primary-container flex items-center gap-2"><span class="material-symbols-outlined text-primary-container text-sm icon-fill">experiment</span><span class="font-semibold">물질과 에너지</span></div>
+          <div class="bg-surface-container-low rounded-md p-2.5 border-l-2 border-primary-container flex items-center gap-2"><span class="material-symbols-outlined text-primary-container text-sm icon-fill">science</span><span class="font-semibold">화학 반응의 세계</span></div>
+          <div class="bg-surface-container-low rounded-md p-2.5 border-l-2 border-primary-container flex items-center gap-2"><span class="material-symbols-outlined text-primary-container text-sm icon-fill">biotech</span><span class="font-semibold">세포와 물질대사</span></div>
+          <div class="bg-surface-container-low rounded-md p-2.5 border-l-2 border-primary-container flex items-center gap-2"><span class="material-symbols-outlined text-primary-container text-sm icon-fill">hub</span><span class="font-semibold">생물의 유전</span></div>
+          <div class="bg-surface-container-low rounded-md p-2.5 border-l-2 border-primary-container flex items-center gap-2"><span class="material-symbols-outlined text-primary-container text-sm icon-fill">public</span><span class="font-semibold">지구시스템과학</span></div>
+          <div class="bg-surface-container-low rounded-md p-2.5 border-l-2 border-primary-container flex items-center gap-2"><span class="material-symbols-outlined text-primary-container text-sm icon-fill">rocket_launch</span><span class="font-semibold">행성우주과학</span></div>
+        </div>
+        <div class="px-4 py-2.5 bg-tertiary-container/5 border-t border-outline-variant/15 text-[11px] text-on-surface-variant">
+          <span class="font-bold text-tertiary-fixed-dim">TIP</span> · 3학점 · 상대평가 5등급 · 2학년 미이수분만 선택 가능
+        </div>
+      </article>
+      <!-- 인문·사회 — 사회탐구 5과목 -->
+      <article class="bg-surface-container-lowest rounded-xl shadow-ambient overflow-hidden flex flex-col border border-outline-variant/15">
+        <div class="h-20 relative flex items-center p-5 bg-gradient-to-br from-surface-tint to-[#2d476f]">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,#aec7f6_0%,transparent_60%)] opacity-25"></div>
+          <div class="relative z-10 flex justify-between items-center w-full">
+            <div>
+              <div class="text-[12px] font-bold text-tertiary-fixed-dim tracking-widest uppercase">인문·사회 계열</div>
+              <h2 class="text-xl font-bold text-white tracking-tight">사회탐구 (5과목 중 택 1)</h2>
+            </div>
+            <span class="material-symbols-outlined text-tertiary-fixed-dim text-3xl">groups</span>
+          </div>
+        </div>
+        <div class="p-4 flex-1 flex flex-col gap-2 text-[13px]">
+          <div class="bg-surface-container-low rounded-md p-3 border-l-2 border-surface-tint flex items-center gap-2"><span class="material-symbols-outlined text-surface-tint text-sm icon-fill">diversity_3</span><span class="font-semibold">사회문제 탐구</span></div>
+          <div class="bg-surface-container-low rounded-md p-3 border-l-2 border-surface-tint flex items-center gap-2"><span class="material-symbols-outlined text-surface-tint text-sm icon-fill">balance</span><span class="font-semibold">윤리문제 탐구</span></div>
+          <div class="bg-surface-container-low rounded-md p-3 border-l-2 border-surface-tint flex items-center gap-2"><span class="material-symbols-outlined text-surface-tint text-sm icon-fill">flight_takeoff</span><span class="font-semibold">여행지리</span></div>
+          <div class="bg-surface-container-low rounded-md p-3 border-l-2 border-surface-tint flex items-center gap-2"><span class="material-symbols-outlined text-surface-tint text-sm icon-fill">history</span><span class="font-semibold">역사로 탐구하는 현대 세계</span></div>
+          <div class="bg-surface-container-low rounded-md p-3 border-l-2 border-surface-tint flex items-center gap-2"><span class="material-symbols-outlined text-surface-tint text-sm icon-fill">savings</span><span class="font-semibold">금융과 경제생활</span></div>
+        </div>
+        <div class="px-4 py-2.5 bg-primary-container/5 border-t border-outline-variant/15 text-[11px] text-on-surface-variant">
+          <span class="font-bold text-primary-container">TIP</span> · 3학점 · 성취도 5단계 · 융합선택 과목
+        </div>
+      </article>
+    </div>
+  </main>
+  <footer class="slide-footer flex justify-between items-center px-12 py-3 text-xs tracking-widest uppercase font-medium">
+    <button onclick="goTo(15)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2"><span class="material-symbols-outlined text-sm">arrow_back</span> 이전</button>
+    <span class="text-primary-container font-bold">슬라이드 16 / 20 — 한민고등학교 교육과정 설명</span>
+    <button onclick="goTo(17)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2">다음 <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+  </footer>
+</section>
+<!-- slide-17: 고급·국제 특화 통합 (자연 5 + 인문 5) -->
+<section id="slide-17" class="slide-frame" data-title="고급·국제 특화 선택">
+  <header class="top-nav flex justify-between items-center px-12 py-4">
+    <div class="text-xl font-bold tracking-[0.3em] text-white">HANMIN&nbsp;&nbsp;ACADEMY</div>
+    <div class="flex items-center gap-3">
+      <button onclick="openIndex()" class="text-slate-300 hover:text-white transition-all hover:bg-white/5 px-3 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold"><span class="material-symbols-outlined text-lg">grid_view</span><span class="hidden md:inline">Slide Index</span></button>
+      <button class="bg-[#7ad7c6] text-[#002147] px-5 py-2 rounded-md font-bold tracking-tight hover:bg-white transition-colors text-sm">Contact Admissions</button>
+    </div>
+  </header>
+  <main class="slide-main bg-surface px-10 pt-7 pb-3">
+    <div class="flex justify-between items-end mb-4 shrink-0">
+      <div class="max-w-3xl">
+        <span class="font-label text-[12px] uppercase tracking-[0.3em] text-tertiary-fixed-dim mb-1 block">Grade 3 · Advanced & International</span>
+        <h1 class="font-headline text-[1.9rem] font-extrabold tracking-tight text-primary-container leading-tight">고급·국제 특화 선택 (3-1학기)</h1>
+        <p class="text-sm text-on-surface-variant leading-relaxed mt-1">계열별 <span class="font-bold text-primary">택 1 · 5학점</span> — 자연·정보 5과목 · 인문·사회 5과목, 대학 수준 심화 트랙</p>
+      </div>
+      <div class="bg-primary text-white rounded-xl px-5 py-3 flex items-center gap-3 shadow-ambient">
+        <span class="material-symbols-outlined text-tertiary-fixed-dim text-2xl">school</span>
+        <div>
+          <div class="text-[12px] text-tertiary-fixed-dim uppercase tracking-widest font-bold">Level</div>
+          <div class="font-bold text-base">대학 수준</div>
+        </div>
+      </div>
+    </div>
+    <!-- 자연·정보 5과목 -->
+    <div class="mb-2 flex items-center gap-3 shrink-0">
+      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-container/10 text-primary-container text-[12px] font-bold tracking-wider uppercase"><span class="w-2 h-2 rounded-full bg-primary-container"></span>자연·정보 계열 (5과목 중 택 1)</span>
+      <span class="text-[11px] text-on-surface-variant">선수과목 이수 전제</span>
+    </div>
+    <div class="grid grid-cols-5 gap-2.5 mb-4 shrink-0">
+      <article class="bg-surface-container-lowest rounded-lg shadow-ambient flex flex-col overflow-hidden border border-outline-variant/15">
+        <div class="relative flex items-center p-3 bg-gradient-to-br from-primary-container to-[#2d476f]">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,#7ad7c6_0%,transparent_60%)] opacity-20"></div>
+          <div class="relative z-10 flex justify-between items-center w-full">
+            <div>
+              <div class="text-[10px] font-bold text-tertiary-fixed-dim tracking-widest uppercase">Track 01</div>
+              <h3 class="text-sm font-bold text-white tracking-tight">고급 물리학</h3>
+            </div>
+            <span class="material-symbols-outlined text-tertiary-fixed-dim text-xl">bolt</span>
+          </div>
+        </div>
+        <div class="p-3 flex-1 bg-surface-container-low">
+          <div class="text-[10px] font-bold text-primary-container uppercase tracking-wider mb-1.5 flex items-center gap-1"><span class="material-symbols-outlined text-xs icon-fill">task_alt</span>선수과목</div>
+          <div class="space-y-1">
+            <div class="bg-surface-container-lowest rounded px-2 py-1 border-l-2 border-primary-container text-[11px] font-semibold">역학과 에너지</div>
+            <div class="bg-surface-container-lowest rounded px-2 py-1 border-l-2 border-primary-container text-[11px] font-semibold">전자기와 양자</div>
+          </div>
+        </div>
+      </article>
+      <article class="bg-surface-container-lowest rounded-lg shadow-ambient flex flex-col overflow-hidden border border-outline-variant/15">
+        <div class="relative flex items-center p-3 bg-gradient-to-br from-primary-container to-[#2d476f]">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,#7ad7c6_0%,transparent_60%)] opacity-20"></div>
+          <div class="relative z-10 flex justify-between items-center w-full">
+            <div>
+              <div class="text-[10px] font-bold text-tertiary-fixed-dim tracking-widest uppercase">Track 02</div>
+              <h3 class="text-sm font-bold text-white tracking-tight">고급 화학</h3>
+            </div>
+            <span class="material-symbols-outlined text-tertiary-fixed-dim text-xl">experiment</span>
+          </div>
+        </div>
+        <div class="p-3 flex-1 bg-surface-container-low">
+          <div class="text-[10px] font-bold text-primary-container uppercase tracking-wider mb-1.5 flex items-center gap-1"><span class="material-symbols-outlined text-xs icon-fill">task_alt</span>선수과목</div>
+          <div class="space-y-1">
+            <div class="bg-surface-container-lowest rounded px-2 py-1 border-l-2 border-primary-container text-[11px] font-semibold">물질과 에너지</div>
+            <div class="bg-surface-container-lowest rounded px-2 py-1 border-l-2 border-primary-container text-[11px] font-semibold">화학 반응의 세계</div>
+          </div>
+        </div>
+      </article>
+      <article class="bg-surface-container-lowest rounded-lg shadow-ambient flex flex-col overflow-hidden border border-outline-variant/15">
+        <div class="relative flex items-center p-3 bg-gradient-to-br from-primary-container to-[#2d476f]">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,#7ad7c6_0%,transparent_60%)] opacity-20"></div>
+          <div class="relative z-10 flex justify-between items-center w-full">
+            <div>
+              <div class="text-[10px] font-bold text-tertiary-fixed-dim tracking-widest uppercase">Track 03</div>
+              <h3 class="text-sm font-bold text-white tracking-tight">고급 생명과학</h3>
+            </div>
+            <span class="material-symbols-outlined text-tertiary-fixed-dim text-xl">biotech</span>
+          </div>
+        </div>
+        <div class="p-3 flex-1 bg-surface-container-low">
+          <div class="text-[10px] font-bold text-primary-container uppercase tracking-wider mb-1.5 flex items-center gap-1"><span class="material-symbols-outlined text-xs icon-fill">task_alt</span>선수과목</div>
+          <div class="space-y-1">
+            <div class="bg-surface-container-lowest rounded px-2 py-1 border-l-2 border-primary-container text-[11px] font-semibold">세포와 물질대사</div>
+            <div class="bg-surface-container-lowest rounded px-2 py-1 border-l-2 border-primary-container text-[11px] font-semibold">생물의 유전</div>
+          </div>
+        </div>
+      </article>
+      <article class="bg-surface-container-lowest rounded-lg shadow-ambient flex flex-col overflow-hidden border border-outline-variant/15">
+        <div class="relative flex items-center p-3 bg-gradient-to-br from-primary-container to-[#2d476f]">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,#7ad7c6_0%,transparent_60%)] opacity-20"></div>
+          <div class="relative z-10 flex justify-between items-center w-full">
+            <div>
+              <div class="text-[10px] font-bold text-tertiary-fixed-dim tracking-widest uppercase">Track 04</div>
+              <h3 class="text-sm font-bold text-white tracking-tight">고급 지구과학</h3>
+            </div>
+            <span class="material-symbols-outlined text-tertiary-fixed-dim text-xl">public</span>
+          </div>
+        </div>
+        <div class="p-3 flex-1 bg-surface-container-low">
+          <div class="text-[10px] font-bold text-primary-container uppercase tracking-wider mb-1.5 flex items-center gap-1"><span class="material-symbols-outlined text-xs icon-fill">task_alt</span>선수과목</div>
+          <div class="space-y-1">
+            <div class="bg-surface-container-lowest rounded px-2 py-1 border-l-2 border-primary-container text-[11px] font-semibold">지구시스템과학</div>
+            <div class="bg-surface-container-lowest rounded px-2 py-1 border-l-2 border-primary-container text-[11px] font-semibold">행성우주과학</div>
+          </div>
+        </div>
+      </article>
+      <article class="bg-surface-container-lowest rounded-lg shadow-ambient flex flex-col overflow-hidden border border-tertiary-fixed-dim/30">
+        <div class="relative flex items-center p-3 bg-gradient-to-br from-tertiary-container to-[#005047]">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,#7ad7c6_0%,transparent_60%)] opacity-25"></div>
+          <div class="relative z-10 flex justify-between items-center w-full">
+            <div>
+              <div class="text-[10px] font-bold text-tertiary-fixed-dim tracking-widest uppercase">Track 05</div>
+              <h3 class="text-sm font-bold text-white tracking-tight">정보과학</h3>
+            </div>
+            <span class="material-symbols-outlined text-tertiary-fixed-dim text-xl">smart_toy</span>
+          </div>
+        </div>
+        <div class="p-3 flex-1 bg-tertiary-container/5">
+          <div class="text-[10px] font-bold text-tertiary-container uppercase tracking-wider mb-1.5 flex items-center gap-1"><span class="material-symbols-outlined text-xs icon-fill">task_alt</span>선수과목</div>
+          <div class="space-y-1">
+            <div class="bg-surface-container-lowest rounded px-2 py-1 border-l-2 border-tertiary-container text-[11px] font-semibold flex items-center justify-between gap-1">인공지능 기초 <span class="text-[9px] font-bold bg-tertiary-fixed-dim text-on-tertiary-fixed px-1.5 py-0.5 rounded">필수</span></div>
+            <div class="bg-surface-container-lowest rounded px-2 py-1 border-l-2 border-tertiary-container/40 text-[11px] font-semibold flex items-center justify-between gap-1 text-on-surface-variant">컴퓨터 구조 <span class="text-[9px] font-bold bg-tertiary-container/15 text-tertiary-container px-1.5 py-0.5 rounded">권장</span></div>
+          </div>
+          <div class="mt-2 text-[10px] text-tertiary-fixed-dim font-semibold">※ 정보계열 진학 학생 필수 이수</div>
+        </div>
+      </article>
+    </div>
+    <!-- 인문·사회 5과목 -->
+    <div class="mb-2 flex items-center gap-3 shrink-0">
+      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-tint/10 text-surface-tint text-[12px] font-bold tracking-wider uppercase"><span class="w-2 h-2 rounded-full bg-surface-tint"></span>인문·사회 계열 (5과목 중 택 1)</span>
+      <span class="text-[11px] text-on-surface-variant">국제·전문 진로 권장</span>
+    </div>
+    <div class="grid grid-cols-5 gap-2.5 shrink-0">
+      <article class="bg-surface-container-lowest rounded-lg shadow-ambient flex flex-col overflow-hidden border border-outline-variant/15">
+        <div class="relative flex items-center p-3 bg-gradient-to-br from-surface-tint to-[#2d476f]">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,#aec7f6_0%,transparent_60%)] opacity-25"></div>
+          <div class="relative z-10 flex justify-between items-center w-full">
+            <div>
+              <div class="text-[10px] font-bold text-tertiary-fixed-dim tracking-widest uppercase">Track 06</div>
+              <h3 class="text-sm font-bold text-white tracking-tight">국제 경제</h3>
+            </div>
+            <span class="material-symbols-outlined text-tertiary-fixed-dim text-xl">payments</span>
+          </div>
+        </div>
+        <div class="p-3 flex-1 bg-surface-container-low">
+          <div class="text-[10px] font-bold text-surface-tint uppercase tracking-wider mb-1.5 flex items-center gap-1"><span class="material-symbols-outlined text-xs icon-fill">school</span>추천 전공</div>
+          <div class="space-y-1">
+            <div class="bg-surface-container-lowest rounded px-2 py-1 border-l-2 border-surface-tint text-[11px] font-semibold">경영·경제</div>
+            <div class="bg-surface-container-lowest rounded px-2 py-1 border-l-2 border-surface-tint text-[11px] font-semibold">국제학</div>
+          </div>
+        </div>
+      </article>
+      <article class="bg-surface-container-lowest rounded-lg shadow-ambient flex flex-col overflow-hidden border border-outline-variant/15">
+        <div class="relative flex items-center p-3 bg-gradient-to-br from-surface-tint to-[#2d476f]">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,#aec7f6_0%,transparent_60%)] opacity-25"></div>
+          <div class="relative z-10 flex justify-between items-center w-full">
+            <div>
+              <div class="text-[10px] font-bold text-tertiary-fixed-dim tracking-widest uppercase">Track 07</div>
+              <h3 class="text-sm font-bold text-white tracking-tight">지역 이해</h3>
+            </div>
+            <span class="material-symbols-outlined text-tertiary-fixed-dim text-xl">travel_explore</span>
+          </div>
+        </div>
+        <div class="p-3 flex-1 bg-surface-container-low">
+          <div class="text-[10px] font-bold text-surface-tint uppercase tracking-wider mb-1.5 flex items-center gap-1"><span class="material-symbols-outlined text-xs icon-fill">school</span>추천 전공</div>
+          <div class="space-y-1">
+            <div class="bg-surface-container-lowest rounded px-2 py-1 border-l-2 border-surface-tint text-[11px] font-semibold">지역학·정치외교</div>
+            <div class="bg-surface-container-lowest rounded px-2 py-1 border-l-2 border-surface-tint text-[11px] font-semibold">문화인류학</div>
+          </div>
+        </div>
+      </article>
+      <article class="bg-surface-container-lowest rounded-lg shadow-ambient flex flex-col overflow-hidden border border-outline-variant/15">
+        <div class="relative flex items-center p-3 bg-gradient-to-br from-surface-tint to-[#2d476f]">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,#aec7f6_0%,transparent_60%)] opacity-25"></div>
+          <div class="relative z-10 flex justify-between items-center w-full">
+            <div>
+              <div class="text-[10px] font-bold text-tertiary-fixed-dim tracking-widest uppercase">Track 08</div>
+              <h3 class="text-sm font-bold text-white tracking-tight">국제 관계</h3>
+            </div>
+            <span class="material-symbols-outlined text-tertiary-fixed-dim text-xl">handshake</span>
+          </div>
+        </div>
+        <div class="p-3 flex-1 bg-surface-container-low">
+          <div class="text-[10px] font-bold text-surface-tint uppercase tracking-wider mb-1.5 flex items-center gap-1"><span class="material-symbols-outlined text-xs icon-fill">school</span>추천 전공</div>
+          <div class="space-y-1">
+            <div class="bg-surface-container-lowest rounded px-2 py-1 border-l-2 border-surface-tint text-[11px] font-semibold">정치외교·국제학</div>
+            <div class="bg-surface-container-lowest rounded px-2 py-1 border-l-2 border-surface-tint text-[11px] font-semibold">법학</div>
+          </div>
+        </div>
+      </article>
+      <article class="bg-surface-container-lowest rounded-lg shadow-ambient flex flex-col overflow-hidden border border-outline-variant/15">
+        <div class="relative flex items-center p-3 bg-gradient-to-br from-surface-tint to-[#2d476f]">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,#aec7f6_0%,transparent_60%)] opacity-25"></div>
+          <div class="relative z-10 flex justify-between items-center w-full">
+            <div>
+              <div class="text-[10px] font-bold text-tertiary-fixed-dim tracking-widest uppercase">Track 09</div>
+              <h3 class="text-sm font-bold text-white tracking-tight">역사학</h3>
+            </div>
+            <span class="material-symbols-outlined text-tertiary-fixed-dim text-xl">menu_book</span>
+          </div>
+        </div>
+        <div class="p-3 flex-1 bg-surface-container-low">
+          <div class="text-[10px] font-bold text-surface-tint uppercase tracking-wider mb-1.5 flex items-center gap-1"><span class="material-symbols-outlined text-xs icon-fill">school</span>추천 전공</div>
+          <div class="space-y-1">
+            <div class="bg-surface-container-lowest rounded px-2 py-1 border-l-2 border-surface-tint text-[11px] font-semibold">사학·국제학</div>
+            <div class="bg-surface-container-lowest rounded px-2 py-1 border-l-2 border-surface-tint text-[11px] font-semibold">고고학</div>
+          </div>
+        </div>
+      </article>
+      <article class="bg-surface-container-lowest rounded-lg shadow-ambient flex flex-col overflow-hidden border border-outline-variant/15">
+        <div class="relative flex items-center p-3 bg-gradient-to-br from-surface-tint to-[#2d476f]">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,#aec7f6_0%,transparent_60%)] opacity-25"></div>
+          <div class="relative z-10 flex justify-between items-center w-full">
+            <div>
+              <div class="text-[10px] font-bold text-tertiary-fixed-dim tracking-widest uppercase">Track 10</div>
+              <h3 class="text-sm font-bold text-white tracking-tight">현대정치철학</h3>
+            </div>
+            <span class="material-symbols-outlined text-tertiary-fixed-dim text-xl">psychology</span>
+          </div>
+        </div>
+        <div class="p-3 flex-1 bg-surface-container-low">
+          <div class="text-[10px] font-bold text-surface-tint uppercase tracking-wider mb-1.5 flex items-center gap-1"><span class="material-symbols-outlined text-xs icon-fill">school</span>추천 전공</div>
+          <div class="space-y-1">
+            <div class="bg-surface-container-lowest rounded px-2 py-1 border-l-2 border-surface-tint text-[11px] font-semibold">철학·정치학</div>
+            <div class="bg-surface-container-lowest rounded px-2 py-1 border-l-2 border-surface-tint text-[11px] font-semibold">사회학</div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </main>
+  <footer class="slide-footer flex justify-between items-center px-12 py-3 text-xs tracking-widest uppercase font-medium">
+    <button onclick="goTo(16)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2"><span class="material-symbols-outlined text-sm">arrow_back</span> 이전</button>
+    <span class="text-primary-container font-bold">슬라이드 17 / 20 — 한민고등학교 교육과정 설명</span>
+    <button onclick="goTo(18)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2">다음 <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+  </footer>
+</section>
+<!-- slide-18: Q&A 1/2 -->
+<section id="slide-18" class="slide-frame" data-title="Q&A (1/2)">
+  <header class="top-nav flex justify-between items-center px-12 py-4">
+    <div class="text-xl font-bold tracking-[0.3em] text-white">HANMIN&nbsp;&nbsp;ACADEMY</div>
+    <div class="flex items-center gap-3">
+      <button onclick="openIndex()" class="text-slate-300 hover:text-white transition-all hover:bg-white/5 px-3 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold"><span class="material-symbols-outlined text-lg">grid_view</span><span class="hidden md:inline">Slide Index</span></button>
+      <button class="bg-[#7ad7c6] text-[#002147] px-5 py-2 rounded-md font-bold tracking-tight hover:bg-white transition-colors text-sm">Contact Admissions</button>
+    </div>
+  </header>
+  <main class="slide-main bg-surface px-12 pt-8 pb-4 relative">
+    <div class="absolute inset-0 z-0 pointer-events-none flex justify-end items-end p-16 opacity-[0.04]">
+      <span class="material-symbols-outlined text-[22rem] text-primary icon-fill">question_answer</span>
+    </div>
+    <div class="relative z-10 flex flex-row gap-10 h-full items-stretch">
+      <!-- Left header -->
+      <div class="w-1/3 flex flex-col gap-5 justify-center">
+        <div class="inline-flex items-center gap-2 bg-primary-container text-on-primary-container px-4 py-1.5 rounded-full w-fit">
+          <span class="material-symbols-outlined text-sm">forum</span>
+          <span class="text-[12px] uppercase tracking-widest font-bold">Q&amp;A · 1/2</span>
+        </div>
+        <h1 class="text-4xl lg:text-5xl font-headline font-extrabold text-primary leading-tight tracking-tight">
+          과목 선택<br/><span class="text-surface-tint">Q &amp; A</span>
+        </h1>
+        <p class="text-on-surface-variant text-base leading-relaxed">
+          계열 분류, 변경 가능 여부, 절대평가 영향 등 가장 자주 묻는 질문에 답합니다.
+        </p>
+        <div class="mt-4 p-4 bg-surface-container-low rounded-xl border border-outline-variant/15 text-sm">
+          <div class="flex items-center gap-2 mb-1 text-primary-container font-bold">
+            <span class="material-symbols-outlined text-base">info</span>
+            <span>다음 슬라이드</span>
+          </div>
+          <p class="text-on-surface-variant text-xs leading-snug">
+            고급 과목 자격 · 과제연구 진행 · 2028 수능 관련 Q4~Q6은 슬라이드 19에서 확인
+          </p>
+        </div>
+      </div>
+      <!-- Right content -->
+      <div class="w-2/3 flex flex-col justify-center gap-4">
+        <!-- Q1 -->
+        <div class="bg-surface-container-lowest p-5 rounded-xl shadow-ambient border border-outline-variant/10 relative overflow-hidden group hover:bg-surface-container-low transition-colors">
+          <div class="absolute top-0 left-0 w-1 h-full bg-primary-container"></div>
+          <div class="flex items-start gap-3">
+            <div class="bg-primary-container text-white flex items-center justify-center w-9 h-9 rounded-full shrink-0 font-bold text-sm">Q1</div>
+            <div>
+              <h3 class="text-base font-bold text-on-surface mb-2">2학년 과목 선택 시 인문/자연 계열은 어떻게 결정되나요?</h3>
+              <p class="text-sm text-on-surface-variant leading-relaxed">
+                탐구 과목 선택에 따라 자동 분류됩니다. 물리·화학·생명과학·지구과학 계열 과목을 선택하면 자연계열, 사회 계열 과목을 선택하면 인문계열로 분류됩니다. 일부 과목은 계열 무관하게 선택 가능합니다.
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- Q2 -->
+        <div class="bg-surface-container-lowest p-5 rounded-xl shadow-ambient border border-outline-variant/10 relative overflow-hidden group hover:bg-surface-container-low transition-colors">
+          <div class="absolute top-0 left-0 w-1 h-full bg-surface-tint"></div>
+          <div class="flex items-start gap-3">
+            <div class="bg-surface-tint text-white flex items-center justify-center w-9 h-9 rounded-full shrink-0 font-bold text-sm">Q2</div>
+            <div>
+              <h3 class="text-base font-bold text-on-surface mb-2">과목 선택 후 변경이 가능한가요?</h3>
+              <p class="text-sm text-on-surface-variant leading-relaxed">
+                원칙적으로 과목 신청 기간 이후에는 변경이 어렵습니다. 단, 수강 인원 미달로 폐강된 과목의 경우 학교 지도 하에 대체 과목을 재선택할 수 있습니다.
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- Q3 -->
+        <div class="bg-surface-container-lowest p-5 rounded-xl shadow-ambient border border-outline-variant/10 relative overflow-hidden group hover:bg-surface-container-low transition-colors">
+          <div class="absolute top-0 left-0 w-1 h-full bg-tertiary-fixed-dim"></div>
+          <div class="flex items-start gap-3">
+            <div class="bg-tertiary-fixed-dim text-on-tertiary-fixed flex items-center justify-center w-9 h-9 rounded-full shrink-0 font-bold text-sm">Q3</div>
+            <div>
+              <h3 class="text-base font-bold text-on-surface mb-2">내신 등급이 없는 과목(절대평가)을 선택하면 불리한가요?</h3>
+              <p class="text-sm text-on-surface-variant leading-relaxed">
+                불리하지 않습니다. 진로·융합 선택 과목은 대학에서 등급 대신 수강 사실과 세특으로 평가합니다. 오히려 전공 적합성을 보여줄 수 있어 학종에서 강점이 됩니다.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="slide-footer flex justify-between items-center px-12 py-3 text-xs tracking-widest uppercase font-medium">
+    <button onclick="goTo(17)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2"><span class="material-symbols-outlined text-sm">arrow_back</span> 이전</button>
+    <span class="text-primary-container font-bold">슬라이드 18 / 20 — 한민고등학교 교육과정 설명</span>
+    <button onclick="goTo(19)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2">다음 <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+  </footer>
+</section>
+<!-- slide-19: Q&A 2/2 -->
+<section id="slide-19" class="slide-frame" data-title="Q&A (2/2)">
+  <header class="top-nav flex justify-between items-center px-12 py-4">
+    <div class="text-xl font-bold tracking-[0.3em] text-white">HANMIN&nbsp;&nbsp;ACADEMY</div>
+    <div class="flex items-center gap-3">
+      <button onclick="openIndex()" class="text-slate-300 hover:text-white transition-all hover:bg-white/5 px-3 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold"><span class="material-symbols-outlined text-lg">grid_view</span><span class="hidden md:inline">Slide Index</span></button>
+      <button class="bg-[#7ad7c6] text-[#002147] px-5 py-2 rounded-md font-bold tracking-tight hover:bg-white transition-colors text-sm">Contact Admissions</button>
+    </div>
+  </header>
+  <main class="slide-main bg-surface px-12 pt-8 pb-4 relative">
+    <div class="absolute inset-0 z-0 pointer-events-none flex justify-end items-end p-16 opacity-[0.04]">
+      <span class="material-symbols-outlined text-[22rem] text-primary icon-fill">quiz</span>
+    </div>
+    <div class="relative z-10 flex flex-row gap-10 h-full items-stretch">
+      <!-- Left header -->
+      <div class="w-1/3 flex flex-col gap-5 justify-center">
+        <div class="inline-flex items-center gap-2 bg-primary-container text-on-primary-container px-4 py-1.5 rounded-full w-fit">
+          <span class="material-symbols-outlined text-sm">forum</span>
+          <span class="text-[12px] uppercase tracking-widest font-bold">Q&amp;A · 2/2</span>
+        </div>
+        <h1 class="text-4xl lg:text-5xl font-headline font-extrabold text-primary leading-tight tracking-tight">
+          과목 선택<br/><span class="text-surface-tint">Q &amp; A</span>
+        </h1>
+        <p class="text-on-surface-variant text-base leading-relaxed">
+          고급 과목 자격 · 과제연구 진행 방식 · 2028 수능 변화에 대한 답변입니다.
+        </p>
+        <div class="mt-4 p-4 bg-tertiary-container text-white rounded-xl text-sm">
+          <div class="flex items-center gap-2 mb-1 text-tertiary-fixed-dim font-bold">
+            <span class="material-symbols-outlined text-base">tips_and_updates</span>
+            <span>핵심 포인트</span>
+          </div>
+          <p class="text-white/80 text-xs leading-snug">
+            한민고 과제연구는 1년+ 장기 프로젝트이며, 학술제는 2학년 말에 진행됩니다.
+          </p>
+        </div>
+      </div>
+      <!-- Right content -->
+      <div class="w-2/3 flex flex-col justify-center gap-4">
+        <!-- Q4 -->
+        <div class="bg-surface-container-lowest p-5 rounded-xl shadow-ambient border border-outline-variant/10 relative overflow-hidden group hover:bg-surface-container-low transition-colors">
+          <div class="absolute top-0 left-0 w-1 h-full bg-primary-container"></div>
+          <div class="flex items-start gap-3">
+            <div class="bg-primary-container text-white flex items-center justify-center w-9 h-9 rounded-full shrink-0 font-bold text-sm">Q4</div>
+            <div>
+              <h3 class="text-base font-bold text-on-surface mb-2">고급 과목(고급 물리학 등)은 누구나 선택할 수 있나요?</h3>
+              <p class="text-sm text-on-surface-variant leading-relaxed">
+                고급 과목은 3학년 대상이며, 해당 분야의 일반선택·진로선택 과목을 이수한 학생에게 적합합니다. 대학 수준의 내용을 다루므로 올림피아드·최상위권 대학 진학을 목표로 하는 학생에게 권장됩니다.
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- Q5 -->
+        <div class="bg-surface-container-lowest p-5 rounded-xl shadow-ambient border border-outline-variant/10 relative overflow-hidden group hover:bg-surface-container-low transition-colors">
+          <div class="absolute top-0 left-0 w-1 h-full bg-surface-tint"></div>
+          <div class="flex items-start gap-3">
+            <div class="bg-surface-tint text-white flex items-center justify-center w-9 h-9 rounded-full shrink-0 font-bold text-sm">Q5</div>
+            <div>
+              <h3 class="text-base font-bold text-on-surface mb-2">과제연구 과목은 어떻게 진행되나요?</h3>
+              <p class="text-sm text-on-surface-variant leading-relaxed">
+                1학년 2학기 창의적 문제해결 연습 프로그램으로 시작하여, 2학년에 창의융합 과제연구(1학기) → 분과별 과제연구(2학기)로 이어집니다. <span class="font-bold text-primary-container">2학년 말 한민 학술제</span>를 통해 연구 성과를 발표합니다. 1년 이상의 장기 탐구 프로젝트입니다.
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- Q6 -->
+        <div class="bg-surface-container-lowest p-5 rounded-xl shadow-ambient border border-outline-variant/10 relative overflow-hidden group hover:bg-surface-container-low transition-colors">
+          <div class="absolute top-0 left-0 w-1 h-full bg-tertiary-fixed-dim"></div>
+          <div class="flex items-start gap-3">
+            <div class="bg-tertiary-fixed-dim text-on-tertiary-fixed flex items-center justify-center w-9 h-9 rounded-full shrink-0 font-bold text-sm">Q6</div>
+            <div>
+              <h3 class="text-base font-bold text-on-surface mb-2">2028 수능 개편으로 수학 범위가 줄어드나요?</h3>
+              <p class="text-sm text-on-surface-variant leading-relaxed">
+                네. 2028 수능부터 수학 영역에서 미적분Ⅱ와 기하가 제외됩니다. 수능 수학은 대수, 미적분Ⅰ, 확률과 통계로 구성됩니다. 다만 <span class="font-bold text-primary-container">이과 계열 대학 진학을 위해서는 내신에서 심화 과목을 수강하는 것이 중요</span>합니다.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="slide-footer flex justify-between items-center px-12 py-3 text-xs tracking-widest uppercase font-medium">
+    <button onclick="goTo(18)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2"><span class="material-symbols-outlined text-sm">arrow_back</span> 이전</button>
+    <span class="text-primary-container font-bold">슬라이드 19 / 20 — 한민고등학교 교육과정 설명</span>
+    <button onclick="goTo(20)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2">다음 <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+  </footer>
+</section>
+<!-- slide-20: CTA -->
+<section id="slide-20" class="slide-frame" data-title="교육과정 설계 시작">
+  <header class="top-nav flex justify-between items-center px-12 py-4">
+    <div class="text-xl font-bold tracking-[0.3em] text-white">HANMIN&nbsp;&nbsp;ACADEMY</div>
+    <div class="flex items-center gap-3">
+      <button onclick="openIndex()" class="text-slate-300 hover:text-white transition-all hover:bg-white/5 px-3 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold"><span class="material-symbols-outlined text-lg">grid_view</span><span class="hidden md:inline">Slide Index</span></button>
+      <button class="bg-[#7ad7c6] text-[#002147] px-5 py-2 rounded-md font-bold tracking-tight hover:bg-white transition-colors text-sm">Contact Admissions</button>
+    </div>
+  </header>
+  <main class="slide-main relative flex items-center justify-center">
+    <!-- Background image + overlay -->
+    <div class="absolute inset-0 w-full h-full">
+      <img alt="학생들이 협업하는 모습" class="w-full h-full object-cover object-center" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnUFJHUHXpGnPGHmHI-xFZzE8az2Z34NnHmGs4b418klXK1mDTdGMg-9x-n1FEtYOHmUxWq3N6P1VWeI44qcYDG_pFlnT6ypX5tulhVJym722UN5cuiUkbgmzGUxoaDiusd59vBe7-oRrYFXnJlDZTxCw9gpIE1vPfNuXJjrHYXSW1KMprZ-ppU2m3uisSfCBWwvKP39kHeDKsRMgGwJt60jeujtbyUhrK2VZXXmJwPviI7tcg7DNXYSEaH2DAiBD6lhhB8rg0lLE"/>
+      <div class="absolute inset-0 hero-gradient"></div>
+      <div class="absolute inset-0 opacity-40" style="background: radial-gradient(circle at 20% 30%, rgba(122,215,198,0.25), transparent 50%), radial-gradient(circle at 80% 70%, rgba(174,199,246,0.2), transparent 50%);"></div>
+    </div>
+    <div class="relative z-10 w-full max-w-7xl mx-auto px-12 flex flex-row items-center justify-between gap-10">
+      <!-- Left Text Block -->
+      <div class="flex-1 text-white max-w-2xl">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-tertiary-container/30 border border-tertiary-fixed-dim/30 backdrop-blur-sm mb-5">
+          <span class="material-symbols-outlined text-tertiary-fixed-dim text-sm icon-fill">explore</span>
+          <span class="text-[12px] font-bold tracking-widest uppercase text-tertiary-fixed-dim">Final Step</span>
+        </div>
+        <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.1] mb-5">
+          지금 바로<br/><span class="text-tertiary-fixed-dim">나의 과목을 설계</span>하세요
+        </h1>
+        <p class="text-lg text-slate-200 mb-8 leading-relaxed max-w-xl">
+          진로별 로드맵을 탐색하고, 1~3학년 과목을 직접 선택해 나만의 교육과정 포트폴리오를 완성하세요.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <a href="./app/index.html#career-guide" class="bg-tertiary-fixed-dim text-on-tertiary-fixed px-7 py-3.5 rounded-md font-bold text-base hover:bg-white transition-all shadow-[0_8px_16px_rgba(122,215,198,0.25)] flex items-center justify-center gap-2 group no-underline">
+            교육과정 설계
+            <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+          </a>
+          <button onclick="openIndex()" class="bg-white/10 text-white border border-white/20 px-7 py-3.5 rounded-md font-semibold text-base hover:bg-white/20 transition-all backdrop-blur-md flex items-center justify-center gap-2">
+            전체 슬라이드 보기
+            <span class="material-symbols-outlined">grid_view</span>
+          </button>
+        </div>
+      </div>
+      <!-- Right Bento -->
+      <div class="hidden lg:grid grid-cols-2 gap-3 w-[380px] glass-panel p-5 rounded-xl border border-white/20 shadow-[0_24px_48px_rgba(0,0,0,0.25)]">
+        <div class="col-span-2 bg-surface-container-low p-4 rounded-lg border border-outline-variant/15">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-tertiary-fixed-dim">
+              <span class="material-symbols-outlined icon-fill">school</span>
+            </div>
+            <h3 class="font-bold text-on-surface">40+ 선택과목</h3>
+          </div>
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            기초·심화 세트부터 고급·국제 트랙까지, 진로에 맞춘 자유로운 과목 조합.
+          </p>
+        </div>
+        <div class="col-span-1 bg-surface-container-low p-4 rounded-lg border border-outline-variant/15 flex flex-col justify-between">
+          <span class="material-symbols-outlined text-primary mb-2">auto_awesome</span>
+          <div>
+            <div class="text-2xl font-extrabold text-primary">20+</div>
+            <div class="text-[12px] font-bold text-on-surface-variant uppercase tracking-wider">심화·고급 과목</div>
+          </div>
+        </div>
+        <div class="col-span-1 bg-tertiary-container p-4 rounded-lg border border-tertiary-fixed-dim/30 flex flex-col justify-between">
+          <span class="material-symbols-outlined text-tertiary-fixed-dim mb-2">verified</span>
+          <div>
+            <div class="text-2xl font-extrabold text-white">100<span class="text-lg">%</span></div>
+            <div class="text-[12px] font-bold text-tertiary-fixed-dim uppercase tracking-wider">세특 기반 기록</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="slide-footer flex justify-between items-center px-12 py-3 text-xs tracking-widest uppercase font-medium">
+    <button onclick="goTo(19)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2"><span class="material-symbols-outlined text-sm">arrow_back</span> 이전</button>
+    <span class="text-primary-container font-bold">슬라이드 20 / 20 — 한민고등학교 교육과정 설명</span>
+    <button onclick="goTo(0)" class="text-slate-500 hover:text-primary-container transition-colors flex items-center gap-2">처음으로 <span class="material-symbols-outlined text-sm">restart_alt</span></button>
+  </footer>
+</section>
+</div>
+<!-- ===== /slides-container ===== -->
+
+<!-- ===== Navigation JS ===== -->
+<script>
+(function(){
+  const TOTAL = 21; // 0..19
+  let current = 0;
+  const container = document.getElementById('slides-container');
+
+  function getCurrentFromScroll() {
+    if (!container) return 0;
+    const idx = Math.round(container.scrollLeft / window.innerWidth);
+    return Math.max(0, Math.min(TOTAL - 1, idx));
+  }
+
+  function goTo(n) {
+    n = Math.max(0, Math.min(TOTAL - 1, n));
+    // 모바일(≤768): 각 슬라이드가 세로로 쌓여 있으므로 해당 슬라이드로 scrollIntoView
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      var el = document.getElementById('slide-' + n);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (container) {
+      container.scrollTo({ left: n * window.innerWidth, behavior: 'smooth' });
+    }
+    current = n;
+  }
+
+  window.goTo = goTo;
+
+  window.openIndex = function() {
+    document.getElementById('slide-index-modal').classList.add('open');
+  };
+  window.closeIndex = function() {
+    document.getElementById('slide-index-modal').classList.remove('open');
+  };
+
+  // Build slide index grid
+  document.addEventListener('DOMContentLoaded', function() {
+    const grid = document.getElementById('slide-index-grid');
+    if (!grid) return;
+    for (let i = 0; i < TOTAL; i++) {
+      const sec = document.getElementById('slide-' + i);
+      const title = sec ? (sec.getAttribute('data-title') || '') : '';
+      const btn = document.createElement('button');
+      btn.className = 'group text-left p-5 rounded-xl bg-surface-container-low hover:bg-primary-container hover:text-white transition-all border border-outline-variant/10';
+      btn.innerHTML = `
+        <div class="text-[12px] font-bold tracking-widest uppercase text-tertiary-fixed-dim group-hover:text-tertiary-fixed-dim mb-2">
+          ${i === 0 ? 'COVER' : 'SLIDE ' + String(i).padStart(2, '0')}
+        </div>
+        <div class="font-bold text-base">${title}</div>
+      `;
+      btn.onclick = function() {
+        closeIndex();
+        goTo(i);
+      };
+      grid.appendChild(btn);
+    }
+  });
+
+  // Keyboard navigation — 좌우 이동
+  document.addEventListener('keydown', function(e) {
+    const modalOpen = document.getElementById('slide-index-modal').classList.contains('open');
+    if (e.key === 'Escape' && modalOpen) {
+      closeIndex();
+      return;
+    }
+    if (modalOpen) return;
+    current = getCurrentFromScroll();
+    switch (e.key) {
+      case 'ArrowRight':
+      case 'PageDown':
+      case ' ':
+        e.preventDefault();
+        goTo(current + 1);
+        break;
+      case 'ArrowLeft':
+      case 'PageUp':
+        e.preventDefault();
+        goTo(current - 1);
+        break;
+      case 'Home':
+        e.preventDefault();
+        goTo(0);
+        break;
+      case 'End':
+        e.preventDefault();
+        goTo(TOTAL - 1);
+        break;
+      case 'i':
+      case 'I':
+        e.preventDefault();
+        openIndex();
+        break;
+    }
+  });
+
+  // 마우스 휠을 수평 스크롤로 변환 — 데스크톱(가로 캐러셀)에서만.
+  // 모바일은 세로 스크롤이므로 기본 동작을 막지 않는다.
+  if (container) {
+    container.addEventListener('wheel', function(e) {
+      if (window.matchMedia('(max-width: 768px)').matches) return;
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault();
+        container.scrollBy({ left: e.deltaY, behavior: 'auto' });
+      }
+    }, { passive: false });
+
+    // Update current slide as user scrolls
+    let scrollTimeout;
+    container.addEventListener('scroll', function() {
+      if (scrollTimeout) cancelAnimationFrame(scrollTimeout);
+      scrollTimeout = requestAnimationFrame(function() {
+        current = getCurrentFromScroll();
+      });
+    }, { passive: true });
+  }
+})();
+</script>
+
+</body>
+</html>
+

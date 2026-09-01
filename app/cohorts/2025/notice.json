@@ -1,0 +1,66 @@
+{
+  "badge": "HM Curriculum Design · Final Survey",
+  "title": "3차 선택 과목 수요조사",
+  "period": "9/4(금) ~ 9/8(화)",
+  "summary": "2차 제출 내용을 확인하고 최종 수정·제출합니다.",
+  "gradeCards": [
+    {
+      "label": "Grade 1",
+      "when": "3차 조사 기간",
+      "description": "2학년·3학년 선택 과목을 최종 확인합니다."
+    },
+    {
+      "label": "Grade 2",
+      "when": "3차 조사 기간",
+      "description": "3학년 선택 과목을 최종 확인합니다."
+    }
+  ],
+  "gradeFooter": "기간 안에는 다시 제출할 수 있으며, 마지막 제출 내용이 최종 반영됩니다.",
+  "scheduleBadge": "",
+  "scheduleTitle": "",
+  "scheduleDescription": "",
+  "scheduleRows": [],
+  "scheduleFooter": "",
+  "highlightsBadge": "Final Check",
+  "highlightsTitle": "제출 전에 확인하세요",
+  "highlights": [
+    {
+      "label": "Round 2 Restore",
+      "title": "2차 제출 내용 불러오기",
+      "body": "로그인하면 2차에 제출한 선택을 불러옵니다. 달라진 부분을 확인한 뒤 수정하세요."
+    },
+    {
+      "label": "Final Submission",
+      "title": "최종 선택 제출",
+      "body": "과목과 학점, 선수과목 안내를 모두 확인한 뒤 제출하세요."
+    },
+    {
+      "label": "Confirmation",
+      "title": "확인서 출력",
+      "body": "최종 제출 후 확인서를 출력해 가정에서 확인합니다."
+    },
+    {
+      "label": "Subject Guides",
+      "title": "과목 안내 자료",
+      "body": "낯선 과목은 상세 화면의 공식 안내 자료를 확인하세요."
+    }
+  ],
+  "steps": [
+    {
+      "title": "2차 제출 내용 확인",
+      "range": "로그인 직후",
+      "body": "불러온 진로와 선택 과목이 맞는지 확인합니다."
+    },
+    {
+      "title": "3차 최종 제출",
+      "range": "9/4 ~ 9/8",
+      "body": "필요한 부분을 수정하고 최종 제출합니다."
+    },
+    {
+      "title": "가정통신문 제출",
+      "range": "3차 종료 후",
+      "body": "최종 확인서에 학부모님 서명을 받아 담임 선생님께 제출합니다."
+    }
+  ],
+  "footerNote": "3차 조사가 끝나면 더 이상 변경할 수 없습니다. 제출 전 과목과 학점을 다시 확인하세요."
+}
