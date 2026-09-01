@@ -22,7 +22,7 @@ const HM_SELECTION = Object.freeze({
   passwordMinLength: Number('8') || 8,
   forceChangeOnFirstLogin: 'true' === 'true',
   finalRound: Math.max(1, Math.min(3, Number('3') || 1)),
-  studentHeaders: ['student_id', 'email', 'name', 'grade', 'entry_year', 'initial_password', 'active', 'login_id'],
+  studentHeaders: ['student_id', 'email', 'name', 'grade', 'entry_year', 'initial_password', 'active', 'login_id', 'completed_subject_ids'],
   teacherHeaders: ['email', 'name', 'active'],
   accountHeaders: ['student_id', 'salt', 'password_hash', 'must_change', 'updated_at', 'login_id'],
   sessionHeaders: ['token_hash', 'identity_key', 'student_id', 'email', 'role', 'expires_at', 'created_at'],
@@ -438,6 +438,7 @@ function identityFromStudent_(student, email) {
     entryYear: integerIn_(student.entry_year, 2000, 2200, '입학연도'),
     role: 'student',
     isTest: false,
+    completedSubjectIds: parseArray_(student.completed_subject_ids).map(String).filter(Boolean),
   };
 }
 
@@ -461,6 +462,7 @@ function issueAuth_(identity, mustChangePassword, picture) {
     identityKey: identity.identityKey,
     grade: identity.grade,
     isTest: identity.isTest,
+    completedSubjectIds: identity.completedSubjectIds || [],
     mustChangePassword: mustChangePassword === true,
     sessionToken: token,
     exp: Math.floor(expires.getTime() / 1000),

@@ -2,7 +2,7 @@
   "rules": [
     {
       "kind": "classify",
-      "groupId": "g2-탐구",
+      "groupId": "g2-s1-탐구",
       "families": {
         "sci": {
           "pools": [

@@ -1,2 +1,2 @@
-student_id,email,name,grade,entry_year,initial_password,active,login_id
-10101,student@hanmin.hs.kr,홍길동,1,2026,임시비밀번호를직접입력,TRUE,teacher-A001
+student_id,email,name,grade,entry_year,initial_password,active,login_id,completed_subject_ids
+10101,student@hanmin.hs.kr,홍길동,1,2026,임시비밀번호를직접입력,TRUE,teacher-A001,[]
