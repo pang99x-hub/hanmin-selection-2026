@@ -30191,6 +30191,7 @@
         "핵심": [
           "subj-g3-s1-독서와_작문-2022",
           "g2-fixed-kor-munhak",
+          "cross-2026-g2-s2-예술-미술-음악",
           "g2-fixed-kor-hwabeop",
           "g2-explore-social-culture",
           "g2-basic-eng-dokhaejagmun",
@@ -30278,6 +30279,7 @@
               "university": "전주대",
               "department": "산업디자인학과",
               "core": [
+                "미술",
                 "진로와 직업"
               ],
               "recommended": [],
@@ -30426,7 +30428,8 @@
               "university": "강원대\n(삼척·도계)",
               "department": "생활조형디자인학과",
               "core": [
-                "영어 독해와 작문"
+                "영어 독해와 작문",
+                "미술"
               ],
               "recommended": [],
               "officialCore": [
@@ -30628,7 +30631,8 @@
               "core": [
                 "화법과 언어",
                 "독서와 작문",
-                "문학"
+                "문학",
+                "미술"
               ],
               "recommended": [],
               "officialCore": [
@@ -30684,7 +30688,8 @@
           "core": [
             "화법과 언어",
             "독서와 작문",
-            "문학"
+            "문학",
+            "미술"
           ],
           "recommended": []
         },
@@ -30692,7 +30697,8 @@
           "university": "강원대\n(삼척·도계)",
           "field": "디자인스포츠대학 생활조형디자인학과",
           "core": [
-            "영어 독해와 작문"
+            "영어 독해와 작문",
+            "미술"
           ],
           "recommended": []
         },
@@ -30719,6 +30725,7 @@
           "university": "전주대",
           "field": "문화융합대학 산업디자인학과",
           "core": [
+            "미술",
             "진로와 직업"
           ],
           "recommended": []
@@ -30740,6 +30747,10 @@
         },
         {
           "subject": "문학",
+          "universities": 2
+        },
+        {
+          "subject": "미술",
           "universities": 2
         },
         {
