@@ -1690,6 +1690,42 @@
       }
     },
     {
+      "id": "subj-g3-s1-고급_지구과학-2022",
+      "name": "고급 지구과학",
+      "credits": 5,
+      "category": "진로선택",
+      "grading": "5등급+A~E",
+      "gradingType": "relative+absolute",
+      "semester": "3-1",
+      "grade": 3,
+      "groupId": "g3-s1-고급 탐구",
+      "status": "AVAILABLE",
+      "isReadOnly": false,
+      "subjectArea": "교과(군) 간 선택",
+      "tags": [
+        "#지구우주필수",
+        "#지구심화",
+        "#대학수준"
+      ],
+      "shortDescription": "대학 수준의 지구과학을 선행 학습합니다. [지구시스템과학] + [행성우주과학] 이수 필수.",
+      "trackAffinity": [
+        "sci",
+        "info"
+      ],
+      "recommendedCareers": [
+        "earth-environment",
+        "architecture-civil",
+        "agriculture-marine"
+      ],
+      "fullDescription": {
+        "overview": "지구를 포함한 우주 공간에서 나타나는 현상에 대한 기본 개념을 바탕으로 지구과학적 탐구를 체험하고, 지구과학의 심화 개념과 탐구 능력을 활용해 실생활 문제해결 능력을 기르는 과학계열 과목입니다. 지구시스템과 우주에 대한 현상을 통합적으로 인식하고 객관적 탐구 태도를 갖춥니다.",
+        "units": "고체 지구 · 대기와 해양 · 우주",
+        "targetStudent": "지구환경·천문·대기 분야 심화 진학을 준비하는 학생",
+        "relatedCareers": "지구환경과학, 대기과학, 해양학, 천문우주학, 지질학 등",
+        "schoolHighlight": "지구와 우주 시스템을 관측·자료 분석·모델링으로 탐구하며 복합적인 자연 현상을 과학적으로 설명합니다."
+      }
+    },
+    {
       "id": "subj-g3-s1-고급_생명과학-2022",
       "name": "고급 생명과학",
       "credits": 5,
@@ -1724,42 +1760,6 @@
         "targetStudent": "의약·생명 계열 심화 진학을 준비하는 학생",
         "relatedCareers": "생명과학, 의학, 약학, 수의학, 생명공학 등",
         "schoolHighlight": "생명 현상을 분자·세포·개체 수준에서 연결하고 실험 자료 해석과 과학적 논증을 심화합니다."
-      }
-    },
-    {
-      "id": "subj-g3-s1-고급_지구과학-2022",
-      "name": "고급 지구과학",
-      "credits": 5,
-      "category": "진로선택",
-      "grading": "5등급+A~E",
-      "gradingType": "relative+absolute",
-      "semester": "3-1",
-      "grade": 3,
-      "groupId": "g3-s1-고급 탐구",
-      "status": "AVAILABLE",
-      "isReadOnly": false,
-      "subjectArea": "교과(군) 간 선택",
-      "tags": [
-        "#지구우주필수",
-        "#지구심화",
-        "#대학수준"
-      ],
-      "shortDescription": "대학 수준의 지구과학을 선행 학습합니다. [지구시스템과학] + [행성우주과학] 이수 필수.",
-      "trackAffinity": [
-        "sci",
-        "info"
-      ],
-      "recommendedCareers": [
-        "earth-environment",
-        "architecture-civil",
-        "agriculture-marine"
-      ],
-      "fullDescription": {
-        "overview": "지구를 포함한 우주 공간에서 나타나는 현상에 대한 기본 개념을 바탕으로 지구과학적 탐구를 체험하고, 지구과학의 심화 개념과 탐구 능력을 활용해 실생활 문제해결 능력을 기르는 과학계열 과목입니다. 지구시스템과 우주에 대한 현상을 통합적으로 인식하고 객관적 탐구 태도를 갖춥니다.",
-        "units": "고체 지구 · 대기와 해양 · 우주",
-        "targetStudent": "지구환경·천문·대기 분야 심화 진학을 준비하는 학생",
-        "relatedCareers": "지구환경과학, 대기과학, 해양학, 천문우주학, 지질학 등",
-        "schoolHighlight": "지구와 우주 시스템을 관측·자료 분석·모델링으로 탐구하며 복합적인 자연 현상을 과학적으로 설명합니다."
       }
     },
     {

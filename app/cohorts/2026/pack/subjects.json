@@ -169,43 +169,6 @@
       }
     },
     {
-      "id": "g2-fixed-research",
-      "name": "창의융합과제연구",
-      "credits": 3,
-      "category": "학교지정",
-      "grading": "P/F",
-      "gradingType": "pass-fail",
-      "semester": "2-1",
-      "grade": 2,
-      "groupId": "g2-s1-fixed",
-      "status": "LOCKED",
-      "isReadOnly": true,
-      "subjectArea": "교양",
-      "tags": [
-        "#R&E파이프라인",
-        "#연구역량",
-        "#한민고특화"
-      ],
-      "shortDescription": "자기주도적 융합 연구를 통해 창의적 문제해결 역량을 개발합니다. 2학기 전공별 과제연구의 선행 과목입니다.",
-      "trackAffinity": [
-        "sci",
-        "info",
-        "hum"
-      ],
-      "recommendedCareers": [
-        "free-major-hum",
-        "free-major-sci",
-        "education"
-      ],
-      "fullDescription": {
-        "overview": "학생이 관심 있는 문제를 스스로 정하고 여러 교과의 지식과 방법을 융합해 연구하는 프로젝트형 과목입니다.",
-        "units": "주제 선정 · 연구 질문 구체화 · 선행 자료 조사 · 연구 방법 설계 · 자료 수집과 분석 · 보고서 작성과 발표",
-        "schoolHighlight": "한민고의 과제연구 과정에서 탐구 계획부터 결과 발표까지 한 흐름으로 완성합니다.",
-        "targetStudent": "관심 분야를 깊이 탐구하고 자기 주도 연구 경험을 쌓고 싶은 학생",
-        "relatedCareers": "인문·사회·자연·공학 전 계열, 연구직, 교육·정책·기획 분야"
-      }
-    },
-    {
       "id": "cross-2026-g2-s1-예술-음악-미술",
       "name": "음악",
       "credits": 3,
@@ -247,6 +210,43 @@
       },
       "pairWith": "cross-2026-g2-s2-예술-미술-음악",
       "pairName": "미술"
+    },
+    {
+      "id": "g2-fixed-research",
+      "name": "창의융합과제연구",
+      "credits": 3,
+      "category": "학교지정",
+      "grading": "P/F",
+      "gradingType": "pass-fail",
+      "semester": "2-1",
+      "grade": 2,
+      "groupId": "g2-s1-fixed",
+      "status": "LOCKED",
+      "isReadOnly": true,
+      "subjectArea": "교양",
+      "tags": [
+        "#R&E파이프라인",
+        "#연구역량",
+        "#한민고특화"
+      ],
+      "shortDescription": "자기주도적 융합 연구를 통해 창의적 문제해결 역량을 개발합니다. 2학기 전공별 과제연구의 선행 과목입니다.",
+      "trackAffinity": [
+        "sci",
+        "info",
+        "hum"
+      ],
+      "recommendedCareers": [
+        "free-major-hum",
+        "free-major-sci",
+        "education"
+      ],
+      "fullDescription": {
+        "overview": "학생이 관심 있는 문제를 스스로 정하고 여러 교과의 지식과 방법을 융합해 연구하는 프로젝트형 과목입니다.",
+        "units": "주제 선정 · 연구 질문 구체화 · 선행 자료 조사 · 연구 방법 설계 · 자료 수집과 분석 · 보고서 작성과 발표",
+        "schoolHighlight": "한민고의 과제연구 과정에서 탐구 계획부터 결과 발표까지 한 흐름으로 완성합니다.",
+        "targetStudent": "관심 분야를 깊이 탐구하고 자기 주도 연구 경험을 쌓고 싶은 학생",
+        "relatedCareers": "인문·사회·자연·공학 전 계열, 연구직, 교육·정책·기획 분야"
+      }
     },
     {
       "id": "g2-basic-kor-dokseo",

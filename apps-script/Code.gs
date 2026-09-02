@@ -22,19 +22,54 @@ const HM_SELECTION = Object.freeze({
   passwordMinLength: Number('8') || 8,
   forceChangeOnFirstLogin: 'true' === 'true',
   finalRound: Math.max(1, Math.min(3, Number('3') || 1)),
-  studentHeaders: ['student_id', 'email', 'name', 'grade', 'entry_year', 'initial_password', 'active', 'login_id', 'completed_subject_ids'],
+  // gender 는 **끝에** 붙인다 — 가운데 끼우면 이미 쓰고 있는 시트의 열 순서와 어긋나
+  // ensureSheet_ 가 «제목 순서가 다르다»로 멈춘다. 읽기는 제목으로 하므로 자리는 무관하다.
+  studentHeaders: ['student_id', 'email', 'name', 'grade', 'entry_year', 'initial_password', 'active', 'login_id', 'completed_subject_ids', 'gender'],
   teacherHeaders: ['email', 'name', 'active'],
   accountHeaders: ['student_id', 'salt', 'password_hash', 'must_change', 'updated_at', 'login_id'],
   sessionHeaders: ['token_hash', 'identity_key', 'student_id', 'email', 'role', 'expires_at', 'created_at'],
   loginAttemptHeaders: ['login_key', 'window_started_at', 'failures', 'blocked_until', 'updated_at'],
-  submissionHeaders: [
-    'timestamp', 'updated_at', 'email', 'role', 'is_test',
-    'entry_year', 'student_no', 'current_grade', 'target_grade', 'round',
+  /*
+   * 제출내역 열 순서 — 사람이 읽는 순서다.
+   *
+   *   학년·반·번호·학번·이름·이메일  →  선택군들  →  나머지(기록·기술)
+   *
+   * 선택과목이 이 표의 핵심인데 예전에는 기술 열 뒤 오른쪽 끝에 붙어 있어, 담당자가
+   * 한참 스크롤해야 보였다. 앞쪽은 «누구인가», 가운데가 «무엇을 골랐나», 뒤는 기계용이다.
+   */
+  submissionHeadHeaders: ['학년', '반', '번호', '학번', '이름', '이메일', '성별'],
+  submissionTailHeaders: [
+    'timestamp', 'updated_at', 'role', 'is_test',
+    'entry_year', 'current_grade', 'target_grade', 'round',
     'track_major', 'track_family', 'track_major_id', 'track_family_id',
     'subjects_by_group', 'locked_by_track', 'credits',
     'user_agent', 'app_version', 'payload_json', 'identity_key'
   ],
 });
+
+/** 선택군 열이 없을 때의 기본 열 묶음 — 머리 + 꼬리. */
+function submissionHeaders_() {
+  return HM_SELECTION.submissionHeadHeaders.concat(HM_SELECTION.submissionTailHeaders);
+}
+
+/** 성별 표기 — 원장은 M/F 로 두고, 표에는 남/여로 적는다. 값이 없으면 빈칸. */
+function genderLabel_(value) {
+  const text = String(value || '').trim().toUpperCase();
+  if (text === 'M' || text === '남' || text === '남자') return '남';
+  if (text === 'F' || text === '여' || text === '여자') return '여';
+  return '';
+}
+
+/** 학번에서 학년·반·번호를 뗀다. 20101 → 2학년 1반 1번. 형식이 다르면 빈칸으로 둔다. */
+function splitStudentNo_(studentNo) {
+  const text = String(studentNo || '').trim();
+  if (!/^\d{5}$/.test(text)) return { grade: '', classNo: '', number: '' };
+  return {
+    grade: Number(text.slice(0, 1)),
+    classNo: Number(text.slice(1, 3)),
+    number: Number(text.slice(3, 5)),
+  };
+}
 
 function onOpen() {
   SpreadsheetApp.getUi()
@@ -42,6 +77,7 @@ function onOpen() {
     .addItem('처음 설정', 'setupSelectionApp')
     .addItem('학생 명단의 계정 만들기', 'setupStudentAccounts')
     .addItem('이전 차수 제출만 가져오기', 'importPreviousRoundSubmissions')
+    .addItem('제출 자리 미리 깔기', 'prefillSubmissionSlots')
     .addItem('현재 차수 확인', 'showSelectionAppStatus')
     .addToUi();
 }
@@ -85,7 +121,7 @@ function setupSelectionApp(spreadsheetId) {
   ];
   const config = ensureSheet_(spreadsheet, HM_SELECTION.configSheet, ['key', 'value', '설명']);
   upsertConfigRows_(config, configRows);
-  ensureSheet_(spreadsheet, HM_SELECTION.submissionsSheet, HM_SELECTION.submissionHeaders);
+  ensureSubmissionsSheet_(spreadsheet);
   ensureSheet_(spreadsheet, HM_SELECTION.overridesSheet, ['email', 'grade', '메모']);
   const students = ensureSheet_(spreadsheet, HM_SELECTION.studentsSheet, HM_SELECTION.studentHeaders);
   students.getRange('A:A').setNumberFormat('@');
@@ -209,7 +245,7 @@ function importPreviousRoundSubmissions() {
   const sourceValues = sourceSheet.getDataRange().getValues();
   if (sourceValues.length < 2) throw new Error('기존 시트에 가져올 제출 행이 없습니다.');
   const sourceHeaders = sourceValues[0].map(function (value) { return String(value || '').trim(); });
-  ['student_no', 'round', 'target_grade'].forEach(function (header) {
+  ['학번', 'round', 'target_grade'].forEach(function (header) {
     if (sourceHeaders.indexOf(header) < 0) throw new Error('기존 제출 탭에 ' + header + ' 열이 없습니다.');
   });
 
@@ -237,13 +273,13 @@ function importPreviousRoundSubmissions() {
     const candidateTime = new Date(String(sourceRow.updated_at || sourceRow.timestamp || 0)).getTime() || 0;
     if (newestByKey[key] && newestByKey[key].candidateTime > candidateTime) return;
     const normalized = {};
-    HM_SELECTION.submissionHeaders.forEach(function (header) { normalized[header] = sourceRow[header] == null ? '' : sourceRow[header]; });
+    submissionHeaders_().forEach(function (header) { normalized[header] = sourceRow[header] == null ? '' : sourceRow[header]; });
     normalized.identity_key = 'student:' + studentId;
     normalized.email = String(student.email || '').trim().toLowerCase();
     normalized.role = 'student';
     normalized.is_test = false;
     normalized.entry_year = student.entry_year;
-    normalized.student_no = studentId;
+    normalized['학번'] = studentId;
     normalized.current_grade = student.grade;
     normalized.target_grade = targetGrade;
     normalized.round = previousRound;
@@ -259,18 +295,18 @@ function importPreviousRoundSubmissions() {
   let created = 0;
   let updated = 0;
   try {
-    const target = ensureSheet_(destination, HM_SELECTION.submissionsSheet, HM_SELECTION.submissionHeaders);
+    const target = ensureSubmissionsSheet_(destination);
     const targetValues = target.getDataRange().getValues();
     const rowByKey = {};
     for (let i = 1; i < targetValues.length; i += 1) {
-      const row = objectFromRow_(HM_SELECTION.submissionHeaders, targetValues[i]);
+      const row = objectFromRow_(submissionHeaders_(), targetValues[i]);
       if (bool_(row.is_test) || String(row.role || 'student') === 'teacher') continue;
-      const key = String(row.student_no || '') + '|' + Number(row.target_grade) + '|' + Number(row.round);
+      const key = String(row['학번'] || '') + '|' + Number(row.target_grade) + '|' + Number(row.round);
       rowByKey[key] = i + 1;
     }
     candidates.forEach(function (row) {
-      const key = String(row.student_no) + '|' + Number(row.target_grade) + '|' + Number(row.round);
-      const values = HM_SELECTION.submissionHeaders.map(function (header) { return row[header]; });
+      const key = String(row['학번']) + '|' + Number(row.target_grade) + '|' + Number(row.round);
+      const values = submissionHeaders_().map(function (header) { return row[header]; });
       if (rowByKey[key]) {
         target.getRange(rowByKey[key], 1, 1, values.length).setValues([values]);
         updated += 1;
@@ -737,15 +773,22 @@ function saveSubmission_(payload) {
   const lockedByTrack = normalizedStringList_(payload.lockedByTrack, 60);
   const credits = payload.credits && typeof payload.credits === 'object' ? payload.credits : {};
   const now = new Date().toISOString();
+  const seat = splitStudentNo_(role === 'student' ? student.student_id : payload.studentNo);
   const rowObject = {
+    // 앞머리 — 사람이 표를 읽을 때 첫눈에 필요한 것들. 학번에서 학년·반·번호를 뗀다.
+    '학년': seat.grade,
+    '반': seat.classNo,
+    '번호': seat.number,
+    '학번': role === 'student' ? safeText_(student.student_id) : safeText_(payload.studentNo),
+    '이름': role === 'student' ? safeText_(student.name) : safeText_(session.email),
+    '이메일': String(session.email || ''),
+    '성별': role === 'student' ? genderLabel_(student.gender) : '',
     timestamp: now,
     updated_at: now,
     identity_key: String(session.identity_key),
-    email: String(session.email || ''),
     role: role,
     is_test: isTest,
     entry_year: role === 'student' ? safeText_(student.entry_year) : safeText_(payload.entryYear),
-    student_no: role === 'student' ? safeText_(student.student_id) : safeText_(payload.studentNo),
     current_grade: currentGrade,
     target_grade: targetGrade,
     round: round,
@@ -786,7 +829,7 @@ function saveSubmission_(payload) {
    * 색인은 캐시에 둔다. 캐시가 비면 한 번만 만들고 다시 담는다.
    */
   {
-    const sheet = ensureSheet_(spreadsheet_(), HM_SELECTION.submissionsSheet, HM_SELECTION.submissionHeaders);
+    const sheet = ensureSubmissionsSheet_(spreadsheet_());
     const slotKey = submissionSlotKey_(session.identity_key, targetGrade, round, isTest);
     let rowNumber = submissionRowFor_(sheet, slotKey);
     const layout = ensureGroupColumns_(sheet, groupColumns_(payload, subjectsByGroup));
@@ -821,15 +864,6 @@ function saveSubmission_(payload) {
         lock.releaseLock();
       }
     }
-    writeGroupTabs_(spreadsheet_(), layout, subjectsByGroup, {
-      identityKey: String(session.identity_key),
-      round: round,
-      isTest: isTest,
-      studentNo: rowObject.student_no,
-      name: role === 'student' ? safeText_(student.name) : safeText_(session.email),
-      family: rowObject.track_family,
-      at: now,
-    });
     return {
       ok: true,
       round: round,
@@ -840,6 +874,79 @@ function saveSubmission_(payload) {
       finalRound: status.finalRound,
     };
   }
+}
+
+/**
+ * 제출 자리 미리 깔기 — 조사를 열기 전에 학생마다 줄을 하나씩 만들어 둔다.
+ *
+ * 제출은 «자기 줄만 덮어쓰기»라 잠금이 필요 없다. 다만 자리가 아직 없는 학생은 줄을
+ * 만들어야 하고, 그 순간에는 잠금을 잡는다. 조사가 열리는 첫 몇 분에 350명이 한꺼번에
+ * 몰리면 그 «첫 줄 만들기»가 전부 그때 일어나 다시 줄을 선다.
+ *
+ * 미리 깔아 두면 모든 제출이 처음부터 덮어쓰기다. 조사 시작 전에 한 번 실행한다.
+ *
+ * 깔아 둔 줄은 timestamp 가 비어 있고, submissionObjects_ 가 그것을 걸러낸다 —
+ * 인원 집계나 현황에 «아직 안 낸 학생»이 응답자로 섞이지 않는다.
+ *
+ * 명단이 바뀌면(전입 등) 다시 실행하면 된다. 이미 있는 자리는 건드리지 않는다.
+ */
+function prefillSubmissionSlots() {
+  const spreadsheet = spreadsheet_();
+  const status = scheduleStatus_();
+  const round = status.currentRound || status.finalRound;
+  const students = ensureSheet_(spreadsheet, HM_SELECTION.studentsSheet, HM_SELECTION.studentHeaders);
+  const sheet = ensureSubmissionsSheet_(spreadsheet);
+  const index = submissionSlotIndex_(sheet, true);
+
+  const rows = students.getDataRange().getValues();
+  const headers = submissionHeaders_();
+  const appended = [];
+  let skipped = 0;
+  let inactive = 0;
+  for (let i = 1; i < rows.length; i += 1) {
+    const student = objectFromRow_(HM_SELECTION.studentHeaders, rows[i]);
+    const studentId = normalizedStudentId_(student.student_id);
+    if (!studentId) continue;
+    if (!bool_(student.active)) { inactive += 1; continue; }
+    const grade = Number(student.grade);
+    if (!(grade >= 1 && grade <= 2)) { inactive += 1; continue; }
+    const targetGrade = grade + 1;
+    const identityKey = 'student:' + studentId;
+    if (index[submissionSlotKey_(identityKey, targetGrade, round, false)]) { skipped += 1; continue; }
+    const row = headers.map(function () { return ''; });
+    const put = function (name, value) { row[headers.indexOf(name)] = value; };
+    // timestamp 는 비워 둔다 — «자리는 있으나 아직 내지 않았다»는 표시다.
+    put('identity_key', identityKey);
+    put('이메일', String(student.email || '').trim().toLowerCase());
+    put('성별', genderLabel_(student.gender));
+    put('이름', String(student.name || '').trim());
+    const seat = splitStudentNo_(studentId);
+    put('학년', seat.grade); put('반', seat.classNo); put('번호', seat.number);
+    put('role', 'student');
+    put('is_test', false);
+    put('entry_year', student.entry_year);
+    put('학번', studentId);
+    put('current_grade', grade);
+    put('target_grade', targetGrade);
+    put('round', round);
+    appended.push(row);
+  }
+
+  if (appended.length) {
+    sheet.getRange(sheet.getLastRow() + 1, 1, appended.length, headers.length).setValues(appended);
+    SpreadsheetApp.flush();
+    submissionSlotIndex_(sheet, true);   // 색인을 새 줄까지 포함해 다시 만든다
+  }
+  const summary = round + '차 · 새 자리 ' + appended.length
+    + ' · 이미 있던 자리 ' + skipped
+    + ' · 제외(비활성·학년 밖) ' + inactive;
+  Logger.log(summary);
+  try {
+    SpreadsheetApp.getUi().alert('제출 자리 미리 깔기 완료', summary, SpreadsheetApp.getUi().ButtonSet.OK);
+  } catch (err) {
+    // 편집기 실행 — 실행 로그에서 결과를 본다.
+  }
+  return summary;
 }
 
 /*
@@ -855,72 +962,6 @@ function saveSubmission_(payload) {
 var HM_SLOT_CACHE_KEY = 'hm_submission_rows_v1';
 var HM_SLOT_CACHE_TTL = 21600;   // 6시간 — CacheService 최대치
 
-/* 선택군 탭 — 담당자가 이동수업을 짤 때 실제로 여는 표. */
-var HM_GROUP_TAB_HEADERS = ['학번', '이름', '계열', '선택과목', '제출시각', '차수', '키'];
-var HM_GROUP_TAB_CACHE = 'hm_group_rows_v1';
-
-/**
- * 선택군 탭에 한 줄 써 넣는다 — «3학년 1학기 수학선택» 처럼 탭 하나가 선택군 하나다.
- *
- * 제출내역 탭은 그대로 둔다(진실원천). 이쪽은 거기서 파생되는 «보는 표»다. 담당자가
- * 이동수업을 짜려면 «이 선택군을 누가 골랐나»가 한 화면에 있어야 하는데, 제출내역은
- * 한 학생이 한 줄이라 그걸 못 준다.
- *
- * 같은 학생이 다시 제출하면 자기 줄을 덮는다. 열쇠는 identity_key + 차수 + 시험여부다.
- * 마지막 «키» 열은 그 열쇠를 담아 두는 자리이고 숨긴다 — 사람이 볼 것은 아니지만,
- * 캐시가 비었을 때 줄을 다시 찾으려면 시트에 남아 있어야 한다.
- *
- * 고른 과목이 없으면 줄을 만들지 않는다. 다만 이미 있던 줄은 비워 둔다 — 지난 제출에서
- * 골랐다가 뺀 것을 그대로 두면 «아직 듣는 학생»으로 잘못 세어진다.
- */
-function writeGroupTabs_(spreadsheet, layout, subjectsByGroup, meta) {
-  const cache = CacheService.getScriptCache();
-  Object.keys(subjectsByGroup).forEach(function (groupId) {
-    const title = layout.columnById[groupId];
-    if (!title) return;
-    const picked = subjectsByGroup[groupId];
-    const text = Array.isArray(picked) ? picked.join(';') : '';
-    const sheet = ensureSheet_(spreadsheet, title, HM_GROUP_TAB_HEADERS);
-    const key = meta.identityKey + '|' + meta.round + '|' + (meta.isTest ? 'T' : 'R');
-    const cacheKey = HM_GROUP_TAB_CACHE + '|' + title;
-
-    let rowNumber = 0;
-    const cached = cache.get(cacheKey);
-    if (cached) {
-      try { rowNumber = (JSON.parse(cached) || {})[key] || 0; } catch (err) { rowNumber = 0; }
-    }
-    if (!rowNumber) {
-      const index = {};
-      const last = sheet.getLastRow();
-      if (last > 1) {
-        const keys = sheet.getRange(2, HM_GROUP_TAB_HEADERS.length, last - 1, 1).getValues();
-        for (let i = 0; i < keys.length; i += 1) {
-          const cell = String(keys[i][0] || '');
-          if (cell) index[cell] = i + 2;
-        }
-      }
-      rowNumber = index[key] || 0;
-      try { cache.put(cacheKey, JSON.stringify(index), HM_SLOT_CACHE_TTL); } catch (err) { /* 무시 */ }
-    }
-    if (!rowNumber && !text) return;
-
-    const values = [[meta.studentNo, meta.name, meta.family, text, meta.at, meta.round, key]];
-    if (rowNumber) {
-      sheet.getRange(rowNumber, 1, 1, HM_GROUP_TAB_HEADERS.length).setValues(values);
-      return;
-    }
-    sheet.appendRow(values[0]);
-    const appended = sheet.getLastRow();
-    sheet.hideColumns(HM_GROUP_TAB_HEADERS.length);
-    try {
-      const prev = cache.get(cacheKey);
-      const index = prev ? (JSON.parse(prev) || {}) : {};
-      index[key] = appended;
-      cache.put(cacheKey, JSON.stringify(index), HM_SLOT_CACHE_TTL);
-    } catch (err) { /* 무시 */ }
-  });
-}
-
 /** 앱이 보낸 열 배치표를 고른다. 없으면 제출에 담긴 선택군 ID 로 대신한다. */
 function groupColumns_(payload, subjectsByGroup) {
   const sent = payload && Array.isArray(payload.groupColumns) ? payload.groupColumns : null;
@@ -933,40 +974,108 @@ function groupColumns_(payload, subjectsByGroup) {
 }
 
 /**
- * 선택군 열 확보 — 제출내역 시트에 «선택군 하나 = 열 하나»를 만든다.
+ * 열 너비 — 기본값은 한 화면에 몇 칸 못 담는다.
  *
- * 예전에는 선택 결과를 subjects_by_group 한 칸에 JSON 으로 넣었다. 기계는 읽지만
- * 사람은 못 쓴다 — 담당자가 시트에서 «국영수 선택에 기하 고른 학생»을 거를 수 없다.
- * 그래서 고정 열 뒤에 선택군 열을 덧붙이고 과목명을 «;» 로 이어 쓴다. JSON 칸도
- * 그대로 둔다: 학생이 다시 들어왔을 때 이전 제출을 복원하는 데 그 값을 쓴다.
+ * 학년·반·번호는 한 자리 숫자라 아주 좁혀도 되고, 선택군은 과목명이 두어 개 들어가므로
+ * 조금 넓힌다. 표는 훑어보는 것이지 한 칸을 읽는 것이 아니다.
+ */
+function fitSubmissionColumns_(sheet, headers) {
+  const narrow = { '학년': 44, '반': 40, '번호': 48, '성별': 48 };
+  const medium = { '학번': 64, '이름': 76, '이메일': 150 };
+  for (let i = 0; i < headers.length; i += 1) {
+    const name = headers[i];
+    let width = 0;
+    if (name in narrow) width = narrow[name];
+    else if (name in medium) width = medium[name];
+    else if (HM_SELECTION.submissionTailHeaders.indexOf(name) === -1) width = 130;  // 선택군
+    if (!width) continue;
+    try { sheet.setColumnWidth(i + 1, width); } catch (err) { /* 무시 */ }
+  }
+}
+
+/**
+ * 기계용 열을 접는다 — 담당자가 보는 것은 «누가 무엇을 골랐나»뿐이다.
  *
- * 열 제목과 차례는 앱이 보낸 배치표(groupColumns)를 그대로 따른다. 이 스크립트는
- * 팩을 모르므로 «어느 학기의 무슨 선택군인지»를 알 길이 없다 — 아는 쪽이 정해서
- * 보내야 «3-1 수학선택»처럼 학기 순으로 정리된 표가 나온다.
+ * payload_json 한 칸이 화면 몇 배 너비를 차지해서, 선택군 열이 오른쪽 한참 밖으로
+ * 밀려 있었다. 지우지는 않는다 — 복원·재계산이 그 값을 쓴다. 접기만 한다.
+ */
+function hideTechnicalColumns_(sheet, headers) {
+  const hidden = [
+    'subjects_by_group', 'locked_by_track', 'credits', 'user_agent', 'app_version',
+    'payload_json', 'identity_key', 'track_major_id', 'track_family_id', 'updated_at',
+  ];
+  for (let i = 0; i < headers.length; i += 1) {
+    if (hidden.indexOf(headers[i]) === -1) continue;
+    try { sheet.hideColumns(i + 1); } catch (err) { /* 이미 접혀 있으면 그만 */ }
+  }
+}
+
+/**
+ * 제출내역 열 배치 — 머리(누구인가) + 선택군(무엇을 골랐나) + 꼬리(기록·기술).
  *
- * 배치표가 없는 옛 앱에서 들어오면 ID 를 제목으로 쓴다(동작은 유지, 모양만 투박).
+ * 선택군 열은 학교마다·학년마다 다르고 학기별로 쪼개지기도 해서 미리 박을 수 없다.
+ * 그래서 실제로 들어온 배치표를 보고 필요한 만큼 만들되, **꼬리 앞에** 끼워 넣는다 —
+ * 끝에 붙이면 payload_json 같은 넓은 열 뒤로 밀려 담당자가 못 본다.
+ *
+ * 열이 늘거나 순서가 달라졌으면 표를 통째로 다시 그린다. 값은 열 제목으로 옮기므로
+ * 이미 들어온 제출이 어긋나지 않는다.
  *
  * @param columns [{ id, label }] · @return { headers, columnById }
  */
 function ensureGroupColumns_(sheet, columns) {
-  const lastColumn = Math.max(sheet.getLastColumn(), HM_SELECTION.submissionHeaders.length);
-  const headers = sheet.getRange(1, 1, 1, lastColumn).getValues()[0]
+  const head = HM_SELECTION.submissionHeadHeaders;
+  const tail = HM_SELECTION.submissionTailHeaders;
+  const lastColumn = Math.max(sheet.getLastColumn(), head.length + tail.length);
+  const actual = sheet.getRange(1, 1, 1, lastColumn).getValues()[0]
     .map(function (cell) { return String(cell || ''); });
+
+  // 지금 표에 이미 있는 선택군 열 — 머리·꼬리에 없는 제목이 곧 선택군이다.
+  const known = {};
+  head.concat(tail).forEach(function (name) { known[name] = true; });
+  const existingGroups = actual.filter(function (name) { return name && !known[name]; });
+
   const columnById = {};
-  const missing = [];
+  const wanted = existingGroups.slice();
   for (let i = 0; i < columns.length; i += 1) {
     const id = String(columns[i].id || '');
     if (!id) continue;
     const title = String(columns[i].label || id);
     columnById[id] = title;
-    if (headers.indexOf(title) === -1 && missing.indexOf(title) === -1) missing.push(title);
+    if (wanted.indexOf(title) === -1) wanted.push(title);
   }
-  if (missing.length) {
-    sheet.getRange(1, headers.length + 1, 1, missing.length).setValues([missing]).setFontWeight('bold');
-    for (let i = 0; i < missing.length; i += 1) headers.push(missing[i]);
-  }
-  return { headers: headers, columnById: columnById };
+  const desired = head.concat(wanted, tail);
+
+  const same = desired.length === actual.length && desired.every(function (name, i) { return name === actual[i]; });
+  if (!same) rebuildSubmissionSheet_(sheet, actual, desired);
+  return { headers: desired, columnById: columnById };
 }
+
+/**
+ * 표를 새 열 순서로 다시 그린다 — 값은 **열 제목으로** 옮긴다.
+ *
+ * 자리로 옮기면 열이 하나 끼어드는 순간 전부 한 칸씩 밀린다. 제목으로 옮기면 순서를
+ * 어떻게 바꾸든 같은 뜻의 칸에 같은 값이 남는다. 옮길 곳이 없어진 열의 값은 버린다.
+ */
+function rebuildSubmissionSheet_(sheet, actual, desired) {
+  const lastRow = sheet.getLastRow();
+  const rows = lastRow > 1 ? sheet.getRange(2, 1, lastRow - 1, actual.length).getValues() : [];
+  const at = {};
+  actual.forEach(function (name, i) { if (name && !(name in at)) at[name] = i; });
+  const moved = rows.map(function (row) {
+    return desired.map(function (name) {
+      const from = at[name];
+      return from === undefined ? '' : row[from];
+    });
+  });
+  sheet.clear();
+  sheet.getRange(1, 1, 1, desired.length).setValues([desired]).setFontWeight('bold');
+  if (moved.length) sheet.getRange(2, 1, moved.length, desired.length).setValues(moved);
+  sheet.setFrozenRows(1);
+  hideTechnicalColumns_(sheet, desired);
+  fitSubmissionColumns_(sheet, desired);
+  invalidateSubmissionSlots_();   // 줄 번호가 그대로여도 색인을 새로 만들게 둔다
+}
+
 
 
 function submissionSlotKey_(identityKey, targetGrade, round, isTest) {
@@ -989,10 +1098,10 @@ function submissionSlotIndex_(sheet, forceRebuild) {
   const index = {};
   const lastRow = sheet.getLastRow();
   if (lastRow > 1) {
-    const rows = sheet.getRange(2, 1, lastRow - 1, HM_SELECTION.submissionHeaders.length).getValues();
+    const rows = sheet.getRange(2, 1, lastRow - 1, submissionHeaders_().length).getValues();
     for (let i = 0; i < rows.length; i += 1) {
-      const row = objectFromRow_(HM_SELECTION.submissionHeaders, rows[i]);
-      const identity = String(row.identity_key || row.email || '');
+      const row = objectFromRow_(submissionHeaders_(), rows[i]);
+      const identity = String(row.identity_key || row['이메일'] || '');
       if (!identity) continue;
       const key = submissionSlotKey_(identity, row.target_grade, row.round, bool_(row.is_test));
       // 같은 열쇠가 두 줄에 있으면 앞줄을 쓴다 — 옛 데이터에 중복이 있어도 자리가 흔들리지 않게.
@@ -1025,7 +1134,7 @@ function invalidateSubmissionSlots_() {
 function latestSubmissionByIdentity_(identityKey, targetGradeValue, includeTests) {
   const targetGrade = targetGradeValue ? integerIn_(targetGradeValue, 2, 3, '대상 학년') : null;
   const rows = submissionObjects_().filter(function (row) {
-    return String(row.identity_key || row.email).toLowerCase() === String(identityKey).toLowerCase()
+    return String(row.identity_key || row['이메일']).toLowerCase() === String(identityKey).toLowerCase()
       && (!targetGrade || Number(row.target_grade) === targetGrade)
       && (includeTests || !bool_(row.is_test));
   }).sort(function (a, b) {
@@ -1039,7 +1148,7 @@ function latestSubmission_(emailValue, targetGradeValue) {
   const email = normalizedEmail_(emailValue);
   const targetGrade = targetGradeValue ? integerIn_(targetGradeValue, 2, 3, '대상 학년') : null;
   const rows = submissionObjects_().filter(function (row) {
-    return String(row.email).toLowerCase() === email
+    return String(row['이메일']).toLowerCase() === email
       && (!targetGrade || Number(row.target_grade) === targetGrade)
       && !bool_(row.is_test);
   }).sort(function (a, b) {
@@ -1128,6 +1237,26 @@ function spreadsheet_() {
   return SpreadsheetApp.openById(id);
 }
 
+/**
+ * 제출내역 시트 — 제목 «순서»는 검사하지 않는다.
+ *
+ * 다른 시트는 순서가 어긋나면 멈추는 편이 안전하다. 사람이 손으로 열을 옮겼다면 그대로
+ * 쓰면 위험하기 때문이다. 그런데 제출내역만은 열이 스스로 늘고 자리가 바뀐다 —
+ * 선택군이 생길 때마다 가운데 끼어들고, 배치가 달라지면 표를 다시 그린다.
+ * 그 재배치가 ensureGroupColumns_ 에서 일어나므로, 여기서 먼저 막으면 고칠 기회가 없다.
+ */
+function ensureSubmissionsSheet_(spreadsheet) {
+  const name = HM_SELECTION.submissionsSheet;
+  let sheet = spreadsheet.getSheetByName(name);
+  if (!sheet) sheet = spreadsheet.insertSheet(name);
+  if (sheet.getLastRow() === 0) {
+    const headers = submissionHeaders_();
+    sheet.getRange(1, 1, 1, headers.length).setValues([headers]).setFontWeight('bold');
+  }
+  sheet.setFrozenRows(1);
+  return sheet;
+}
+
 function ensureSheet_(spreadsheet, name, headers) {
   let sheet = spreadsheet.getSheetByName(name);
   if (!sheet) sheet = spreadsheet.insertSheet(name);
@@ -1163,10 +1292,18 @@ function upsertConfigRows_(sheet, rows) {
 }
 
 function submissionObjects_() {
-  const sheet = ensureSheet_(spreadsheet_(), HM_SELECTION.submissionsSheet, HM_SELECTION.submissionHeaders);
+  const sheet = ensureSubmissionsSheet_(spreadsheet_());
   const values = sheet.getDataRange().getValues();
-  return values.slice(1).filter(function (row) { return row.some(function (cell) { return cell !== ''; }); }).map(function (row) {
-    return objectFromRow_(HM_SELECTION.submissionHeaders, row);
+  /*
+   * timestamp 가 빈 줄은 «미리 깔아 둔 자리»다 — 아직 아무도 내지 않았다.
+   * 이 함수의 결과가 인원 집계·이전 제출 복원·현황 확인에 모두 쓰이므로, 여기서 한 번
+   * 걸러야 «제출 0명인데 응답자 350명»이 되지 않는다.
+   */
+  const timestampAt = submissionHeaders_().indexOf('timestamp');
+  return values.slice(1).filter(function (row) {
+    return String(row[timestampAt] || '') !== '';
+  }).map(function (row) {
+    return objectFromRow_(submissionHeaders_(), row);
   });
 }
 
