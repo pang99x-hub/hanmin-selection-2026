@@ -789,7 +789,13 @@ function saveSubmission_(payload) {
     const sheet = ensureSheet_(spreadsheet_(), HM_SELECTION.submissionsSheet, HM_SELECTION.submissionHeaders);
     const slotKey = submissionSlotKey_(session.identity_key, targetGrade, round, isTest);
     let rowNumber = submissionRowFor_(sheet, slotKey);
-    const values = HM_SELECTION.submissionHeaders.map(function (header) { return rowObject[header]; });
+    const headers = ensureGroupColumns_(sheet, Object.keys(subjectsByGroup));
+    const values = headers.map(function (header) {
+      if (Object.prototype.hasOwnProperty.call(rowObject, header)) return rowObject[header];
+      // 선택군 열 — 담당자가 시트에서 바로 읽고 거르도록 «과목명;과목명» 으로 편다.
+      const picked = subjectsByGroup[header];
+      return Array.isArray(picked) ? picked.join(';') : '';
+    });
     if (rowNumber) {
       sheet.getRange(rowNumber, 1, 1, values.length).setValues([values]);
     } else {
@@ -834,6 +840,34 @@ function saveSubmission_(payload) {
  */
 var HM_SLOT_CACHE_KEY = 'hm_submission_rows_v1';
 var HM_SLOT_CACHE_TTL = 21600;   // 6시간 — CacheService 최대치
+
+/**
+ * 선택군 열 확보 — 제출내역 시트에 «선택군 하나 = 열 하나»를 만든다.
+ *
+ * 예전에는 선택 결과를 subjects_by_group 한 칸에 JSON 으로 넣었다. 기계는 읽지만
+ * 사람은 못 쓴다 — 담당자가 시트에서 «국영수 선택에 기하 고른 학생»을 거를 수 없다.
+ * 그래서 고정 열 뒤에 선택군 열을 덧붙이고 과목명을 «;» 로 이어 쓴다. JSON 칸도
+ * 그대로 둔다: 학생이 다시 들어왔을 때 이전 제출을 복원하는 데 그 값을 쓴다.
+ *
+ * 열은 처음 보는 선택군이 나올 때마다 늘어난다. 학교마다·학년마다 선택군이 다르고
+ * 학기별로 쪼개지기도 해서, 미리 정해 둘 수가 없다.
+ *
+ * @return 첫 행 제목 배열(고정 열 + 선택군 열)
+ */
+function ensureGroupColumns_(sheet, groupIds) {
+  const lastColumn = Math.max(sheet.getLastColumn(), HM_SELECTION.submissionHeaders.length);
+  const headers = sheet.getRange(1, 1, 1, lastColumn).getValues()[0]
+    .map(function (cell) { return String(cell || ''); });
+  const missing = [];
+  for (let i = 0; i < groupIds.length; i += 1) {
+    const id = String(groupIds[i] || '');
+    if (!id) continue;
+    if (headers.indexOf(id) === -1 && missing.indexOf(id) === -1) missing.push(id);
+  }
+  if (!missing.length) return headers;
+  sheet.getRange(1, headers.length + 1, 1, missing.length).setValues([missing]).setFontWeight('bold');
+  return headers.concat(missing);
+}
 
 function submissionSlotKey_(identityKey, targetGrade, round, isTest) {
   return [
