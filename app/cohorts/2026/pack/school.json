@@ -37,13 +37,14 @@
   "finalRound": 3,
   "savedStateKey": "hm_saved_r2",
   "features": {
-    "classifyMode": "student-choice",
+    "classifyMode": "inferred",
     "prerequisites": "enforce",
     "creditGate": "exact",
     "liveCounts": true,
     "recommendations": true,
     "confirmationSheet": true,
     "careerGuide": true,
+    "blockMissingPrerequisites": true,
     "prefillPreviousRound": {
       "1": false,
       "2": false,

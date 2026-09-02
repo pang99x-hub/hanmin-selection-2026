@@ -2042,14 +2042,11 @@
           "g2-explore-physics",
           "g2-explore-world-history",
           "g2-fusion-mechanics",
-          "subj-g3-s1-역학과_에너지-2022",
           "g2-fusion-electromagnetism",
-          "subj-g3-s1-전자기와_양자-2022",
           "g2-explore-ethics"
         ],
         "권장": [
-          "subj-g3-s1-인공지능_수학-2022",
-          "subj-g3-s2-인공지능_수학-2022"
+          "subj-g3-s1-인공지능_수학-2022"
         ]
       },
       "tip": "경영·경제 계열 진학에도 경제 수학보다 미적분Ⅱ 이수가 대입에서 더 높게 평가됩니다.",
@@ -6211,16 +6208,12 @@
           "g2-explore-geography",
           "subj-g3-s1-여행지리-2022",
           "g2-fusion-mechanics",
-          "subj-g3-s1-역학과_에너지-2022",
           "g2-fusion-electromagnetism",
-          "subj-g3-s1-전자기와_양자-2022",
           "subj-g3-s2-주제_탐구_독서-2022",
           "subj-g3-s2-진로와_직업-2022",
           "g2-fusion-planetary",
-          "subj-g3-s1-행성우주과학-2022",
           "g2-explore-ethics",
-          "g2-fusion-chemical-reaction",
-          "subj-g3-s1-화학_반응의_세계-2022"
+          "g2-fusion-chemical-reaction"
         ]
       },
       "tip": "가르치려는 교과 계열에 따라 관련 과목(수학·과학 교육 → 이과 과목, 국어·사회 교육 → 인문 과목)을 균형 있게 이수하세요.",
@@ -8359,22 +8352,15 @@
           "g2-explore-physics",
           "g2-explore-chemistry",
           "g2-fusion-mechanics",
-          "subj-g3-s1-역학과_에너지-2022",
           "g2-fusion-electromagnetism",
-          "subj-g3-s1-전자기와_양자-2022",
           "g2-explore-biology"
         ],
         "권장": [
           "g2-fusion-matter-energy",
-          "subj-g3-s1-물질과_에너지-2022",
           "g2-fusion-genetics",
-          "subj-g3-s1-생물의_유전-2022",
           "g2-fusion-cell-metabolism",
-          "subj-g3-s1-세포와_물질대사-2022",
           "subj-g3-s1-인공지능_수학-2022",
-          "subj-g3-s2-인공지능_수학-2022",
-          "g2-fusion-chemical-reaction",
-          "subj-g3-s1-화학_반응의_세계-2022"
+          "g2-fusion-chemical-reaction"
         ]
       },
       "universitySubjects": [],
@@ -9375,20 +9361,14 @@
           "g2-explore-biology",
           "g2-explore-chemistry",
           "g2-fusion-cell-metabolism",
-          "subj-g3-s1-세포와_물질대사-2022",
           "g2-fusion-chemical-reaction",
-          "subj-g3-s1-화학_반응의_세계-2022",
           "g2-fusion-matter-energy",
-          "subj-g3-s1-물질과_에너지-2022",
           "g2-fusion-genetics",
-          "subj-g3-s1-생물의_유전-2022",
           "g2-explore-physics"
         ],
         "권장": [
           "g2-fusion-mechanics",
-          "subj-g3-s1-역학과_에너지-2022",
-          "g2-fusion-electromagnetism",
-          "subj-g3-s1-전자기와_양자-2022"
+          "g2-fusion-electromagnetism"
         ]
       },
       "universitySubjects": [],
@@ -11065,15 +11045,11 @@
           "g2-explore-chemistry",
           "g2-explore-biology",
           "g2-fusion-mechanics",
-          "subj-g3-s1-역학과_에너지-2022",
-          "g2-fusion-electromagnetism",
-          "subj-g3-s1-전자기와_양자-2022"
+          "g2-fusion-electromagnetism"
         ],
         "권장": [
           "g2-fusion-earth-system",
-          "subj-g3-s1-지구시스템과학-2022",
-          "g2-fusion-planetary",
-          "subj-g3-s1-행성우주과학-2022"
+          "g2-fusion-planetary"
         ]
       },
       "universitySubjects": [],
@@ -11561,11 +11537,8 @@
           "g2-explore-physics",
           "g2-explore-chemistry",
           "g2-fusion-mechanics",
-          "subj-g3-s1-역학과_에너지-2022",
           "g2-fusion-electromagnetism",
-          "subj-g3-s1-전자기와_양자-2022",
           "subj-g3-s1-인공지능_수학-2022",
-          "subj-g3-s2-인공지능_수학-2022",
           "g2-explore-earth",
           "subj-g3-s1-독서와_작문-2022",
           "g2-explore-biology",
@@ -11573,9 +11546,7 @@
         ],
         "권장": [
           "g2-fusion-matter-energy",
-          "subj-g3-s1-물질과_에너지-2022",
-          "g2-fusion-chemical-reaction",
-          "subj-g3-s1-화학_반응의_세계-2022"
+          "g2-fusion-chemical-reaction"
         ]
       },
       "universitySubjects": [],
@@ -13685,23 +13656,16 @@
           "g2-explore-physics",
           "g2-explore-chemistry",
           "g2-fusion-mechanics",
-          "subj-g3-s1-역학과_에너지-2022",
           "g2-fusion-electromagnetism",
-          "subj-g3-s1-전자기와_양자-2022",
           "g2-explore-biology"
         ],
         "권장": [
           "g2-fusion-matter-energy",
-          "subj-g3-s1-물질과_에너지-2022",
           "g2-fusion-chemical-reaction",
-          "subj-g3-s1-화학_반응의_세계-2022",
           "g2-explore-earth",
           "g2-fusion-genetics",
-          "subj-g3-s1-생물의_유전-2022",
           "g2-fusion-cell-metabolism",
-          "subj-g3-s1-세포와_물질대사-2022",
-          "subj-g3-s1-인공지능_수학-2022",
-          "subj-g3-s2-인공지능_수학-2022"
+          "subj-g3-s1-인공지능_수학-2022"
         ]
       },
       "universitySubjects": [],
@@ -16346,22 +16310,16 @@
           "g2-explore-earth",
           "g2-explore-biology",
           "g2-fusion-mechanics",
-          "subj-g3-s1-역학과_에너지-2022",
           "g2-fusion-matter-energy",
-          "subj-g3-s1-물질과_에너지-2022",
           "g2-fusion-cell-metabolism",
-          "subj-g3-s1-세포와_물질대사-2022",
           "g2-fusion-chemical-reaction",
-          "subj-g3-s1-화학_반응의_세계-2022",
           "subj-g3-s1-독서와_작문-2022",
           "g2-explore-social-culture",
           "g2-explore-ai",
-          "g2-fusion-electromagnetism",
-          "subj-g3-s1-전자기와_양자-2022"
+          "g2-fusion-electromagnetism"
         ],
         "권장": [
-          "g2-fusion-genetics",
-          "subj-g3-s1-생물의_유전-2022"
+          "g2-fusion-genetics"
         ]
       },
       "universitySubjects": [],
@@ -18343,22 +18301,15 @@
           "g2-explore-physics",
           "g2-explore-biology",
           "g2-fusion-matter-energy",
-          "subj-g3-s1-물질과_에너지-2022",
           "g2-fusion-chemical-reaction",
-          "subj-g3-s1-화학_반응의_세계-2022",
           "g2-fusion-cell-metabolism",
-          "subj-g3-s1-세포와_물질대사-2022",
           "g2-fusion-mechanics",
-          "subj-g3-s1-역학과_에너지-2022",
           "g2-fusion-electromagnetism",
-          "subj-g3-s1-전자기와_양자-2022",
           "g2-explore-earth"
         ],
         "권장": [
           "g2-fusion-genetics",
-          "subj-g3-s1-생물의_유전-2022",
-          "subj-g3-s1-인공지능_수학-2022",
-          "subj-g3-s2-인공지능_수학-2022"
+          "subj-g3-s1-인공지능_수학-2022"
         ]
       },
       "universitySubjects": [],
@@ -20460,13 +20411,9 @@
           "g2-explore-chemistry",
           "g2-explore-biology",
           "g2-fusion-cell-metabolism",
-          "subj-g3-s1-세포와_물질대사-2022",
           "g2-fusion-chemical-reaction",
-          "subj-g3-s1-화학_반응의_세계-2022",
           "g2-fusion-matter-energy",
-          "subj-g3-s1-물질과_에너지-2022",
           "g2-fusion-genetics",
-          "subj-g3-s1-생물의_유전-2022",
           "g2-explore-physics",
           "g2-explore-earth",
           "subj-g3-s1-독서와_작문-2022"
@@ -22464,20 +22411,13 @@
           "g2-explore-chemistry",
           "g2-explore-biology",
           "g2-fusion-cell-metabolism",
-          "subj-g3-s1-세포와_물질대사-2022",
           "g2-fusion-chemical-reaction",
-          "subj-g3-s1-화학_반응의_세계-2022",
           "g2-explore-physics",
           "g2-fusion-matter-energy",
-          "subj-g3-s1-물질과_에너지-2022",
           "g2-fusion-genetics",
-          "subj-g3-s1-생물의_유전-2022",
           "g2-fusion-mechanics",
-          "subj-g3-s1-역학과_에너지-2022",
           "g2-fusion-electromagnetism",
-          "subj-g3-s1-전자기와_양자-2022",
-          "subj-g3-s1-인공지능_수학-2022",
-          "subj-g3-s2-인공지능_수학-2022"
+          "subj-g3-s1-인공지능_수학-2022"
         ]
       },
       "tip": "2학년 세포/유전(세포와 물질대사, 생물의 유전) 과목을 반드시 이수해야 3학년 고급 생명과학 선택이 가능합니다.",
@@ -25522,17 +25462,11 @@
         ],
         "권장": [
           "g2-fusion-matter-energy",
-          "subj-g3-s1-물질과_에너지-2022",
           "g2-fusion-genetics",
-          "subj-g3-s1-생물의_유전-2022",
           "g2-fusion-cell-metabolism",
-          "subj-g3-s1-세포와_물질대사-2022",
           "g2-fusion-mechanics",
-          "subj-g3-s1-역학과_에너지-2022",
           "g2-fusion-electromagnetism",
-          "subj-g3-s1-전자기와_양자-2022",
-          "g2-fusion-chemical-reaction",
-          "subj-g3-s1-화학_반응의_세계-2022"
+          "g2-fusion-chemical-reaction"
         ]
       },
       "universitySubjects": [],

@@ -11,16 +11,6 @@
       "sortOrder": 0
     },
     {
-      "id": "g3-s1-창의적 디자인 사고와 비즈니스 모델 질문 기반 주제 탐구",
-      "label": "창의적 디자인 사고와 비즈니스 모델 질문 기반 주제 탐구",
-      "grade": 3,
-      "isFixed": true,
-      "pickMin": 0,
-      "pickMax": 0,
-      "semester": "3-1",
-      "sortOrder": 1
-    },
-    {
       "id": "g2-s1-탐구",
       "label": "탐구",
       "grade": 2,

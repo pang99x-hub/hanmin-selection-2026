@@ -68,8 +68,8 @@
       "kind": "requires",
       "subject": "subj-g3-s1-고급_물리학-2022",
       "all": [
-        "subj-g3-s1-역학과_에너지-2022",
-        "subj-g3-s1-전자기와_양자-2022"
+        "g2-fusion-mechanics",
+        "g2-fusion-electromagnetism"
       ],
       "mode": "required"
     },
@@ -155,6 +155,96 @@
       "subject": "g2-basic-math-geometry",
       "partners": [
         "g2-basic-math-advanced-algebra"
+      ]
+    },
+    {
+      "kind": "requires",
+      "subject": "subj-g3-s1-정보과학-2022",
+      "all": [
+        "g2-fusion-data-science"
+      ],
+      "mode": "recommended"
+    },
+    {
+      "kind": "classify",
+      "groupId": "g2-s1-탐구 선택",
+      "families": {
+        "sci": {
+          "pools": [
+            [
+              "g2-explore-physics",
+              "g2-explore-chemistry",
+              "g2-explore-biology",
+              "g2-explore-earth",
+              "g2-explore-ai"
+            ]
+          ],
+          "minima": [
+            3
+          ]
+        },
+        "hum": {
+          "pools": [
+            [
+              "g2-explore-social-culture",
+              "g2-explore-ethics",
+              "g2-explore-geography",
+              "g2-explore-world-history",
+              "g2-explore-chinese-classics"
+            ]
+          ],
+          "minima": [
+            3
+          ]
+        }
+      }
+    },
+    {
+      "kind": "cascade",
+      "if": [],
+      "then": [
+        "g2-explore-ai",
+        "g2-explore-physics",
+        "subj-g3-s1-정보과학-2022"
+      ],
+      "when": {
+        "career": "it-computer"
+      }
+    },
+    {
+      "kind": "cascade",
+      "if": [],
+      "then": [
+        "g2-research-social"
+      ],
+      "when": {
+        "family": "hum"
+      },
+      "exclusiveGroup": true
+    },
+    {
+      "kind": "cascade",
+      "if": [],
+      "then": [
+        "g2-math-calculus2"
+      ],
+      "when": {
+        "family": "sci"
+      },
+      "exclusiveGroup": true
+    },
+    {
+      "kind": "cascade",
+      "if": "subj-g3-s1-고급_미적분-2022",
+      "then": [
+        "subj-g3-s2-통합수학Ⅰ-2022"
+      ]
+    },
+    {
+      "kind": "cascade",
+      "if": "subj-g3-s1-통합수학Ⅰ-2022",
+      "then": [
+        "subj-g3-s2-전문_수학-2022"
       ]
     }
   ]

@@ -283,6 +283,8 @@ function importPreviousRoundSubmissions() {
     lock.releaseLock();
   }
   SpreadsheetApp.flush();
+  // 줄이 늘거나 밀렸다 — 다음 제출이 자리 색인을 다시 만들게 한다.
+  invalidateSubmissionSlots_();
   SpreadsheetApp.getUi().alert(
     '이전 차수 제출 가져오기 완료',
     previousRound + '차 ' + created + '행 추가 · ' + updated + '행 갱신 · 새 명단에 없는 학생 ' + skippedUnknown + '행 제외\n기존 운영 시트는 읽기만 했습니다.',
@@ -294,6 +296,8 @@ function replaceSheetBody_(sheet, rows, width) {
   const oldRows = Math.max(0, sheet.getLastRow() - 1);
   if (oldRows) sheet.getRange(2, 1, oldRows, width).clearContent();
   if (rows.length) sheet.getRange(2, 1, rows.length, width).setValues(rows);
+  // 제출 시트를 통째로 갈아 끼우면 자리가 전부 바뀐다.
+  if (sheet.getName() === HM_SELECTION.submissionsSheet) invalidateSubmissionSlots_();
 }
 
 function showSelectionAppStatus() {
@@ -768,27 +772,44 @@ function saveSubmission_(payload) {
     })),
   };
 
-  const lock = LockService.getScriptLock();
-  lock.waitLock(30000);
-  try {
+  /*
+   * 자리를 미리 정해 두고 그 줄에만 쓴다 — 잠금도, 시트 훑기도 없다.
+   *
+   * 종전에는 «시트 전체를 읽어 내 줄을 찾고, 없으면 맨 뒤에 붙인다»였다. 읽고-고쳐-쓰기라
+   * 전역 잠금이 필요했고, 잠금이 곧 병목이 됐다 — 한 건에 시트 왕복 두세 번이라 30초
+   * 대기 안에 20~60명밖에 못 들어간다. 한 학년이 350명이니 마감 직전에 몰리면
+   * «접속이 몰려 저장하지 못했습니다»를 받는 학생이 생긴다.
+   *
+   * 줄이 학생마다 고정되면 두 학생이 같은 줄을 노릴 수 없다. 그래서 잠금이 필요 없고,
+   * 동시 제출이 그대로 병렬로 처리된다. 재제출도 자기 줄을 덮으므로 동작은 같다.
+   *
+   * 색인은 캐시에 둔다. 캐시가 비면 한 번만 만들고 다시 담는다.
+   */
+  {
     const sheet = ensureSheet_(spreadsheet_(), HM_SELECTION.submissionsSheet, HM_SELECTION.submissionHeaders);
-    const rows = sheet.getDataRange().getValues();
-    let rowNumber = 0;
-    for (let i = 1; i < rows.length; i += 1) {
-      const row = objectFromRow_(HM_SELECTION.submissionHeaders, rows[i]);
-      if (
-        String(row.identity_key || row.email).toLowerCase() === String(session.identity_key).toLowerCase()
-        && Number(row.target_grade) === targetGrade
-        && Number(row.round) === round
-        && bool_(row.is_test) === isTest
-      ) {
-        rowNumber = i + 1;
-        break;
+    const slotKey = submissionSlotKey_(session.identity_key, targetGrade, round, isTest);
+    let rowNumber = submissionRowFor_(sheet, slotKey);
+    const values = HM_SELECTION.submissionHeaders.map(function (header) { return rowObject[header]; });
+    if (rowNumber) {
+      sheet.getRange(rowNumber, 1, 1, values.length).setValues([values]);
+    } else {
+      // 자리가 없는 학생(전입 등)만 잠금을 잡고 한 줄 만든다. 드문 일이라 병목이 아니다.
+      const lock = LockService.getScriptLock();
+      lock.waitLock(30000);
+      try {
+        rowNumber = submissionRowFor_(sheet, slotKey, true);
+        if (rowNumber) {
+          sheet.getRange(rowNumber, 1, 1, values.length).setValues([values]);
+        } else {
+          sheet.appendRow(values);
+          rowNumber = sheet.getLastRow();
+          rememberSubmissionRow_(slotKey, rowNumber);
+        }
+        SpreadsheetApp.flush();
+      } finally {
+        lock.releaseLock();
       }
     }
-    const values = HM_SELECTION.submissionHeaders.map(function (header) { return rowObject[header]; });
-    if (rowNumber) sheet.getRange(rowNumber, 1, 1, values.length).setValues([values]);
-    else sheet.appendRow(values);
     return {
       ok: true,
       round: round,
@@ -798,9 +819,73 @@ function saveSubmission_(payload) {
       finalized: status.finalized,
       finalRound: status.finalRound,
     };
-  } finally {
-    lock.releaseLock();
   }
+}
+
+/*
+ * 제출 자리(줄) 색인 — «누가 · 어느 학년 · 몇 차 · 시험인가» 하나가 한 줄이다.
+ *
+ * 열쇠를 identity_key 로 잡는다. 이 템플릿이 이미 구글 로그인(이메일)과 명단 로그인
+ * (학번·지정 아이디)을 그 한 값으로 모아 두었으므로, 로그인 방식이 무엇이든 같은
+ * 줄을 가리킨다. 이메일로 찾든 학번으로 찾든 명단을 한 번 보는 것은 같다.
+ *
+ * 색인은 스크립트 캐시에 둔다. 캐시가 살아 있으면 제출은 시트 왕복 한 번(쓰기)으로
+ * 끝나고 잠금이 필요 없다. 캐시가 비었을 때만 시트를 한 번 훑어 다시 만든다.
+ */
+var HM_SLOT_CACHE_KEY = 'hm_submission_rows_v1';
+var HM_SLOT_CACHE_TTL = 21600;   // 6시간 — CacheService 최대치
+
+function submissionSlotKey_(identityKey, targetGrade, round, isTest) {
+  return [
+    String(identityKey || '').toLowerCase(),
+    Number(targetGrade),
+    Number(round),
+    isTest ? 1 : 0,
+  ].join('|');
+}
+
+function submissionSlotIndex_(sheet, forceRebuild) {
+  const cache = CacheService.getScriptCache();
+  if (!forceRebuild) {
+    const cached = cache.get(HM_SLOT_CACHE_KEY);
+    if (cached) {
+      try { return JSON.parse(cached); } catch (err) { /* 깨졌으면 다시 만든다 */ }
+    }
+  }
+  const index = {};
+  const lastRow = sheet.getLastRow();
+  if (lastRow > 1) {
+    const rows = sheet.getRange(2, 1, lastRow - 1, HM_SELECTION.submissionHeaders.length).getValues();
+    for (let i = 0; i < rows.length; i += 1) {
+      const row = objectFromRow_(HM_SELECTION.submissionHeaders, rows[i]);
+      const identity = String(row.identity_key || row.email || '');
+      if (!identity) continue;
+      const key = submissionSlotKey_(identity, row.target_grade, row.round, bool_(row.is_test));
+      // 같은 열쇠가 두 줄에 있으면 앞줄을 쓴다 — 옛 데이터에 중복이 있어도 자리가 흔들리지 않게.
+      if (!(key in index)) index[key] = i + 2;
+    }
+  }
+  try { cache.put(HM_SLOT_CACHE_KEY, JSON.stringify(index), HM_SLOT_CACHE_TTL); } catch (err) { /* 캐시 초과는 무시 */ }
+  return index;
+}
+
+function submissionRowFor_(sheet, slotKey, forceRebuild) {
+  const index = submissionSlotIndex_(sheet, forceRebuild === true);
+  return index[slotKey] || 0;
+}
+
+function rememberSubmissionRow_(slotKey, rowNumber) {
+  const cache = CacheService.getScriptCache();
+  const cached = cache.get(HM_SLOT_CACHE_KEY);
+  let index = {};
+  if (cached) { try { index = JSON.parse(cached); } catch (err) { index = {}; } }
+  index[slotKey] = rowNumber;
+  try { cache.put(HM_SLOT_CACHE_KEY, JSON.stringify(index), HM_SLOT_CACHE_TTL); } catch (err) { /* 무시 */ }
+}
+
+/** 제출 시트를 새로 깔거나 줄이 밀렸을 때 — 다음 제출이 색인을 다시 만들게 한다. */
+function invalidateSubmissionSlots_() {
+  try { CacheService.getScriptCache().remove(HM_SLOT_CACHE_KEY); } catch (err) { /* 무시 */ }
 }
 
 function latestSubmissionByIdentity_(identityKey, targetGradeValue, includeTests) {

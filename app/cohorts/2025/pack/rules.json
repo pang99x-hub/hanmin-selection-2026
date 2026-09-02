@@ -1,40 +1,6 @@
 {
   "rules": [
     {
-      "kind": "classify",
-      "groupId": "g2-s1-탐구",
-      "families": {
-        "sci": {
-          "pools": [
-            [
-              "g2-explore-physics",
-              "g2-explore-chemistry",
-              "g2-explore-biology",
-              "g2-explore-earth",
-              "g2-explore-ai"
-            ]
-          ],
-          "minima": [
-            3
-          ]
-        },
-        "hum": {
-          "pools": [
-            [
-              "g2-explore-social-culture",
-              "g2-explore-ethics",
-              "g2-explore-geography",
-              "g2-explore-world-history",
-              "g2-explore-chinese-classics"
-            ]
-          ],
-          "minima": [
-            3
-          ]
-        }
-      }
-    },
-    {
       "kind": "pair",
       "subject": "g2-fusion-mechanics",
       "partners": [
@@ -180,8 +146,8 @@
       "kind": "requires",
       "subject": "subj-g3-s1-고급_물리학-2022",
       "all": [
-        "subj-g3-s1-역학과_에너지-2022",
-        "subj-g3-s1-전자기와_양자-2022"
+        "g2-fusion-mechanics",
+        "g2-fusion-electromagnetism"
       ],
       "mode": "required"
     },
@@ -241,24 +207,64 @@
       ]
     },
     {
-      "kind": "cascade",
-      "if": [],
-      "then": [
-        "subj-g3-s1-창의적_디자인_사고와_비즈니스_모델-2022"
-      ],
-      "when": {
-        "family": "sci"
+      "kind": "classify",
+      "groupId": "g2-s1-탐구",
+      "families": {
+        "sci": {
+          "pools": [
+            [
+              "g2-explore-physics",
+              "g2-explore-chemistry",
+              "g2-explore-biology",
+              "g2-explore-earth",
+              "g2-explore-ai"
+            ]
+          ],
+          "minima": [
+            3
+          ]
+        },
+        "hum": {
+          "pools": [
+            [
+              "g2-explore-social-culture",
+              "g2-explore-ethics",
+              "g2-explore-geography",
+              "g2-explore-world-history",
+              "g2-explore-chinese-classics"
+            ]
+          ],
+          "minima": [
+            3
+          ]
+        }
       }
     },
     {
       "kind": "cascade",
       "if": [],
       "then": [
-        "subj-g3-s1-창의적_디자인_사고와_비즈니스_모델-2022"
+        "g2-explore-ai",
+        "g2-explore-physics",
+        "subj-g3-s1-정보과학-2022"
       ],
       "when": {
-        "family": "hum"
+        "career": "it-computer"
       }
+    },
+    {
+      "kind": "cascade",
+      "if": "subj-g3-s1-고급_미적분-2022",
+      "then": [
+        "subj-g3-s2-통합수학Ⅰ-2022"
+      ]
+    },
+    {
+      "kind": "cascade",
+      "if": "subj-g3-s1-통합수학Ⅰ-2022",
+      "then": [
+        "subj-g3-s2-전문_수학-2022"
+      ]
     }
   ]
 }

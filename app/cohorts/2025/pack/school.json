@@ -37,6 +37,7 @@
     "recommendations": true,
     "confirmationSheet": true,
     "careerGuide": true,
+    "blockMissingPrerequisites": true,
     "prefillPreviousRound": {
       "1": false,
       "2": false,

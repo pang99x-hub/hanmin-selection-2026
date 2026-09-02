@@ -25,7 +25,8 @@
       ],
       "shortDescription": "역학, 전기·자기, 파동, 현대물리 등 물리학의 핵심 원리를 탐구합니다.",
       "trackAffinity": [
-        "sci"
+        "sci",
+        "info"
       ],
       "recommendedCareers": [
         "agriculture-marine",
@@ -69,7 +70,8 @@
       ],
       "shortDescription": "물질의 구조와 반응, 화학 평형 등 화학의 핵심 개념을 심층 탐구합니다.",
       "trackAffinity": [
-        "sci"
+        "sci",
+        "info"
       ],
       "recommendedCareers": [
         "agriculture-marine",
@@ -113,7 +115,8 @@
       ],
       "shortDescription": "세포, 유전, 진화, 항상성 등 생명 현상의 원리를 탐구합니다.",
       "trackAffinity": [
-        "sci"
+        "sci",
+        "info"
       ],
       "recommendedCareers": [
         "agriculture-marine",
@@ -154,7 +157,8 @@
       ],
       "shortDescription": "지구의 구조와 변화, 대기·해양·우주까지 지구시스템 전체를 탐구합니다.",
       "trackAffinity": [
-        "sci"
+        "sci",
+        "info"
       ],
       "recommendedCareers": [
         "agriculture-marine",
@@ -438,7 +442,8 @@
       ],
       "shortDescription": "고전역학과 에너지 전환을 심층 탐구합니다. [고급 물리학] 이수를 위한 필수 선수과목입니다.",
       "trackAffinity": [
-        "sci"
+        "sci",
+        "info"
       ],
       "recommendedCareers": [
         "architecture-civil",
@@ -480,7 +485,8 @@
       ],
       "shortDescription": "현대 물리학과 전기전자 공학의 정수인 전자기학과 양자 역학을 다룹니다.",
       "trackAffinity": [
-        "sci"
+        "sci",
+        "info"
       ],
       "recommendedCareers": [
         "mechanical-electrical"
@@ -519,7 +525,8 @@
       ],
       "shortDescription": "화학 물질 간의 에너지 교환 현상을 정량적으로 탐구합니다.",
       "trackAffinity": [
-        "sci"
+        "sci",
+        "info"
       ],
       "recommendedCareers": [
         "it-computer",
@@ -560,7 +567,8 @@
       ],
       "shortDescription": "화학 반응의 속도와 평형을 다루어 화학 공학의 제조 기초를 학습합니다.",
       "trackAffinity": [
-        "sci"
+        "sci",
+        "info"
       ],
       "recommendedCareers": [
         "agriculture-marine",
@@ -602,7 +610,8 @@
       ],
       "shortDescription": "세포 내부의 대사 과정과 생리학적 구조를 심층 탐구합니다.",
       "trackAffinity": [
-        "sci"
+        "sci",
+        "info"
       ],
       "recommendedCareers": [
         "agriculture-marine",
@@ -642,7 +651,8 @@
       ],
       "shortDescription": "유전학적 발현, 돌연변이 및 염색체 진화 과정을 다룹니다.",
       "trackAffinity": [
-        "sci"
+        "sci",
+        "info"
       ],
       "recommendedCareers": [
         "agriculture-marine",
@@ -682,7 +692,8 @@
       ],
       "shortDescription": "지표, 대기, 해양, 생물권의 상호작용을 통합적으로 탐구합니다.",
       "trackAffinity": [
-        "sci"
+        "sci",
+        "info"
       ],
       "recommendedCareers": [
         "agriculture-marine",
@@ -722,7 +733,8 @@
       ],
       "shortDescription": "태양계 외계 행성 탐사 기술과 천문학적 관측 기법을 학습합니다.",
       "trackAffinity": [
-        "sci"
+        "sci",
+        "info"
       ],
       "recommendedCareers": [
         "mechanical-electrical",
@@ -796,7 +808,11 @@
         "ts-2022-314"
       ],
       "shortDescription": "비판적 독서와 논리적 글쓰기 능력을 심화합니다.",
-      "trackAffinity": [],
+      "trackAffinity": [
+        "sci",
+        "info",
+        "hum"
+      ],
       "recommendedCareers": [
         "language-literature",
         "humanities",
@@ -810,6 +826,45 @@
         "targetStudent": "긴 글을 끝까지 읽어내고 싶은 학생, 보고서·논술에서 제 논지를 세우고 싶은 학생",
         "relatedCareers": "국어국문학, 인문학 전반, 법학, 행정학, 언론·출판 등",
         "schoolHighlight": "다양한 분야의 글을 비판적으로 읽고 자료를 선별·구성해 목적과 독자에 맞는 글을 완성합니다."
+      }
+    },
+    {
+      "id": "subj-g3-s1-스포츠_생활1-2022",
+      "name": "스포츠 생활1",
+      "credits": 2,
+      "category": "학교지정",
+      "grading": "3단계",
+      "gradingType": "absolute",
+      "semester": "3-1",
+      "grade": 3,
+      "groupId": "g3-s1-fixed",
+      "status": "LOCKED",
+      "isReadOnly": true,
+      "subjectArea": "체육",
+      "tags": [
+        "#신체건강",
+        "#필수이수"
+      ],
+      "guidance": [
+        "ebs-2022-118",
+        "ts-2022-398"
+      ],
+      "shortDescription": "스포츠를 생활화하는 태도와 건강 체력을 유지합니다.",
+      "trackAffinity": [
+        "sci",
+        "info",
+        "hum"
+      ],
+      "recommendedCareers": [
+        "sports",
+        "education"
+      ],
+      "fullDescription": {
+        "overview": "전략형 스포츠의 영역형 스포츠와 생태형 스포츠의 생활·자연환경형 스포츠를 심화 학습하는 융합 선택 과목입니다. 경기 유형에 적합한 체력을 강화하고 고도화된 경기 수행 능력을 발휘해 스포츠를 생활화하는 능력을 기릅니다.",
+        "units": "영역형 스포츠 · 생활⋅자연환경형 스포츠",
+        "targetStudent": "구기 종목과 야외 활동을 즐기는 학생, 스포츠를 꾸준히 하고 싶은 학생",
+        "relatedCareers": "체육학, 스포츠지도학, 여가·레저학 등",
+        "schoolHighlight": "생활 속 운동을 직접 실천하며 체력 관리 방법과 스포츠 참여에 필요한 협력·안전 역량을 익힙니다."
       }
     },
     {
@@ -835,7 +890,11 @@
         "ts-2022-345"
       ],
       "shortDescription": "학술적 영어 텍스트 이해와 고급 의사소통 능력을 배양합니다.",
-      "trackAffinity": [],
+      "trackAffinity": [
+        "sci",
+        "info",
+        "hum"
+      ],
       "recommendedCareers": [
         "language-literature",
         "humanities",
@@ -851,60 +910,29 @@
       }
     },
     {
-      "id": "subj-g3-s1-스포츠_생활1-2022",
-      "name": "스포츠 생활1",
+      "id": "subj-g3-s1-창의적_디자인_사고와_비즈니스_모델-2022",
+      "name": "창의적 디자인 사고와 비즈니스 모델",
       "credits": 2,
-      "category": "학교지정",
-      "grading": "3단계",
-      "gradingType": "absolute",
+      "category": "진로선택",
+      "grading": "null",
+      "gradingType": "null",
       "semester": "3-1",
       "grade": 3,
       "groupId": "g3-s1-fixed",
       "status": "LOCKED",
       "isReadOnly": true,
-      "subjectArea": "체육",
-      "tags": [
-        "#신체건강",
-        "#필수이수"
-      ],
-      "guidance": [
-        "ebs-2022-118",
-        "ts-2022-398"
-      ],
-      "shortDescription": "스포츠를 생활화하는 태도와 건강 체력을 유지합니다.",
-      "trackAffinity": [],
-      "recommendedCareers": [
-        "sports",
-        "education"
-      ],
-      "fullDescription": {
-        "overview": "전략형 스포츠의 영역형 스포츠와 생태형 스포츠의 생활·자연환경형 스포츠를 심화 학습하는 융합 선택 과목입니다. 경기 유형에 적합한 체력을 강화하고 고도화된 경기 수행 능력을 발휘해 스포츠를 생활화하는 능력을 기릅니다.",
-        "units": "영역형 스포츠 · 생활⋅자연환경형 스포츠",
-        "targetStudent": "구기 종목과 야외 활동을 즐기는 학생, 스포츠를 꾸준히 하고 싶은 학생",
-        "relatedCareers": "체육학, 스포츠지도학, 여가·레저학 등",
-        "schoolHighlight": "생활 속 운동을 직접 실천하며 체력 관리 방법과 스포츠 참여에 필요한 협력·안전 역량을 익힙니다."
-      }
-    },
-    {
-      "id": "subj-g3-s1-창의적_디자인_사고와_비즈니스_모델-2022",
-      "name": "창의적 디자인 사고와 비즈니스 모델",
-      "credits": 2,
-      "category": "일반선택",
-      "grading": "null",
-      "gradingType": "null",
-      "semester": "3-1",
-      "grade": 3,
-      "groupId": "g3-s1-창의적 디자인 사고와 비즈니스 모델 질문 기반 주제 탐구",
-      "status": "LOCKED",
-      "isReadOnly": true,
-      "subjectArea": "교양",
+      "subjectArea": "기술·가정/정보/제2외국어/한문/교양",
       "tags": [
         "#창업역량",
         "#디자인씽킹",
         "#비즈니스"
       ],
       "shortDescription": "디자인 사고 방법론을 활용하여 혁신적 비즈니스 모델을 창안하는 능력을 기릅니다.",
-      "trackAffinity": [],
+      "trackAffinity": [
+        "sci",
+        "info",
+        "hum"
+      ],
       "recommendedCareers": [
         "business-economics",
         "arts-design",
@@ -937,7 +965,11 @@
         "#대학수준수학"
       ],
       "shortDescription": "다변수 미적분, 급수, 미분방정식 등 대학 수준의 미적분학을 선행 학습합니다.",
-      "trackAffinity": [],
+      "trackAffinity": [
+        "sci",
+        "info",
+        "hum"
+      ],
       "recommendedCareers": [
         "mathematics-physics",
         "mechanical-electrical",
@@ -949,7 +981,97 @@
         "targetStudent": "이공계 심화 진학을 준비하는 학생, 미적분Ⅱ를 마치고 더 나아가려는 학생",
         "relatedCareers": "수학, 물리학, 기계·전기전자공학, 항공우주공학 등",
         "schoolHighlight": "극한·미분·적분의 심화 개념을 엄밀한 추론과 복합 문제 해결에 적용하며 대학 수학 학습의 토대를 다집니다."
-      }
+      },
+      "mathSlot": "3-1"
+    },
+    {
+      "id": "subj-g3-s1-실용_통계-2022",
+      "name": "실용 통계",
+      "credits": 5,
+      "category": "진로선택",
+      "grading": "5등급+A~E",
+      "gradingType": "relative+absolute",
+      "semester": "3-1",
+      "grade": 3,
+      "groupId": "g3-s1-고급 미적분, 전문 수학, 통합수학Ⅰ, 실용 통계, 인공지능 수학",
+      "status": "AVAILABLE",
+      "isReadOnly": false,
+      "subjectArea": "수학",
+      "tags": [
+        "#이공계심화",
+        "#데이터과학",
+        "#통계"
+      ],
+      "guidance": [
+        "ebs-2022-104",
+        "ts-2022-334"
+      ],
+      "shortDescription": "실제 데이터 분석에 활용되는 통계적 방법론을 심층 학습합니다.",
+      "trackAffinity": [
+        "sci",
+        "info",
+        "hum"
+      ],
+      "recommendedCareers": [
+        "social-science",
+        "business-economics",
+        "it-computer",
+        "medical-pharmacy"
+      ],
+      "fullDescription": {
+        "overview": "통계적 문제해결 과정을 이해하고 탐구 활동으로 실생활 문제를 해결하는 융합 선택 과목입니다. 일상에서 접하는 문제를 통계적으로 다루거나 의사 결정에 필요한 자료를 직접 수집·분석해 합리적인 결론을 내리는 경험을 합니다. 현대 사회에 나타나는 변이성을 이해하고, 자연 및 사회 현상을 해석하는 도구로서 수학의 유용성을 인식합니다.",
+        "units": "통계와 통계적 문제 · 자료의 수집과 정리 · 자료의 분석 · 통계적 탐구",
+        "targetStudent": "직접 조사·설문을 설계해 보고 싶은 학생, 탐구 활동에서 데이터를 다루려는 학생",
+        "relatedCareers": "통계학, 사회과학 전반, 경영학, 보건학, 데이터과학 등",
+        "schoolHighlight": "실제 데이터를 수집·정리·시각화하고 통계적 추론을 통해 근거 있는 결론과 의사결정을 구성합니다."
+      },
+      "mathSlot": "3-1",
+      "closed": true,
+      "closedReason": "1차 수요조사 인원 미달로 2027학년도 미개설"
+    },
+    {
+      "id": "subj-g3-s1-인공지능_수학-2022",
+      "name": "인공지능 수학",
+      "credits": 5,
+      "category": "진로선택",
+      "grading": "5등급+A~E",
+      "gradingType": "relative+absolute",
+      "semester": "3-1",
+      "grade": 3,
+      "groupId": "g3-s1-고급 미적분, 전문 수학, 통합수학Ⅰ, 실용 통계, 인공지능 수학",
+      "status": "AVAILABLE",
+      "isReadOnly": false,
+      "subjectArea": "수학",
+      "tags": [
+        "#정보계열추천",
+        "#AI수학",
+        "#데이터과학"
+      ],
+      "guidance": [
+        "ebs-2022-042",
+        "ts-2022-331"
+      ],
+      "shortDescription": "AI·머신러닝에 필요한 선형대수, 확률론, 최적화 이론을 학습합니다.",
+      "trackAffinity": [
+        "sci",
+        "info",
+        "hum"
+      ],
+      "recommendedCareers": [
+        "it-computer",
+        "mechanical-electrical",
+        "business-economics"
+      ],
+      "fullDescription": {
+        "overview": "인공지능의 데이터 처리와 의사 결정에 수학이 활용되는 사례를 통해 인공지능과 수학의 관련성을 탐구하는 과목입니다. 인공지능의 알고리즘이 논리와 수학에 기초하며 빅데이터 활용으로 새로운 가치가 만들어짐을 이해하고, 인공지능이 데이터의 경향성을 파악하고 최적화해 미래를 예측하는 원리를 다룹니다. 데이터의 공정성을 확보하려는 태도와 공학 도구 활용 능력도 함께 기릅니다.",
+        "units": "인공지능과 빅데이터 · 텍스트 데이터 처리 · 이미지 데이터 처리 · 예측과 최적화 · 인공지능과 수학 탐구",
+        "targetStudent": "인공지능·데이터 분야 진학을 생각하는 학생, AI가 어떻게 판단하는지 궁금한 학생",
+        "relatedCareers": "인공지능학, 컴퓨터공학, 데이터과학, 산업공학, 통계학 등",
+        "schoolHighlight": "인공지능의 원리를 수학식으로 이해하고 데이터 해석과 모델링 활동에 연결합니다."
+      },
+      "mathSlot": "3-1",
+      "closed": true,
+      "closedReason": "1차 수요조사 인원 미달로 2027학년도 미개설"
     },
     {
       "id": "subj-g3-s1-전문_수학-2022",
@@ -1000,7 +1122,11 @@
         "#통합수학"
       ],
       "shortDescription": "3학년 1학기에 고급 미적분·실용 통계·인공지능 수학 중 하나를 선택한 학생의 2학기 자동 배정 과목입니다.",
-      "trackAffinity": [],
+      "trackAffinity": [
+        "sci",
+        "info",
+        "hum"
+      ],
       "recommendedCareers": [
         "mathematics-physics",
         "it-computer",
@@ -1013,81 +1139,296 @@
         "schoolHighlight": "공식별 단편 학습보다 여러 개념을 한 문제 안에서 연결하고 풀이 과정을 논리적으로 설명하는 데 중점을 둡니다.",
         "targetStudent": "수학 개념 사이의 연결을 이해하고 복합 문제 해결력을 높이고 싶은 학생",
         "relatedCareers": "수학, 통계학, 경제학, 컴퓨터공학, 자연과학, 공학 전 분야"
+      },
+      "mathSlot": "3-1"
+    },
+    {
+      "id": "subj-g3-s1-금융과_경제생활-2022",
+      "name": "금융과 경제생활",
+      "credits": 3,
+      "category": "진로선택",
+      "grading": "5단계",
+      "gradingType": "absolute",
+      "semester": "3-1",
+      "grade": 3,
+      "groupId": "g3-s1-역학과 에너지, 전자기와 양자, 물질과 에너지, 화학 반응의 세계, 세포와 물질대사, 생물의 유전, 지구시스템과학, 행성우주과학, 사회문제 탐구, 윤리문제 탐구, 여행지리, 역사로 탐구하는 현대 세계, 금융과 경제생활",
+      "status": "AVAILABLE",
+      "isReadOnly": false,
+      "subjectArea": "교과(군) 간 선택",
+      "tags": [
+        "#인문계열",
+        "#금융경제",
+        "#경영경제필수"
+      ],
+      "guidance": [
+        "ebs-2022-112",
+        "ts-2022-371"
+      ],
+      "shortDescription": "금융의 기초 원리와 경제적 의사결정 방법을 탐구합니다.",
+      "trackAffinity": [
+        "hum"
+      ],
+      "recommendedCareers": [
+        "business-economics",
+        "sports"
+      ],
+      "fullDescription": {
+        "overview": "급변하는 디지털 금융 환경에서 평생에 걸쳐 안정된 금융 복지를 누리는 데 필요한 금융 지식과 의사 결정 능력, 건전한 재무적 태도와 습관을 기르는 융합 선택 과목입니다. 안전한 금융 거래에 필요한 소양과 금융 사기 예방, 수입과 지출의 관리, 저축과 투자의 기본 원리, 신용과 위험 관리를 실제 생활 경험과 연결해 다룹니다.",
+        "units": "행복하고 안전한 금융 생활 · 수입과 지출 · 저축과 투자",
+        "targetStudent": "돈 관리와 금융 상품을 제대로 알고 싶은 학생, 상경 계열 진학 예정 학생",
+        "relatedCareers": "경제학, 경영학, 금융학, 회계학, 소비자학 등",
+        "schoolHighlight": "소득·소비·저축·투자·신용의 원리를 생활 사례와 자료 분석으로 익혀 합리적인 금융 의사결정을 연습합니다."
       }
     },
     {
-      "id": "subj-g3-s1-실용_통계-2022",
-      "name": "실용 통계",
-      "credits": 5,
+      "id": "subj-g3-s1-물질과_에너지-2022",
+      "name": "물질과 에너지",
+      "credits": 3,
       "category": "진로선택",
       "grading": "5등급+A~E",
       "gradingType": "relative+absolute",
       "semester": "3-1",
       "grade": 3,
-      "groupId": "g3-s1-고급 미적분, 전문 수학, 통합수학Ⅰ, 실용 통계, 인공지능 수학",
+      "groupId": "g3-s1-역학과 에너지, 전자기와 양자, 물질과 에너지, 화학 반응의 세계, 세포와 물질대사, 생물의 유전, 지구시스템과학, 행성우주과학, 사회문제 탐구, 윤리문제 탐구, 여행지리, 역사로 탐구하는 현대 세계, 금융과 경제생활",
       "status": "AVAILABLE",
       "isReadOnly": false,
-      "subjectArea": "수학",
+      "subjectArea": "교과(군) 간 선택",
       "tags": [
-        "#이공계심화",
-        "#데이터과학",
-        "#통계"
+        "#자연계열",
+        "#화학심화",
+        "#3학년선택"
       ],
       "guidance": [
-        "ebs-2022-104",
-        "ts-2022-334"
+        "ebs-2022-060",
+        "ts-2022-384"
       ],
-      "shortDescription": "실제 데이터 분석에 활용되는 통계적 방법론을 심층 학습합니다.",
-      "trackAffinity": [],
+      "shortDescription": "2학년 미이수자를 위한 3학년 물질과 에너지 과목. 중복 이수 불가.",
+      "trackAffinity": [
+        "sci",
+        "info"
+      ],
       "recommendedCareers": [
-        "social-science",
-        "business-economics",
         "it-computer",
+        "materials-chemistry",
         "medical-pharmacy"
       ],
       "fullDescription": {
-        "overview": "통계적 문제해결 과정을 이해하고 탐구 활동으로 실생활 문제를 해결하는 융합 선택 과목입니다. 일상에서 접하는 문제를 통계적으로 다루거나 의사 결정에 필요한 자료를 직접 수집·분석해 합리적인 결론을 내리는 경험을 합니다. 현대 사회에 나타나는 변이성을 이해하고, 자연 및 사회 현상을 해석하는 도구로서 수학의 유용성을 인식합니다.",
-        "units": "통계와 통계적 문제 · 자료의 수집과 정리 · 자료의 분석 · 통계적 탐구",
-        "targetStudent": "직접 조사·설문을 설계해 보고 싶은 학생, 탐구 활동에서 데이터를 다루려는 학생",
-        "relatedCareers": "통계학, 사회과학 전반, 경영학, 보건학, 데이터과학 등",
-        "schoolHighlight": "실제 데이터를 수집·정리·시각화하고 통계적 추론을 통해 근거 있는 결론과 의사결정을 구성합니다."
+        "overview": "다양한 화학 물질 간의 에너지 교환(엔탈피, 엔트로피) 현상을 정량적으로 증명하는 화학 심화 과목입니다.",
+        "units": "화학 열역학 기초, 분자 궤도 함수, 상태 변화와 자유 에너지",
+        "hanminHighlight": "눈에 보이지 않는 에너지의 흐름을 수식과 실험으로 증명하며 화학적 사고를 심화합니다.",
+        "targetStudent": "배터리, 에너지공학, 화학연구원을 꿈꾸는 학생",
+        "relatedCareers": "화학소재연구, 배터리공학, 약학"
+      },
+      "equivalentTo": [
+        "g2-fusion-matter-energy"
+      ]
+    },
+    {
+      "id": "subj-g3-s1-사회문제_탐구-2022",
+      "name": "사회문제 탐구",
+      "credits": 3,
+      "category": "진로선택",
+      "grading": "5단계",
+      "gradingType": "absolute",
+      "semester": "3-1",
+      "grade": 3,
+      "groupId": "g3-s1-역학과 에너지, 전자기와 양자, 물질과 에너지, 화학 반응의 세계, 세포와 물질대사, 생물의 유전, 지구시스템과학, 행성우주과학, 사회문제 탐구, 윤리문제 탐구, 여행지리, 역사로 탐구하는 현대 세계, 금융과 경제생활",
+      "status": "AVAILABLE",
+      "isReadOnly": false,
+      "subjectArea": "교과(군) 간 선택",
+      "tags": [
+        "#사회",
+        "#탐구",
+        "#프로젝트",
+        "#융합선택"
+      ],
+      "guidance": [
+        "ebs-2022-111",
+        "ts-2022-370"
+      ],
+      "shortDescription": "관심 있는 사회문제를 직접 조사하고 해결 방안을 보고서로 냅니다.",
+      "trackAffinity": [
+        "hum"
+      ],
+      "recommendedCareers": [
+        "social-science",
+        "law-administration",
+        "humanities",
+        "media-advertising"
+      ],
+      "fullDescription": {
+        "overview": "현대 사회에서 발생하는 여러 사회문제를 탐구하고 해결 방안을 모색하는 일반사회 영역의 융합 선택 과목입니다. 사회문제의 의미와 특징, 연구 방법의 이해를 기초로 학생이 주도적으로 해결 방안을 탐구하고 그 과정을 보고서로 작성하는 실천적 탐구 활동을 중심에 둡니다.",
+        "units": "사회문제의 이해와 탐구 · 일상생활과 사회문제 · 변화하는 세계와 사회문제 · 사회문제 사례 연구",
+        "targetStudent": "직접 조사·연구를 해보고 싶은 학생, 사회 이슈에 문제의식이 있는 학생",
+        "relatedCareers": "사회학, 사회복지학, 행정학, 정책학, 언론정보학 등",
+        "schoolHighlight": "관심 있는 사회문제를 자료 조사와 관점 비교로 분석하고 토론·보고서·정책 제안 형태로 해결안을 구체화합니다."
       }
     },
     {
-      "id": "subj-g3-s1-인공지능_수학-2022",
-      "name": "인공지능 수학",
-      "credits": 5,
+      "id": "subj-g3-s1-생물의_유전-2022",
+      "name": "생물의 유전",
+      "credits": 3,
       "category": "진로선택",
       "grading": "5등급+A~E",
       "gradingType": "relative+absolute",
       "semester": "3-1",
       "grade": 3,
-      "groupId": "g3-s1-고급 미적분, 전문 수학, 통합수학Ⅰ, 실용 통계, 인공지능 수학",
+      "groupId": "g3-s1-역학과 에너지, 전자기와 양자, 물질과 에너지, 화학 반응의 세계, 세포와 물질대사, 생물의 유전, 지구시스템과학, 행성우주과학, 사회문제 탐구, 윤리문제 탐구, 여행지리, 역사로 탐구하는 현대 세계, 금융과 경제생활",
       "status": "AVAILABLE",
       "isReadOnly": false,
-      "subjectArea": "수학",
+      "subjectArea": "교과(군) 간 선택",
       "tags": [
-        "#정보계열추천",
-        "#AI수학",
-        "#데이터과학"
+        "#자연계열",
+        "#생명심화",
+        "#3학년선택"
       ],
       "guidance": [
-        "ebs-2022-042",
-        "ts-2022-331"
+        "ebs-2022-063",
+        "ts-2022-387"
       ],
-      "shortDescription": "AI·머신러닝에 필요한 선형대수, 확률론, 최적화 이론을 학습합니다.",
-      "trackAffinity": [],
+      "shortDescription": "2학년 미이수자를 위한 3학년 생물의 유전 과목. 중복 이수 불가.",
+      "trackAffinity": [
+        "sci",
+        "info"
+      ],
       "recommendedCareers": [
-        "it-computer",
-        "mechanical-electrical",
+        "agriculture-marine",
+        "medical-pharmacy"
+      ],
+      "fullDescription": {
+        "overview": "멘델 유전학을 넘어서는 분자 생물학적 유전자 발현, 돌연변이 및 염색체 진화 과정을 다루는 고도의 생물 과목입니다.",
+        "units": "DNA 구조와 복제, 유전자 단백질 합성 기작, 생명 기술(CRISPR 등) 연구",
+        "hanminHighlight": "DNA 단계의 탐구를 통해 현대 생명공학의 최전선을 경험합니다.",
+        "targetStudent": "유전공학, 생명과학 연구원, 전공 심화 탐구자",
+        "relatedCareers": "분자생물학, 종양학, 유전공학"
+      },
+      "equivalentTo": [
+        "g2-fusion-genetics"
+      ],
+      "closed": true,
+      "closedReason": "1차 수요조사 인원 미달로 2027학년도 미개설"
+    },
+    {
+      "id": "subj-g3-s1-세포와_물질대사-2022",
+      "name": "세포와 물질대사",
+      "credits": 3,
+      "category": "진로선택",
+      "grading": "5등급+A~E",
+      "gradingType": "relative+absolute",
+      "semester": "3-1",
+      "grade": 3,
+      "groupId": "g3-s1-역학과 에너지, 전자기와 양자, 물질과 에너지, 화학 반응의 세계, 세포와 물질대사, 생물의 유전, 지구시스템과학, 행성우주과학, 사회문제 탐구, 윤리문제 탐구, 여행지리, 역사로 탐구하는 현대 세계, 금융과 경제생활",
+      "status": "AVAILABLE",
+      "isReadOnly": false,
+      "subjectArea": "교과(군) 간 선택",
+      "tags": [
+        "#자연계열",
+        "#생명심화",
+        "#3학년선택"
+      ],
+      "guidance": [
+        "ebs-2022-062",
+        "ts-2022-386"
+      ],
+      "shortDescription": "2학년 미이수자를 위한 3학년 세포와 물질대사 과목. 중복 이수 불가.",
+      "trackAffinity": [
+        "sci",
+        "info"
+      ],
+      "recommendedCareers": [
+        "agriculture-marine",
+        "medical-pharmacy"
+      ],
+      "fullDescription": {
+        "overview": "세포 내부에서 일어나는 대사 과정, 세포 분열 및 광합성 구조를 다루어 심도 있는 의약/생명 기초를 다집니다.",
+        "units": "효소 대사 반응, 미토콘드리아와 엽록체 기작, 생리학적 관점 실험",
+        "hanminHighlight": "인체의 미시적 작동 원리를 이해하며 의학적 문제를 과학적으로 해결하는 기초를 닦습니다.",
+        "targetStudent": "의대, 치대, 약대 지망생 및 생명공학 연구자를 꿈꾸는 학생",
+        "relatedCareers": "의·약학, 유전공학, 생명자원학"
+      },
+      "equivalentTo": [
+        "g2-fusion-cell-metabolism"
+      ]
+    },
+    {
+      "id": "subj-g3-s1-여행지리-2022",
+      "name": "여행지리",
+      "credits": 3,
+      "category": "진로선택",
+      "grading": "5단계",
+      "gradingType": "absolute",
+      "semester": "3-1",
+      "grade": 3,
+      "groupId": "g3-s1-역학과 에너지, 전자기와 양자, 물질과 에너지, 화학 반응의 세계, 세포와 물질대사, 생물의 유전, 지구시스템과학, 행성우주과학, 사회문제 탐구, 윤리문제 탐구, 여행지리, 역사로 탐구하는 현대 세계, 금융과 경제생활",
+      "status": "AVAILABLE",
+      "isReadOnly": false,
+      "subjectArea": "교과(군) 간 선택",
+      "tags": [
+        "#사회",
+        "#지리",
+        "#여행",
+        "#융합선택"
+      ],
+      "guidance": [
+        "ebs-2022-109",
+        "ts-2022-368"
+      ],
+      "shortDescription": "여행을 실마리로 세계의 자연·문화 경관과 인간-환경 관계를 읽습니다.",
+      "trackAffinity": [
+        "hum"
+      ],
+      "recommendedCareers": [
+        "social-science",
+        "humanities",
+        "agriculture-marine",
         "business-economics"
       ],
       "fullDescription": {
-        "overview": "인공지능의 데이터 처리와 의사 결정에 수학이 활용되는 사례를 통해 인공지능과 수학의 관련성을 탐구하는 과목입니다. 인공지능의 알고리즘이 논리와 수학에 기초하며 빅데이터 활용으로 새로운 가치가 만들어짐을 이해하고, 인공지능이 데이터의 경향성을 파악하고 최적화해 미래를 예측하는 원리를 다룹니다. 데이터의 공정성을 확보하려는 태도와 공학 도구 활용 능력도 함께 기릅니다.",
-        "units": "인공지능과 빅데이터 · 텍스트 데이터 처리 · 이미지 데이터 처리 · 예측과 최적화 · 인공지능과 수학 탐구",
-        "targetStudent": "인공지능·데이터 분야 진학을 생각하는 학생, AI가 어떻게 판단하는지 궁금한 학생",
-        "relatedCareers": "인공지능학, 컴퓨터공학, 데이터과학, 산업공학, 통계학 등",
-        "schoolHighlight": "인공지능의 원리를 수학식으로 이해하고 데이터 해석과 모델링 활동에 연결합니다."
+        "overview": "세계 여러 지역의 자연경관과 인문경관, 인간과 환경의 관계에 대한 이해를 바탕으로 행복한 여행을 향유하는 데 필요한 지리적 소양을 기르는 융합 선택 과목입니다. 자연과학과 인문·사회과학의 내용을 함께 다루어 다학문·간학문적 통합을 강조하며, 사고의 다양성과 스케일 확장을 경험하게 합니다.",
+        "units": "행복하고 안전한 여행 · 문화와 자연을 찾아가는 여행 · 성찰과 공존을 위한 여행 · 미래 사회와 여행",
+        "targetStudent": "여행과 지역 문화에 관심 있는 학생, 지리를 실생활과 잇고 싶은 학생",
+        "relatedCareers": "지리학, 관광학, 문화인류학, 환경학, 도시계획학 등",
+        "schoolHighlight": "여행지의 자연·문화·산업을 지리 자료로 분석하고 책임 있는 여행과 지역 발전 방안을 탐구합니다."
+      },
+      "closed": true,
+      "closedReason": "1차 수요조사 인원 미달로 2027학년도 미개설"
+    },
+    {
+      "id": "subj-g3-s1-역사로_탐구하는_현대_세계-2022",
+      "name": "역사로 탐구하는 현대 세계",
+      "credits": 3,
+      "category": "융합선택",
+      "grading": "5단계",
+      "gradingType": "absolute",
+      "semester": "3-1",
+      "grade": 3,
+      "groupId": "g3-s1-역학과 에너지, 전자기와 양자, 물질과 에너지, 화학 반응의 세계, 세포와 물질대사, 생물의 유전, 지구시스템과학, 행성우주과학, 사회문제 탐구, 윤리문제 탐구, 여행지리, 역사로 탐구하는 현대 세계, 금융과 경제생활",
+      "status": "AVAILABLE",
+      "isReadOnly": false,
+      "subjectArea": "사회",
+      "tags": [
+        "#인문계열",
+        "#역사학",
+        "#3학년선택"
+      ],
+      "guidance": [
+        "ebs-2022-110",
+        "ts-2022-369"
+      ],
+      "shortDescription": "현대 세계의 주요 사건을 역사적 관점으로 분석합니다.",
+      "trackAffinity": [
+        "hum"
+      ],
+      "recommendedCareers": [
+        "law-administration",
+        "media-advertising"
+      ],
+      "fullDescription": {
+        "overview": "현대 세계의 과제를 역사적 관점에서 파악하고 해결 방안을 모색하는 역사과 융합 선택 과목입니다. 국가·지역·세계의 역사에 상호연관적으로 접근하며, 현대 세계의 과제를 중심으로 내용을 선정해 시계열적으로 구성합니다. 자료의 분석·해석 과정에서 탐구 능력을 기르고 해석의 다양성을 경험합니다.",
+        "units": "현대 세계와 역사 탐구 · 냉전과 열전 · 성장의 풍요와 생태환경 · 분쟁과 갈등, 화해의 역사 · 도전받는 현대 세계",
+        "targetStudent": "오늘의 국제 뉴스가 왜 그런지 역사로 알고 싶은 학생",
+        "relatedCareers": "사학, 정치외교학, 국제학, 언론정보학 등",
+        "schoolHighlight": "현대 세계의 갈등과 변화를 역사적 배경에서 추적하고 사료·기사·통계 자료를 비교해 쟁점을 해석합니다."
       }
     },
     {
@@ -1113,7 +1454,10 @@
         "ts-2022-382"
       ],
       "shortDescription": "2학년 미이수자를 위한 3학년 역학과 에너지 과목. 중복 이수 불가.",
-      "trackAffinity": [],
+      "trackAffinity": [
+        "sci",
+        "info"
+      ],
       "recommendedCareers": [
         "architecture-civil",
         "it-computer",
@@ -1130,6 +1474,45 @@
       "equivalentTo": [
         "g2-fusion-mechanics"
       ]
+    },
+    {
+      "id": "subj-g3-s1-윤리문제_탐구-2022",
+      "name": "윤리문제 탐구",
+      "credits": 3,
+      "category": "진로선택",
+      "grading": "5단계",
+      "gradingType": "absolute",
+      "semester": "3-1",
+      "grade": 3,
+      "groupId": "g3-s1-역학과 에너지, 전자기와 양자, 물질과 에너지, 화학 반응의 세계, 세포와 물질대사, 생물의 유전, 지구시스템과학, 행성우주과학, 사회문제 탐구, 윤리문제 탐구, 여행지리, 역사로 탐구하는 현대 세계, 금융과 경제생활",
+      "status": "AVAILABLE",
+      "isReadOnly": false,
+      "subjectArea": "교과(군) 간 선택",
+      "tags": [
+        "#인문계열",
+        "#윤리학",
+        "#3학년선택"
+      ],
+      "guidance": [
+        "ebs-2022-113",
+        "ts-2022-372"
+      ],
+      "shortDescription": "현대 윤리 문제를 탐구하며 도덕적 판단력과 실천적 지혜를 심화합니다.",
+      "trackAffinity": [
+        "hum"
+      ],
+      "recommendedCareers": [
+        "education",
+        "humanities",
+        "social-science"
+      ],
+      "fullDescription": {
+        "overview": "미래사회로의 변화 과정에서 경험하는 다양한 문제를 윤리적 관점에서 바라보고 합리적 해결 방안을 모색하는 도덕과 융합 선택 과목입니다. 동·서양의 윤리 이론과 사회사상, 최신 도덕 심리학의 연구 성과에 기반해 민주시민·디지털과 인공지능·생태전환과 관련한 최근의 윤리적 쟁점들을 구체적 사례 중심으로 탐구합니다.",
+        "units": "윤리문제 탐구의 이해 · 시민의 삶과 윤리적 탐구 · 인공지능 시대의 삶과 윤리적 탐구 · 생태적 삶과 윤리적 탐구 · 윤리문제 탐구의 적용",
+        "targetStudent": "«무엇이 옳은가»를 끝까지 따져 보고 싶은 학생, 토론을 즐기는 학생",
+        "relatedCareers": "철학, 윤리학, 법학, 정책학, 교육학 등",
+        "schoolHighlight": "생명·환경·과학기술·정의의 윤리 쟁점을 여러 관점에서 검토하고 논증과 토론으로 자신의 판단을 세웁니다."
+      }
     },
     {
       "id": "subj-g3-s1-전자기와_양자-2022",
@@ -1154,7 +1537,10 @@
         "ts-2022-383"
       ],
       "shortDescription": "2학년 미이수자를 위한 3학년 전자기와 양자 과목. 중복 이수 불가.",
-      "trackAffinity": [],
+      "trackAffinity": [
+        "sci",
+        "info"
+      ],
       "recommendedCareers": [
         "mechanical-electrical"
       ],
@@ -1167,124 +1553,6 @@
       },
       "equivalentTo": [
         "g2-fusion-electromagnetism"
-      ]
-    },
-    {
-      "id": "subj-g3-s1-물질과_에너지-2022",
-      "name": "물질과 에너지",
-      "credits": 3,
-      "category": "진로선택",
-      "grading": "5등급+A~E",
-      "gradingType": "relative+absolute",
-      "semester": "3-1",
-      "grade": 3,
-      "groupId": "g3-s1-역학과 에너지, 전자기와 양자, 물질과 에너지, 화학 반응의 세계, 세포와 물질대사, 생물의 유전, 지구시스템과학, 행성우주과학, 사회문제 탐구, 윤리문제 탐구, 여행지리, 역사로 탐구하는 현대 세계, 금융과 경제생활",
-      "status": "AVAILABLE",
-      "isReadOnly": false,
-      "subjectArea": "교과(군) 간 선택",
-      "tags": [
-        "#자연계열",
-        "#화학심화",
-        "#3학년선택"
-      ],
-      "guidance": [
-        "ebs-2022-060",
-        "ts-2022-384"
-      ],
-      "shortDescription": "2학년 미이수자를 위한 3학년 물질과 에너지 과목. 중복 이수 불가.",
-      "trackAffinity": [],
-      "recommendedCareers": [
-        "it-computer",
-        "materials-chemistry",
-        "medical-pharmacy"
-      ],
-      "fullDescription": {
-        "overview": "다양한 화학 물질 간의 에너지 교환(엔탈피, 엔트로피) 현상을 정량적으로 증명하는 화학 심화 과목입니다.",
-        "units": "화학 열역학 기초, 분자 궤도 함수, 상태 변화와 자유 에너지",
-        "hanminHighlight": "눈에 보이지 않는 에너지의 흐름을 수식과 실험으로 증명하며 화학적 사고를 심화합니다.",
-        "targetStudent": "배터리, 에너지공학, 화학연구원을 꿈꾸는 학생",
-        "relatedCareers": "화학소재연구, 배터리공학, 약학"
-      },
-      "equivalentTo": [
-        "g2-fusion-matter-energy"
-      ]
-    },
-    {
-      "id": "subj-g3-s1-세포와_물질대사-2022",
-      "name": "세포와 물질대사",
-      "credits": 3,
-      "category": "진로선택",
-      "grading": "5등급+A~E",
-      "gradingType": "relative+absolute",
-      "semester": "3-1",
-      "grade": 3,
-      "groupId": "g3-s1-역학과 에너지, 전자기와 양자, 물질과 에너지, 화학 반응의 세계, 세포와 물질대사, 생물의 유전, 지구시스템과학, 행성우주과학, 사회문제 탐구, 윤리문제 탐구, 여행지리, 역사로 탐구하는 현대 세계, 금융과 경제생활",
-      "status": "AVAILABLE",
-      "isReadOnly": false,
-      "subjectArea": "교과(군) 간 선택",
-      "tags": [
-        "#자연계열",
-        "#생명심화",
-        "#3학년선택"
-      ],
-      "guidance": [
-        "ebs-2022-062",
-        "ts-2022-386"
-      ],
-      "shortDescription": "2학년 미이수자를 위한 3학년 세포와 물질대사 과목. 중복 이수 불가.",
-      "trackAffinity": [],
-      "recommendedCareers": [
-        "agriculture-marine",
-        "medical-pharmacy"
-      ],
-      "fullDescription": {
-        "overview": "세포 내부에서 일어나는 대사 과정, 세포 분열 및 광합성 구조를 다루어 심도 있는 의약/생명 기초를 다집니다.",
-        "units": "효소 대사 반응, 미토콘드리아와 엽록체 기작, 생리학적 관점 실험",
-        "hanminHighlight": "인체의 미시적 작동 원리를 이해하며 의학적 문제를 과학적으로 해결하는 기초를 닦습니다.",
-        "targetStudent": "의대, 치대, 약대 지망생 및 생명공학 연구자를 꿈꾸는 학생",
-        "relatedCareers": "의·약학, 유전공학, 생명자원학"
-      },
-      "equivalentTo": [
-        "g2-fusion-cell-metabolism"
-      ]
-    },
-    {
-      "id": "subj-g3-s1-생물의_유전-2022",
-      "name": "생물의 유전",
-      "credits": 3,
-      "category": "진로선택",
-      "grading": "5등급+A~E",
-      "gradingType": "relative+absolute",
-      "semester": "3-1",
-      "grade": 3,
-      "groupId": "g3-s1-역학과 에너지, 전자기와 양자, 물질과 에너지, 화학 반응의 세계, 세포와 물질대사, 생물의 유전, 지구시스템과학, 행성우주과학, 사회문제 탐구, 윤리문제 탐구, 여행지리, 역사로 탐구하는 현대 세계, 금융과 경제생활",
-      "status": "AVAILABLE",
-      "isReadOnly": false,
-      "subjectArea": "교과(군) 간 선택",
-      "tags": [
-        "#자연계열",
-        "#생명심화",
-        "#3학년선택"
-      ],
-      "guidance": [
-        "ebs-2022-063",
-        "ts-2022-387"
-      ],
-      "shortDescription": "2학년 미이수자를 위한 3학년 생물의 유전 과목. 중복 이수 불가.",
-      "trackAffinity": [],
-      "recommendedCareers": [
-        "agriculture-marine",
-        "medical-pharmacy"
-      ],
-      "fullDescription": {
-        "overview": "멘델 유전학을 넘어서는 분자 생물학적 유전자 발현, 돌연변이 및 염색체 진화 과정을 다루는 고도의 생물 과목입니다.",
-        "units": "DNA 구조와 복제, 유전자 단백질 합성 기작, 생명 기술(CRISPR 등) 연구",
-        "hanminHighlight": "DNA 단계의 탐구를 통해 현대 생명공학의 최전선을 경험합니다.",
-        "targetStudent": "유전공학, 생명과학 연구원, 전공 심화 탐구자",
-        "relatedCareers": "분자생물학, 종양학, 유전공학"
-      },
-      "equivalentTo": [
-        "g2-fusion-genetics"
       ]
     },
     {
@@ -1310,7 +1578,10 @@
         "ts-2022-388"
       ],
       "shortDescription": "2학년 미이수자를 위한 3학년 지구시스템과학 과목. 중복 이수 불가.",
-      "trackAffinity": [],
+      "trackAffinity": [
+        "sci",
+        "info"
+      ],
       "recommendedCareers": [
         "agriculture-marine",
         "architecture-civil"
@@ -1349,7 +1620,10 @@
         "ts-2022-389"
       ],
       "shortDescription": "2학년 미이수자를 위한 3학년 행성우주과학 과목. 중복 이수 불가.",
-      "trackAffinity": [],
+      "trackAffinity": [
+        "sci",
+        "info"
+      ],
       "recommendedCareers": [
         "mechanical-electrical",
         "agriculture-marine",
@@ -1365,157 +1639,6 @@
       "equivalentTo": [
         "g2-fusion-planetary"
       ]
-    },
-    {
-      "id": "subj-g3-s1-사회문제_탐구-2022",
-      "name": "사회문제 탐구",
-      "credits": 3,
-      "category": "진로선택",
-      "grading": "5단계",
-      "gradingType": "absolute",
-      "semester": "3-1",
-      "grade": 3,
-      "groupId": "g3-s1-역학과 에너지, 전자기와 양자, 물질과 에너지, 화학 반응의 세계, 세포와 물질대사, 생물의 유전, 지구시스템과학, 행성우주과학, 사회문제 탐구, 윤리문제 탐구, 여행지리, 역사로 탐구하는 현대 세계, 금융과 경제생활",
-      "status": "AVAILABLE",
-      "isReadOnly": false,
-      "subjectArea": "교과(군) 간 선택",
-      "tags": [
-        "#사회",
-        "#탐구",
-        "#프로젝트",
-        "#융합선택"
-      ],
-      "guidance": [
-        "ebs-2022-111",
-        "ts-2022-370"
-      ],
-      "shortDescription": "관심 있는 사회문제를 직접 조사하고 해결 방안을 보고서로 냅니다.",
-      "trackAffinity": [],
-      "recommendedCareers": [
-        "social-science",
-        "law-administration",
-        "humanities",
-        "media-advertising"
-      ],
-      "fullDescription": {
-        "overview": "현대 사회에서 발생하는 여러 사회문제를 탐구하고 해결 방안을 모색하는 일반사회 영역의 융합 선택 과목입니다. 사회문제의 의미와 특징, 연구 방법의 이해를 기초로 학생이 주도적으로 해결 방안을 탐구하고 그 과정을 보고서로 작성하는 실천적 탐구 활동을 중심에 둡니다.",
-        "units": "사회문제의 이해와 탐구 · 일상생활과 사회문제 · 변화하는 세계와 사회문제 · 사회문제 사례 연구",
-        "targetStudent": "직접 조사·연구를 해보고 싶은 학생, 사회 이슈에 문제의식이 있는 학생",
-        "relatedCareers": "사회학, 사회복지학, 행정학, 정책학, 언론정보학 등",
-        "schoolHighlight": "관심 있는 사회문제를 자료 조사와 관점 비교로 분석하고 토론·보고서·정책 제안 형태로 해결안을 구체화합니다."
-      }
-    },
-    {
-      "id": "subj-g3-s1-윤리문제_탐구-2022",
-      "name": "윤리문제 탐구",
-      "credits": 3,
-      "category": "진로선택",
-      "grading": "5단계",
-      "gradingType": "absolute",
-      "semester": "3-1",
-      "grade": 3,
-      "groupId": "g3-s1-역학과 에너지, 전자기와 양자, 물질과 에너지, 화학 반응의 세계, 세포와 물질대사, 생물의 유전, 지구시스템과학, 행성우주과학, 사회문제 탐구, 윤리문제 탐구, 여행지리, 역사로 탐구하는 현대 세계, 금융과 경제생활",
-      "status": "AVAILABLE",
-      "isReadOnly": false,
-      "subjectArea": "교과(군) 간 선택",
-      "tags": [
-        "#인문계열",
-        "#윤리학",
-        "#3학년선택"
-      ],
-      "guidance": [
-        "ebs-2022-113",
-        "ts-2022-372"
-      ],
-      "shortDescription": "현대 윤리 문제를 탐구하며 도덕적 판단력과 실천적 지혜를 심화합니다.",
-      "trackAffinity": [],
-      "recommendedCareers": [
-        "education",
-        "humanities",
-        "social-science"
-      ],
-      "fullDescription": {
-        "overview": "미래사회로의 변화 과정에서 경험하는 다양한 문제를 윤리적 관점에서 바라보고 합리적 해결 방안을 모색하는 도덕과 융합 선택 과목입니다. 동·서양의 윤리 이론과 사회사상, 최신 도덕 심리학의 연구 성과에 기반해 민주시민·디지털과 인공지능·생태전환과 관련한 최근의 윤리적 쟁점들을 구체적 사례 중심으로 탐구합니다.",
-        "units": "윤리문제 탐구의 이해 · 시민의 삶과 윤리적 탐구 · 인공지능 시대의 삶과 윤리적 탐구 · 생태적 삶과 윤리적 탐구 · 윤리문제 탐구의 적용",
-        "targetStudent": "«무엇이 옳은가»를 끝까지 따져 보고 싶은 학생, 토론을 즐기는 학생",
-        "relatedCareers": "철학, 윤리학, 법학, 정책학, 교육학 등",
-        "schoolHighlight": "생명·환경·과학기술·정의의 윤리 쟁점을 여러 관점에서 검토하고 논증과 토론으로 자신의 판단을 세웁니다."
-      }
-    },
-    {
-      "id": "subj-g3-s1-여행지리-2022",
-      "name": "여행지리",
-      "credits": 3,
-      "category": "진로선택",
-      "grading": "5단계",
-      "gradingType": "absolute",
-      "semester": "3-1",
-      "grade": 3,
-      "groupId": "g3-s1-역학과 에너지, 전자기와 양자, 물질과 에너지, 화학 반응의 세계, 세포와 물질대사, 생물의 유전, 지구시스템과학, 행성우주과학, 사회문제 탐구, 윤리문제 탐구, 여행지리, 역사로 탐구하는 현대 세계, 금융과 경제생활",
-      "status": "AVAILABLE",
-      "isReadOnly": false,
-      "subjectArea": "교과(군) 간 선택",
-      "tags": [
-        "#사회",
-        "#지리",
-        "#여행",
-        "#융합선택"
-      ],
-      "guidance": [
-        "ebs-2022-109",
-        "ts-2022-368"
-      ],
-      "shortDescription": "여행을 실마리로 세계의 자연·문화 경관과 인간-환경 관계를 읽습니다.",
-      "trackAffinity": [],
-      "recommendedCareers": [
-        "social-science",
-        "humanities",
-        "agriculture-marine",
-        "business-economics"
-      ],
-      "fullDescription": {
-        "overview": "세계 여러 지역의 자연경관과 인문경관, 인간과 환경의 관계에 대한 이해를 바탕으로 행복한 여행을 향유하는 데 필요한 지리적 소양을 기르는 융합 선택 과목입니다. 자연과학과 인문·사회과학의 내용을 함께 다루어 다학문·간학문적 통합을 강조하며, 사고의 다양성과 스케일 확장을 경험하게 합니다.",
-        "units": "행복하고 안전한 여행 · 문화와 자연을 찾아가는 여행 · 성찰과 공존을 위한 여행 · 미래 사회와 여행",
-        "targetStudent": "여행과 지역 문화에 관심 있는 학생, 지리를 실생활과 잇고 싶은 학생",
-        "relatedCareers": "지리학, 관광학, 문화인류학, 환경학, 도시계획학 등",
-        "schoolHighlight": "여행지의 자연·문화·산업을 지리 자료로 분석하고 책임 있는 여행과 지역 발전 방안을 탐구합니다."
-      }
-    },
-    {
-      "id": "subj-g3-s1-금융과_경제생활-2022",
-      "name": "금융과 경제생활",
-      "credits": 3,
-      "category": "진로선택",
-      "grading": "5단계",
-      "gradingType": "absolute",
-      "semester": "3-1",
-      "grade": 3,
-      "groupId": "g3-s1-역학과 에너지, 전자기와 양자, 물질과 에너지, 화학 반응의 세계, 세포와 물질대사, 생물의 유전, 지구시스템과학, 행성우주과학, 사회문제 탐구, 윤리문제 탐구, 여행지리, 역사로 탐구하는 현대 세계, 금융과 경제생활",
-      "status": "AVAILABLE",
-      "isReadOnly": false,
-      "subjectArea": "교과(군) 간 선택",
-      "tags": [
-        "#인문계열",
-        "#금융경제",
-        "#경영경제필수"
-      ],
-      "guidance": [
-        "ebs-2022-112",
-        "ts-2022-371"
-      ],
-      "shortDescription": "금융의 기초 원리와 경제적 의사결정 방법을 탐구합니다.",
-      "trackAffinity": [],
-      "recommendedCareers": [
-        "business-economics",
-        "sports"
-      ],
-      "fullDescription": {
-        "overview": "급변하는 디지털 금융 환경에서 평생에 걸쳐 안정된 금융 복지를 누리는 데 필요한 금융 지식과 의사 결정 능력, 건전한 재무적 태도와 습관을 기르는 융합 선택 과목입니다. 안전한 금융 거래에 필요한 소양과 금융 사기 예방, 수입과 지출의 관리, 저축과 투자의 기본 원리, 신용과 위험 관리를 실제 생활 경험과 연결해 다룹니다.",
-        "units": "행복하고 안전한 금융 생활 · 수입과 지출 · 저축과 투자",
-        "targetStudent": "돈 관리와 금융 상품을 제대로 알고 싶은 학생, 상경 계열 진학 예정 학생",
-        "relatedCareers": "경제학, 경영학, 금융학, 회계학, 소비자학 등",
-        "schoolHighlight": "소득·소비·저축·투자·신용의 원리를 생활 사례와 자료 분석으로 익혀 합리적인 금융 의사결정을 연습합니다."
-      }
     },
     {
       "id": "subj-g3-s1-화학_반응의_세계-2022",
@@ -1540,7 +1663,10 @@
         "ts-2022-385"
       ],
       "shortDescription": "2학년 미이수자를 위한 3학년 화학 반응의 세계 과목. 중복 이수 불가.",
-      "trackAffinity": [],
+      "trackAffinity": [
+        "sci",
+        "info"
+      ],
       "recommendedCareers": [
         "agriculture-marine",
         "architecture-civil",
@@ -1557,42 +1683,6 @@
       "equivalentTo": [
         "g2-fusion-chemical-reaction"
       ]
-    },
-    {
-      "id": "subj-g3-s1-역사로_탐구하는_현대_세계-2022",
-      "name": "역사로 탐구하는 현대 세계",
-      "credits": 3,
-      "category": "융합선택",
-      "grading": "5단계",
-      "gradingType": "absolute",
-      "semester": "3-1",
-      "grade": 3,
-      "groupId": "g3-s1-역학과 에너지, 전자기와 양자, 물질과 에너지, 화학 반응의 세계, 세포와 물질대사, 생물의 유전, 지구시스템과학, 행성우주과학, 사회문제 탐구, 윤리문제 탐구, 여행지리, 역사로 탐구하는 현대 세계, 금융과 경제생활",
-      "status": "AVAILABLE",
-      "isReadOnly": false,
-      "subjectArea": "사회",
-      "tags": [
-        "#인문계열",
-        "#역사학",
-        "#3학년선택"
-      ],
-      "guidance": [
-        "ebs-2022-110",
-        "ts-2022-369"
-      ],
-      "shortDescription": "현대 세계의 주요 사건을 역사적 관점으로 분석합니다.",
-      "trackAffinity": [],
-      "recommendedCareers": [
-        "law-administration",
-        "media-advertising"
-      ],
-      "fullDescription": {
-        "overview": "현대 세계의 과제를 역사적 관점에서 파악하고 해결 방안을 모색하는 역사과 융합 선택 과목입니다. 국가·지역·세계의 역사에 상호연관적으로 접근하며, 현대 세계의 과제를 중심으로 내용을 선정해 시계열적으로 구성합니다. 자료의 분석·해석 과정에서 탐구 능력을 기르고 해석의 다양성을 경험합니다.",
-        "units": "현대 세계와 역사 탐구 · 냉전과 열전 · 성장의 풍요와 생태환경 · 분쟁과 갈등, 화해의 역사 · 도전받는 현대 세계",
-        "targetStudent": "오늘의 국제 뉴스가 왜 그런지 역사로 알고 싶은 학생",
-        "relatedCareers": "사학, 정치외교학, 국제학, 언론정보학 등",
-        "schoolHighlight": "현대 세계의 갈등과 변화를 역사적 배경에서 추적하고 사료·기사·통계 자료를 비교해 쟁점을 해석합니다."
-      }
     },
     {
       "id": "subj-g3-s1-고급_물리학-2022",
@@ -1614,7 +1704,10 @@
         "#진로선택"
       ],
       "shortDescription": "역학·전자기학·광학·현대 물리를 대학 수준의 체계로 다룹니다.",
-      "trackAffinity": [],
+      "trackAffinity": [
+        "sci",
+        "info"
+      ],
       "recommendedCareers": [
         "mathematics-physics",
         "mechanical-electrical",
@@ -1626,40 +1719,6 @@
         "targetStudent": "물리학적 깊이를 갈망하며 최상위 공대 및 자연대 진학을 목표로 하는 학생",
         "relatedCareers": "서울대, 의예과, 카이스트 등 최상위 이공계 대학",
         "hanminHighlight": "서울대, 카이스트 등 최상위권 이공계 진학을 위한 한민고의 시그니처 심화 트랙입니다."
-      }
-    },
-    {
-      "id": "subj-g3-s1-고급_화학-2022",
-      "name": "고급 화학",
-      "credits": 5,
-      "category": "진로선택",
-      "grading": "5등급+A~E",
-      "gradingType": "relative+absolute",
-      "semester": "3-1",
-      "grade": 3,
-      "groupId": "g3-s1-고급 물리학, 고급 화학, 고급 생명과학, 고급 지구과학, 정보과학, 국제 경제, 지역 이해, 국제 관계와 국제기구, 역사학으로 국제사회 읽기, 현대정치철학의 이해",
-      "status": "AVAILABLE",
-      "isReadOnly": false,
-      "subjectArea": "교과(군) 간 선택",
-      "tags": [
-        "#과학",
-        "#화학",
-        "#고급",
-        "#진로선택"
-      ],
-      "shortDescription": "물질의 구조·성질·변화와 평형을 심화된 수준에서 다룹니다.",
-      "trackAffinity": [],
-      "recommendedCareers": [
-        "chemistry-life",
-        "materials-chemistry",
-        "medical-pharmacy"
-      ],
-      "fullDescription": {
-        "overview": "일반계 고교 과정을 초월해 대학 1학년 전공 기초(일반화학) 범위의 이론을 다룹니다. [물질과 에너지]와 [화학 반응의 세계]의 통합 심화 과정입니다.",
-        "units": "반응 속도론의 수학적 모델링, 평형 상수 정밀 계산, 유기화학 및 배위화학 기초",
-        "targetStudent": "화학적 현상을 정량적으로 분석하고 대학 수준의 실험 역량을 갖추고 싶은 학생",
-        "relatedCareers": "의예과, 약학과, 화학공학과, 신소재공학과 최상위권",
-        "hanminHighlight": "의치한약수 및 화학공학 최상위권 진학을 위한 압도적인 전공 역량을 증명합니다."
       }
     },
     {
@@ -1682,7 +1741,10 @@
         "#진로선택"
       ],
       "shortDescription": "생물의 구조와 조절, 생명의 연속성과 생명공학까지 전문적으로 다룹니다.",
-      "trackAffinity": [],
+      "trackAffinity": [
+        "sci",
+        "info"
+      ],
       "recommendedCareers": [
         "chemistry-life",
         "medical-pharmacy",
@@ -1715,7 +1777,10 @@
         "#대학수준"
       ],
       "shortDescription": "대학 수준의 지구과학을 선행 학습합니다. [지구시스템과학] + [행성우주과학] 이수 필수.",
-      "trackAffinity": [],
+      "trackAffinity": [
+        "sci",
+        "info"
+      ],
       "recommendedCareers": [
         "earth-environment",
         "architecture-civil",
@@ -1730,8 +1795,8 @@
       }
     },
     {
-      "id": "subj-g3-s1-정보과학-2022",
-      "name": "정보과학",
+      "id": "subj-g3-s1-고급_화학-2022",
+      "name": "고급 화학",
       "credits": 5,
       "category": "진로선택",
       "grading": "5등급+A~E",
@@ -1743,24 +1808,28 @@
       "isReadOnly": false,
       "subjectArea": "교과(군) 간 선택",
       "tags": [
-        "#정보계열최상위",
-        "#CS전공기초",
-        "#알고리즘",
-        "#컴공필수"
+        "#과학",
+        "#화학",
+        "#고급",
+        "#진로선택"
       ],
-      "shortDescription": "컴퓨터과학의 핵심 이론인 자료구조, 알고리즘 등을 전공 수준으로 학습합니다.",
-      "trackAffinity": [],
+      "shortDescription": "물질의 구조·성질·변화와 평형을 심화된 수준에서 다룹니다.",
+      "trackAffinity": [
+        "sci",
+        "info"
+      ],
       "recommendedCareers": [
-        "it-computer"
+        "chemistry-life",
+        "materials-chemistry",
+        "medical-pharmacy"
       ],
       "fullDescription": {
-        "overview": "컴퓨터과학의 핵심 이론인 자료구조, 알고리즘, 운영체제, 네트워크를 대학 전공 수준으로 학습하는 정보계열 최고급 과정입니다.",
-        "units": "정렬/탐색 알고리즘 구현, 그래프 이론, 데이터베이스 설계, 시스템 프로그래밍 실습",
-        "hanminHighlight": "인공지능 기초 → 컴퓨터 구조 → 정보과학으로 이어지는 한민고 정보계열 R&E 파이프라인의 최종 단계입니다.",
-        "targetStudent": "컴퓨터 전공을 확신하며 학문적 근간을 고등학교 단계에서 완성하고 싶은 학생",
-        "relatedCareers": "컴퓨터공학과, 소프트웨어학과, AI학과, 카이스트 전산학부"
-      },
-      "difficulty": "최상"
+        "overview": "일반계 고교 과정을 초월해 대학 1학년 전공 기초(일반화학) 범위의 이론을 다룹니다. [물질과 에너지]와 [화학 반응의 세계]의 통합 심화 과정입니다.",
+        "units": "반응 속도론의 수학적 모델링, 평형 상수 정밀 계산, 유기화학 및 배위화학 기초",
+        "targetStudent": "화학적 현상을 정량적으로 분석하고 대학 수준의 실험 역량을 갖추고 싶은 학생",
+        "relatedCareers": "의예과, 약학과, 화학공학과, 신소재공학과 최상위권",
+        "hanminHighlight": "의치한약수 및 화학공학 최상위권 진학을 위한 압도적인 전공 역량을 증명합니다."
+      }
     },
     {
       "id": "subj-g3-s1-국제_경제-2022",
@@ -1782,7 +1851,9 @@
         "#하이엔드"
       ],
       "shortDescription": "글로벌 상거래, 환율, 관세 및 국제 경제 기구의 작동 메커니즘을 심화 학습합니다.",
-      "trackAffinity": [],
+      "trackAffinity": [
+        "hum"
+      ],
       "recommendedCareers": [
         "business-economics"
       ],
@@ -1792,6 +1863,111 @@
         "hanminHighlight": "글로벌 경제 무대의 전문가를 꿈꾸는 학생들을 위해 복합적인 국제 정세를 경제학적으로 풀어냅니다.",
         "targetStudent": "국제 사회의 경제적 역학 관계를 깊이 있게 연구하고 싶은 학생",
         "relatedCareers": "국제통상, 국제경제, 자유전공학부"
+      },
+      "difficulty": "최상"
+    },
+    {
+      "id": "subj-g3-s1-국제_관계와_국제기구-2022",
+      "name": "국제 관계와 국제기구",
+      "credits": 5,
+      "category": "융합선택",
+      "grading": "5등급+A~E",
+      "gradingType": "relative+absolute",
+      "semester": "3-1",
+      "grade": 3,
+      "groupId": "g3-s1-고급 물리학, 고급 화학, 고급 생명과학, 고급 지구과학, 정보과학, 국제 경제, 지역 이해, 국제 관계와 국제기구, 역사학으로 국제사회 읽기, 현대정치철학의 이해",
+      "status": "AVAILABLE",
+      "isReadOnly": false,
+      "subjectArea": "사회",
+      "tags": [
+        "#인문계열",
+        "#외교정치",
+        "#국제관계"
+      ],
+      "shortDescription": "국제 관계의 이론과 국제기구의 역할을 탐구하며 글로벌 거버넌스를 이해합니다.",
+      "trackAffinity": [
+        "hum"
+      ],
+      "recommendedCareers": [
+        "language-literature",
+        "law-administration"
+      ],
+      "fullDescription": {
+        "overview": "국가 간 협력과 갈등의 원리를 이해하고 국제기구가 평화·인권·환경·개발 문제를 해결하는 방식을 탐구하는 과목입니다.",
+        "units": "국제관계의 주요 관점 · 국제연합과 국제기구 · 국제법과 인권 · 안보·환경·개발 의제 · 국제 협상",
+        "schoolHighlight": "국제 현안을 여러 국가와 기구의 관점에서 분석하고 토론·모의 협상 활동으로 해결안을 구성합니다.",
+        "targetStudent": "국제 뉴스, 외교, 국제기구와 세계 문제 해결에 관심이 있는 학생",
+        "relatedCareers": "정치외교학, 국제학, 행정학, 국제법, 국제개발협력, 언론학"
+      }
+    },
+    {
+      "id": "subj-g3-s1-역사학으로_국제사회_읽기-2022",
+      "name": "역사학으로 국제사회 읽기",
+      "credits": 5,
+      "category": "진로선택",
+      "grading": "null",
+      "gradingType": "null",
+      "semester": "3-1",
+      "grade": 3,
+      "groupId": "g3-s1-고급 물리학, 고급 화학, 고급 생명과학, 고급 지구과학, 정보과학, 국제 경제, 지역 이해, 국제 관계와 국제기구, 역사학으로 국제사회 읽기, 현대정치철학의 이해",
+      "status": "AVAILABLE",
+      "isReadOnly": false,
+      "subjectArea": "교과(군) 간 선택",
+      "tags": [
+        "#인문계열",
+        "#역사학",
+        "#국제사회"
+      ],
+      "shortDescription": "역사학의 방법론으로 현대 국제 사회의 구조와 변화를 분석합니다.",
+      "trackAffinity": [
+        "hum"
+      ],
+      "recommendedCareers": [
+        "humanities",
+        "language-literature"
+      ],
+      "fullDescription": {
+        "overview": "오늘날 국제사회의 질서와 갈등이 형성된 역사적 배경을 살펴보고 현재의 국제 문제를 장기적인 관점에서 해석하는 과목입니다.",
+        "units": "근대 국제질서의 형성 · 제국주의와 탈식민 · 냉전과 세계화 · 지역 분쟁의 역사 · 기억과 역사 갈등",
+        "schoolHighlight": "현재의 국제 이슈를 단편적인 사건으로 보지 않고 사료와 역사적 맥락을 통해 원인과 변화를 추적합니다.",
+        "targetStudent": "세계사와 국제 문제를 연결해 읽고 토론·논술 역량을 키우고 싶은 학생",
+        "relatedCareers": "역사학, 국제학, 정치외교학, 지역학, 언론학, 국제기구"
+      },
+      "closed": true,
+      "closedReason": "1차 수요조사 인원 미달로 2027학년도 미개설"
+    },
+    {
+      "id": "subj-g3-s1-정보과학-2022",
+      "name": "정보과학",
+      "credits": 5,
+      "category": "진로선택",
+      "grading": "5등급+A~E",
+      "gradingType": "relative+absolute",
+      "semester": "3-1",
+      "grade": 3,
+      "groupId": "g3-s1-고급 물리학, 고급 화학, 고급 생명과학, 고급 지구과학, 정보과학, 국제 경제, 지역 이해, 국제 관계와 국제기구, 역사학으로 국제사회 읽기, 현대정치철학의 이해",
+      "status": "AVAILABLE",
+      "isReadOnly": false,
+      "subjectArea": "교과(군) 간 선택",
+      "tags": [
+        "#정보계열최상위",
+        "#CS전공기초",
+        "#알고리즘",
+        "#컴공필수"
+      ],
+      "shortDescription": "컴퓨터과학의 핵심 이론인 자료구조, 알고리즘 등을 전공 수준으로 학습합니다.",
+      "trackAffinity": [
+        "sci"
+      ],
+      "recommendedCareers": [
+        "it-computer"
+      ],
+      "fullDescription": {
+        "overview": "컴퓨터과학의 핵심 이론인 자료구조, 알고리즘, 운영체제, 네트워크를 대학 전공 수준으로 학습하는 정보계열 최고급 과정입니다.",
+        "units": "정렬/탐색 알고리즘 구현, 그래프 이론, 데이터베이스 설계, 시스템 프로그래밍 실습",
+        "hanminHighlight": "인공지능 기초 → 컴퓨터 구조 → 정보과학으로 이어지는 한민고 정보계열 R&E 파이프라인의 최종 단계입니다.",
+        "targetStudent": "컴퓨터 전공을 확신하며 학문적 근간을 고등학교 단계에서 완성하고 싶은 학생",
+        "relatedCareers": "컴퓨터공학과, 소프트웨어학과, AI학과, 카이스트 전산학부"
       },
       "difficulty": "최상"
     },
@@ -1814,7 +1990,9 @@
         "#국제이해"
       ],
       "shortDescription": "세계 주요 지역의 역사·문화·정치·경제를 종합적으로 탐구합니다.",
-      "trackAffinity": [],
+      "trackAffinity": [
+        "hum"
+      ],
       "recommendedCareers": [
         "social-science",
         "earth-environment",
@@ -1827,7 +2005,9 @@
         "schoolHighlight": "지도·통계·기사 등 다양한 자료를 활용해 한 지역을 입체적으로 분석하고 비교합니다.",
         "targetStudent": "세계의 다양한 지역과 문화, 국제 교류와 지역 문제에 관심이 있는 학생",
         "relatedCareers": "지리학, 지역학, 국제학, 관광학, 도시계획, 무역·국제개발"
-      }
+      },
+      "closed": true,
+      "closedReason": "1차 수요조사 인원 미달로 2027학년도 미개설"
     },
     {
       "id": "subj-g3-s1-현대정치철학의_이해-2022",
@@ -1848,7 +2028,9 @@
         "#사회과학"
       ],
       "shortDescription": "현대 정치철학의 주요 이론과 쟁점을 탐구하며 정치적 사유 능력을 심화합니다.",
-      "trackAffinity": [],
+      "trackAffinity": [
+        "hum"
+      ],
       "recommendedCareers": [
         "education",
         "humanities",
@@ -1860,146 +2042,6 @@
         "schoolHighlight": "철학자의 주장을 실제 사회 쟁점에 적용하고 토론과 논증 글쓰기로 자신의 관점을 다듬습니다.",
         "targetStudent": "사회 문제의 기준과 가치 충돌을 깊이 생각하고 토론·논술을 좋아하는 학생",
         "relatedCareers": "철학, 정치외교학, 법학, 행정학, 사회학, 언론·교육 분야"
-      }
-    },
-    {
-      "id": "subj-g3-s1-국제_관계와_국제기구-2022",
-      "name": "국제 관계와 국제기구",
-      "credits": 5,
-      "category": "융합선택",
-      "grading": "5등급+A~E",
-      "gradingType": "relative+absolute",
-      "semester": "3-1",
-      "grade": 3,
-      "groupId": "g3-s1-고급 물리학, 고급 화학, 고급 생명과학, 고급 지구과학, 정보과학, 국제 경제, 지역 이해, 국제 관계와 국제기구, 역사학으로 국제사회 읽기, 현대정치철학의 이해",
-      "status": "AVAILABLE",
-      "isReadOnly": false,
-      "subjectArea": "사회",
-      "tags": [
-        "#인문계열",
-        "#외교정치",
-        "#국제관계"
-      ],
-      "shortDescription": "국제 관계의 이론과 국제기구의 역할을 탐구하며 글로벌 거버넌스를 이해합니다.",
-      "trackAffinity": [],
-      "recommendedCareers": [
-        "language-literature",
-        "law-administration"
-      ],
-      "fullDescription": {
-        "overview": "국가 간 협력과 갈등의 원리를 이해하고 국제기구가 평화·인권·환경·개발 문제를 해결하는 방식을 탐구하는 과목입니다.",
-        "units": "국제관계의 주요 관점 · 국제연합과 국제기구 · 국제법과 인권 · 안보·환경·개발 의제 · 국제 협상",
-        "schoolHighlight": "국제 현안을 여러 국가와 기구의 관점에서 분석하고 토론·모의 협상 활동으로 해결안을 구성합니다.",
-        "targetStudent": "국제 뉴스, 외교, 국제기구와 세계 문제 해결에 관심이 있는 학생",
-        "relatedCareers": "정치외교학, 국제학, 행정학, 국제법, 국제개발협력, 언론학"
-      }
-    },
-    {
-      "id": "subj-g3-s1-역사학으로_국제사회_읽기-2022",
-      "name": "역사학으로 국제사회 읽기",
-      "credits": 5,
-      "category": "일반선택",
-      "grading": "null",
-      "gradingType": "null",
-      "semester": "3-1",
-      "grade": 3,
-      "groupId": "g3-s1-고급 물리학, 고급 화학, 고급 생명과학, 고급 지구과학, 정보과학, 국제 경제, 지역 이해, 국제 관계와 국제기구, 역사학으로 국제사회 읽기, 현대정치철학의 이해",
-      "status": "AVAILABLE",
-      "isReadOnly": false,
-      "subjectArea": "교양",
-      "tags": [
-        "#인문계열",
-        "#역사학",
-        "#국제사회"
-      ],
-      "shortDescription": "역사학의 방법론으로 현대 국제 사회의 구조와 변화를 분석합니다.",
-      "trackAffinity": [],
-      "recommendedCareers": [
-        "humanities",
-        "language-literature"
-      ],
-      "fullDescription": {
-        "overview": "오늘날 국제사회의 질서와 갈등이 형성된 역사적 배경을 살펴보고 현재의 국제 문제를 장기적인 관점에서 해석하는 과목입니다.",
-        "units": "근대 국제질서의 형성 · 제국주의와 탈식민 · 냉전과 세계화 · 지역 분쟁의 역사 · 기억과 역사 갈등",
-        "schoolHighlight": "현재의 국제 이슈를 단편적인 사건으로 보지 않고 사료와 역사적 맥락을 통해 원인과 변화를 추적합니다.",
-        "targetStudent": "세계사와 국제 문제를 연결해 읽고 토론·논술 역량을 키우고 싶은 학생",
-        "relatedCareers": "역사학, 국제학, 정치외교학, 지역학, 언론학, 국제기구"
-      }
-    },
-    {
-      "id": "subj-g3-s2-주제_탐구_독서-2022",
-      "name": "주제 탐구 독서",
-      "credits": 4,
-      "category": "학교지정",
-      "grading": "5등급+A~E",
-      "gradingType": "relative+absolute",
-      "semester": "3-2",
-      "grade": 3,
-      "groupId": "g3-s2-fixed",
-      "status": "LOCKED",
-      "isReadOnly": true,
-      "subjectArea": "국어",
-      "tags": [
-        "#심화독서",
-        "#진로연계",
-        "#탐구역량"
-      ],
-      "guidance": [
-        "ebs-2022-036",
-        "ts-2022-316"
-      ],
-      "shortDescription": "진로 분야와 연계된 심화 주제를 선정하여 깊이 있는 탐구 독서를 수행합니다.",
-      "trackAffinity": [],
-      "recommendedCareers": [
-        "humanities",
-        "social-science",
-        "language-literature",
-        "education"
-      ],
-      "fullDescription": {
-        "overview": "읽기 영역을 심화한 진로 선택 과목으로, «질문하고 답을 구하는» 탐구 과정으로서의 독서를 다룹니다. 인문·예술, 사회·문화, 과학·기술 등 분야를 가리지 않고 주제와 관련된 책과 자료를 찾아 읽고, 내용을 비교·분석·통합해 자신의 관점과 견해를 세웁니다. 학업과 진로 탐색이 곧 탐구라는 점에서 진로 연계 활동으로 이어집니다.",
-        "units": "주제 탐구 독서의 의미 · 분야에 따른 책과 자료의 특성",
-        "targetStudent": "관심 분야를 스스로 파고들고 싶은 학생, 탐구 보고서·세특 활동을 제대로 해보고 싶은 학생",
-        "relatedCareers": "전 계열 — 진학하려는 분야의 학문 탐구 기초",
-        "schoolHighlight": "관심 주제에 맞는 자료를 스스로 선정하고 출처를 비교·평가해 탐구 질문에 답하는 읽기 결과물을 완성합니다."
-      }
-    },
-    {
-      "id": "subj-g3-s2-심화_영어_독해와_작문-2022",
-      "name": "심화 영어 독해와 작문",
-      "credits": 4,
-      "category": "학교지정",
-      "grading": "5등급+A~E",
-      "gradingType": "relative+absolute",
-      "semester": "3-2",
-      "grade": 3,
-      "groupId": "g3-s2-fixed",
-      "status": "LOCKED",
-      "isReadOnly": true,
-      "subjectArea": "영어",
-      "tags": [
-        "#영어심화",
-        "#국제역량",
-        "#학술작문"
-      ],
-      "guidance": [
-        "ebs-2022-047",
-        "ts-2022-346"
-      ],
-      "shortDescription": "심화 영어 독해와 논증적 영작문 능력을 종합적으로 키웁니다.",
-      "trackAffinity": [],
-      "recommendedCareers": [
-        "language-literature",
-        "humanities",
-        "social-science",
-        "media-advertising"
-      ],
-      "fullDescription": {
-        "overview": "「영어 독해와 작문」과 연계된 읽기·쓰기 심화 과목입니다. 기초 학문 분야를 포함하는 다양한 주제와 장르의 글을 읽고 비판적 독해 능력을 기르며, 자신의 의견을 창의적으로 표현하는 종합적인 영어 문해력을 배양합니다. 효과적인 전략으로 다양한 매체의 글을 읽고 분석·비평하는 활동을 자기주도적으로 수행합니다.",
-        "units": "독해 · 작문",
-        "targetStudent": "영어로 된 자료를 다루는 학과 진학을 준비하는 학생, 영어 글쓰기를 깊이 익히고 싶은 학생",
-        "relatedCareers": "영어영문학, 통번역학, 국제학, 언론정보학 등",
-        "schoolHighlight": "학술적 영어 글의 구조와 논리를 정밀하게 분석하고 자료 기반 에세이와 비평문으로 표현을 고도화합니다."
       }
     },
     {
@@ -2025,7 +2067,9 @@
         "ts-2022-373"
       ],
       "shortDescription": "전 계열 공통 필수 과목. 기후변화의 사회적·경제적 맥락을 탐구합니다.",
-      "trackAffinity": [],
+      "trackAffinity": [
+        "hum"
+      ],
       "recommendedCareers": [
         "social-science",
         "agriculture-marine",
@@ -2063,7 +2107,10 @@
         "ts-2022-391"
       ],
       "shortDescription": "전 계열 공통 필수 과목. 기후변화의 과학적 원리와 생태계 영향을 탐구합니다.",
-      "trackAffinity": [],
+      "trackAffinity": [
+        "sci",
+        "info"
+      ],
       "recommendedCareers": [
         "agriculture-marine",
         "materials-chemistry",
@@ -2099,7 +2146,11 @@
         "ts-2022-399"
       ],
       "shortDescription": "다양한 스포츠 종목을 통해 지속적인 건강 생활 습관을 형성합니다.",
-      "trackAffinity": [],
+      "trackAffinity": [
+        "sci",
+        "info",
+        "hum"
+      ],
       "recommendedCareers": [
         "sports",
         "education"
@@ -2110,6 +2161,90 @@
         "targetStudent": "네트형·필드형 종목을 좋아하는 학생, 경기 수행 능력을 끌어올리고 싶은 학생",
         "relatedCareers": "체육학, 스포츠지도학, 스포츠경영학 등",
         "schoolHighlight": "스포츠 활동을 계획·실천·성찰하며 경기 수행, 협력, 건강 관리와 평생 체육 역량을 발전시킵니다."
+      }
+    },
+    {
+      "id": "subj-g3-s2-심화_영어_독해와_작문-2022",
+      "name": "심화 영어 독해와 작문",
+      "credits": 4,
+      "category": "학교지정",
+      "grading": "5등급+A~E",
+      "gradingType": "relative+absolute",
+      "semester": "3-2",
+      "grade": 3,
+      "groupId": "g3-s2-fixed",
+      "status": "LOCKED",
+      "isReadOnly": true,
+      "subjectArea": "영어",
+      "tags": [
+        "#영어심화",
+        "#국제역량",
+        "#학술작문"
+      ],
+      "guidance": [
+        "ebs-2022-047",
+        "ts-2022-346"
+      ],
+      "shortDescription": "심화 영어 독해와 논증적 영작문 능력을 종합적으로 키웁니다.",
+      "trackAffinity": [
+        "sci",
+        "info",
+        "hum"
+      ],
+      "recommendedCareers": [
+        "language-literature",
+        "humanities",
+        "social-science",
+        "media-advertising"
+      ],
+      "fullDescription": {
+        "overview": "「영어 독해와 작문」과 연계된 읽기·쓰기 심화 과목입니다. 기초 학문 분야를 포함하는 다양한 주제와 장르의 글을 읽고 비판적 독해 능력을 기르며, 자신의 의견을 창의적으로 표현하는 종합적인 영어 문해력을 배양합니다. 효과적인 전략으로 다양한 매체의 글을 읽고 분석·비평하는 활동을 자기주도적으로 수행합니다.",
+        "units": "독해 · 작문",
+        "targetStudent": "영어로 된 자료를 다루는 학과 진학을 준비하는 학생, 영어 글쓰기를 깊이 익히고 싶은 학생",
+        "relatedCareers": "영어영문학, 통번역학, 국제학, 언론정보학 등",
+        "schoolHighlight": "학술적 영어 글의 구조와 논리를 정밀하게 분석하고 자료 기반 에세이와 비평문으로 표현을 고도화합니다."
+      }
+    },
+    {
+      "id": "subj-g3-s2-주제_탐구_독서-2022",
+      "name": "주제 탐구 독서",
+      "credits": 4,
+      "category": "학교지정",
+      "grading": "5등급+A~E",
+      "gradingType": "relative+absolute",
+      "semester": "3-2",
+      "grade": 3,
+      "groupId": "g3-s2-fixed",
+      "status": "LOCKED",
+      "isReadOnly": true,
+      "subjectArea": "국어",
+      "tags": [
+        "#심화독서",
+        "#진로연계",
+        "#탐구역량"
+      ],
+      "guidance": [
+        "ebs-2022-036",
+        "ts-2022-316"
+      ],
+      "shortDescription": "진로 분야와 연계된 심화 주제를 선정하여 깊이 있는 탐구 독서를 수행합니다.",
+      "trackAffinity": [
+        "sci",
+        "info",
+        "hum"
+      ],
+      "recommendedCareers": [
+        "humanities",
+        "social-science",
+        "language-literature",
+        "education"
+      ],
+      "fullDescription": {
+        "overview": "읽기 영역을 심화한 진로 선택 과목으로, «질문하고 답을 구하는» 탐구 과정으로서의 독서를 다룹니다. 인문·예술, 사회·문화, 과학·기술 등 분야를 가리지 않고 주제와 관련된 책과 자료를 찾아 읽고, 내용을 비교·분석·통합해 자신의 관점과 견해를 세웁니다. 학업과 진로 탐색이 곧 탐구라는 점에서 진로 연계 활동으로 이어집니다.",
+        "units": "주제 탐구 독서의 의미 · 분야에 따른 책과 자료의 특성",
+        "targetStudent": "관심 분야를 스스로 파고들고 싶은 학생, 탐구 보고서·세특 활동을 제대로 해보고 싶은 학생",
+        "relatedCareers": "전 계열 — 진학하려는 분야의 학문 탐구 기초",
+        "schoolHighlight": "관심 주제에 맞는 자료를 스스로 선정하고 출처를 비교·평가해 탐구 질문에 답하는 읽기 결과물을 완성합니다."
       }
     },
     {
@@ -2135,7 +2270,11 @@
         "ts-2022-455"
       ],
       "shortDescription": "나를 이해하고 직업 세계를 살펴, 스스로 진로를 설계하고 실천합니다.",
-      "trackAffinity": [],
+      "trackAffinity": [
+        "sci",
+        "info",
+        "hum"
+      ],
       "recommendedCareers": [
         "free-major-hum",
         "free-major-sci"
@@ -2179,70 +2318,6 @@
         "targetStudent": "이공계 심화 진학을 준비하는 학생, 미적분Ⅱ를 마치고 더 나아가려는 학생",
         "relatedCareers": "수학, 물리학, 기계·전기전자공학, 항공우주공학 등",
         "schoolHighlight": "극한·미분·적분의 심화 개념을 엄밀한 추론과 복합 문제 해결에 적용하며 대학 수학 학습의 토대를 다집니다."
-      }
-    },
-    {
-      "id": "subj-g3-s2-전문_수학-2022",
-      "name": "전문 수학",
-      "credits": 5,
-      "category": "진로선택",
-      "grading": "5등급+A~E",
-      "gradingType": "relative+absolute",
-      "semester": "3-2",
-      "grade": 3,
-      "groupId": "g3-s2-고급 미적분, 전문 수학, 통합수학Ⅰ, 실용 통계, 인공지능 수학",
-      "status": "AVAILABLE",
-      "isReadOnly": false,
-      "subjectArea": "수학",
-      "tags": [
-        "#전문수학",
-        "#통합수학세트"
-      ],
-      "shortDescription": "3학년 1학기에 통합수학Ⅰ을 선택한 학생의 2학기 자동 배정 과목입니다.",
-      "trackAffinity": [],
-      "recommendedCareers": [
-        "mathematics-physics",
-        "it-computer",
-        "mechanical-electrical"
-      ],
-      "fullDescription": {
-        "overview": "삼각함수와 미적분, 기하, 확률과 통계의 심화된 내용을 이해하고 탐구하는 과학계열 과목입니다. 미적분으로 자연 및 사회 현상을 분석·해석하고, 도형의 성질을 추측·증명하며 공간 추론 능력을 기릅니다. 도형을 좌표공간에서 순서쌍과 방정식으로 나타내며 수학 영역 사이의 연결성을 이해합니다.",
-        "units": "삼각함수와 미적분 · 기하 · 확률과 통계",
-        "targetStudent": "과학고·영재학교 또는 과학중점 과정에서 수학을 깊이 다루려는 학생",
-        "relatedCareers": "수학, 물리학, 공학 전반, 통계학, 컴퓨터과학 등",
-        "schoolHighlight": "대수·기하·해석의 개념을 서로 연결하고 증명과 수학적 모델링을 통해 고난도 문제 해결 과정을 설명합니다."
-      }
-    },
-    {
-      "id": "subj-g3-s2-통합수학Ⅰ-2022",
-      "name": "통합수학Ⅰ",
-      "credits": 5,
-      "category": "진로선택",
-      "grading": "null",
-      "gradingType": "null",
-      "semester": "3-2",
-      "grade": 3,
-      "groupId": "g3-s2-고급 미적분, 전문 수학, 통합수학Ⅰ, 실용 통계, 인공지능 수학",
-      "status": "AVAILABLE",
-      "isReadOnly": false,
-      "subjectArea": "수학",
-      "tags": [
-        "#통합수학"
-      ],
-      "shortDescription": "3학년 1학기에 고급 미적분·실용 통계·인공지능 수학 중 하나를 선택한 학생의 2학기 자동 배정 과목입니다.",
-      "trackAffinity": [],
-      "recommendedCareers": [
-        "mathematics-physics",
-        "it-computer",
-        "mechanical-electrical",
-        "business-economics"
-      ],
-      "fullDescription": {
-        "overview": "수학의 여러 영역을 서로 연결해 복합적인 문제를 해결하고 수학적 모델링과 추론 능력을 기르는 과목입니다.",
-        "units": "대수적 표현과 방정식 · 함수와 변화 · 기하와 벡터 · 경우의 수와 확률 · 영역 간 통합 문제와 모델링",
-        "schoolHighlight": "공식별 단편 학습보다 여러 개념을 한 문제 안에서 연결하고 풀이 과정을 논리적으로 설명하는 데 중점을 둡니다.",
-        "targetStudent": "수학 개념 사이의 연결을 이해하고 복합 문제 해결력을 높이고 싶은 학생",
-        "relatedCareers": "수학, 통계학, 경제학, 컴퓨터공학, 자연과학, 공학 전 분야"
       }
     },
     {
@@ -2319,6 +2394,80 @@
         "relatedCareers": "인공지능학, 컴퓨터공학, 데이터과학, 산업공학, 통계학 등",
         "schoolHighlight": "인공지능의 원리를 수학식으로 이해하고 데이터 해석과 모델링 활동에 연결합니다."
       }
+    },
+    {
+      "id": "subj-g3-s2-전문_수학-2022",
+      "name": "전문 수학",
+      "credits": 5,
+      "category": "진로선택",
+      "grading": "5등급+A~E",
+      "gradingType": "relative+absolute",
+      "semester": "3-2",
+      "grade": 3,
+      "groupId": "g3-s2-고급 미적분, 전문 수학, 통합수학Ⅰ, 실용 통계, 인공지능 수학",
+      "status": "AVAILABLE",
+      "isReadOnly": false,
+      "subjectArea": "수학",
+      "tags": [
+        "#전문수학",
+        "#통합수학세트"
+      ],
+      "shortDescription": "3학년 1학기에 통합수학Ⅰ을 선택한 학생의 2학기 자동 배정 과목입니다.",
+      "trackAffinity": [
+        "sci",
+        "info",
+        "hum"
+      ],
+      "recommendedCareers": [
+        "mathematics-physics",
+        "it-computer",
+        "mechanical-electrical"
+      ],
+      "fullDescription": {
+        "overview": "삼각함수와 미적분, 기하, 확률과 통계의 심화된 내용을 이해하고 탐구하는 과학계열 과목입니다. 미적분으로 자연 및 사회 현상을 분석·해석하고, 도형의 성질을 추측·증명하며 공간 추론 능력을 기릅니다. 도형을 좌표공간에서 순서쌍과 방정식으로 나타내며 수학 영역 사이의 연결성을 이해합니다.",
+        "units": "삼각함수와 미적분 · 기하 · 확률과 통계",
+        "targetStudent": "과학고·영재학교 또는 과학중점 과정에서 수학을 깊이 다루려는 학생",
+        "relatedCareers": "수학, 물리학, 공학 전반, 통계학, 컴퓨터과학 등",
+        "schoolHighlight": "대수·기하·해석의 개념을 서로 연결하고 증명과 수학적 모델링을 통해 고난도 문제 해결 과정을 설명합니다."
+      },
+      "mathSlot": "3-2"
+    },
+    {
+      "id": "subj-g3-s2-통합수학Ⅰ-2022",
+      "name": "통합수학Ⅰ",
+      "credits": 5,
+      "category": "진로선택",
+      "grading": "null",
+      "gradingType": "null",
+      "semester": "3-2",
+      "grade": 3,
+      "groupId": "g3-s2-고급 미적분, 전문 수학, 통합수학Ⅰ, 실용 통계, 인공지능 수학",
+      "status": "AVAILABLE",
+      "isReadOnly": false,
+      "subjectArea": "수학",
+      "tags": [
+        "#통합수학"
+      ],
+      "shortDescription": "3학년 1학기에 고급 미적분·실용 통계·인공지능 수학 중 하나를 선택한 학생의 2학기 자동 배정 과목입니다.",
+      "trackAffinity": [
+        "sci",
+        "info",
+        "hum"
+      ],
+      "recommendedCareers": [
+        "mathematics-physics",
+        "it-computer",
+        "mechanical-electrical",
+        "business-economics"
+      ],
+      "fullDescription": {
+        "overview": "수학의 여러 영역을 서로 연결해 복합적인 문제를 해결하고 수학적 모델링과 추론 능력을 기르는 과목입니다.",
+        "units": "대수적 표현과 방정식 · 함수와 변화 · 기하와 벡터 · 경우의 수와 확률 · 영역 간 통합 문제와 모델링",
+        "schoolHighlight": "공식별 단편 학습보다 여러 개념을 한 문제 안에서 연결하고 풀이 과정을 논리적으로 설명하는 데 중점을 둡니다.",
+        "targetStudent": "수학 개념 사이의 연결을 이해하고 복합 문제 해결력을 높이고 싶은 학생",
+        "relatedCareers": "수학, 통계학, 경제학, 컴퓨터공학, 자연과학, 공학 전 분야"
+      },
+      "mathSlot": "3-2"
     }
   ]
 }
