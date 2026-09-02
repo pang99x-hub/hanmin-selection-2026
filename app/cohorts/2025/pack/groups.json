@@ -1,14 +1,24 @@
 {
   "groups": [
     {
-      "id": "g3-s1-수학선택",
-      "label": "수학선택",
+      "id": "g3-s1-수학 선택",
+      "label": "수학 선택",
       "grade": 3,
       "isFixed": false,
       "pickMin": 1,
       "pickMax": 1,
       "semester": "3-1",
       "sortOrder": 0
+    },
+    {
+      "id": "g3-s1-심화 탐구",
+      "label": "심화 탐구",
+      "grade": 3,
+      "isFixed": false,
+      "pickMin": 1,
+      "pickMax": 1,
+      "semester": "3-1",
+      "sortOrder": 1
     },
     {
       "id": "g2-s1-탐구",
@@ -21,16 +31,6 @@
       "sortOrder": 1
     },
     {
-      "id": "g3-s1-심화 탐구",
-      "label": "심화 탐구",
-      "grade": 3,
-      "isFixed": false,
-      "pickMin": 1,
-      "pickMax": 1,
-      "semester": "3-1",
-      "sortOrder": 2
-    },
-    {
       "id": "g3-s1-고급 탐구",
       "label": "고급 탐구",
       "grade": 3,
@@ -38,7 +38,7 @@
       "pickMin": 1,
       "pickMax": 1,
       "semester": "3-1",
-      "sortOrder": 3
+      "sortOrder": 2
     },
     {
       "id": "g3-s2-수학 선택",
@@ -48,7 +48,7 @@
       "pickMin": 1,
       "pickMax": 1,
       "semester": "3-2",
-      "sortOrder": 4
+      "sortOrder": 3
     },
     {
       "id": "g2-s2-심화탐구",
