@@ -821,6 +821,15 @@ function saveSubmission_(payload) {
         lock.releaseLock();
       }
     }
+    writeGroupTabs_(spreadsheet_(), layout, subjectsByGroup, {
+      identityKey: String(session.identity_key),
+      round: round,
+      isTest: isTest,
+      studentNo: rowObject.student_no,
+      name: role === 'student' ? safeText_(student.name) : safeText_(session.email),
+      family: rowObject.track_family,
+      at: now,
+    });
     return {
       ok: true,
       round: round,
@@ -845,6 +854,72 @@ function saveSubmission_(payload) {
  */
 var HM_SLOT_CACHE_KEY = 'hm_submission_rows_v1';
 var HM_SLOT_CACHE_TTL = 21600;   // 6시간 — CacheService 최대치
+
+/* 선택군 탭 — 담당자가 이동수업을 짤 때 실제로 여는 표. */
+var HM_GROUP_TAB_HEADERS = ['학번', '이름', '계열', '선택과목', '제출시각', '차수', '키'];
+var HM_GROUP_TAB_CACHE = 'hm_group_rows_v1';
+
+/**
+ * 선택군 탭에 한 줄 써 넣는다 — «3학년 1학기 수학선택» 처럼 탭 하나가 선택군 하나다.
+ *
+ * 제출내역 탭은 그대로 둔다(진실원천). 이쪽은 거기서 파생되는 «보는 표»다. 담당자가
+ * 이동수업을 짜려면 «이 선택군을 누가 골랐나»가 한 화면에 있어야 하는데, 제출내역은
+ * 한 학생이 한 줄이라 그걸 못 준다.
+ *
+ * 같은 학생이 다시 제출하면 자기 줄을 덮는다. 열쇠는 identity_key + 차수 + 시험여부다.
+ * 마지막 «키» 열은 그 열쇠를 담아 두는 자리이고 숨긴다 — 사람이 볼 것은 아니지만,
+ * 캐시가 비었을 때 줄을 다시 찾으려면 시트에 남아 있어야 한다.
+ *
+ * 고른 과목이 없으면 줄을 만들지 않는다. 다만 이미 있던 줄은 비워 둔다 — 지난 제출에서
+ * 골랐다가 뺀 것을 그대로 두면 «아직 듣는 학생»으로 잘못 세어진다.
+ */
+function writeGroupTabs_(spreadsheet, layout, subjectsByGroup, meta) {
+  const cache = CacheService.getScriptCache();
+  Object.keys(subjectsByGroup).forEach(function (groupId) {
+    const title = layout.columnById[groupId];
+    if (!title) return;
+    const picked = subjectsByGroup[groupId];
+    const text = Array.isArray(picked) ? picked.join(';') : '';
+    const sheet = ensureSheet_(spreadsheet, title, HM_GROUP_TAB_HEADERS);
+    const key = meta.identityKey + '|' + meta.round + '|' + (meta.isTest ? 'T' : 'R');
+    const cacheKey = HM_GROUP_TAB_CACHE + '|' + title;
+
+    let rowNumber = 0;
+    const cached = cache.get(cacheKey);
+    if (cached) {
+      try { rowNumber = (JSON.parse(cached) || {})[key] || 0; } catch (err) { rowNumber = 0; }
+    }
+    if (!rowNumber) {
+      const index = {};
+      const last = sheet.getLastRow();
+      if (last > 1) {
+        const keys = sheet.getRange(2, HM_GROUP_TAB_HEADERS.length, last - 1, 1).getValues();
+        for (let i = 0; i < keys.length; i += 1) {
+          const cell = String(keys[i][0] || '');
+          if (cell) index[cell] = i + 2;
+        }
+      }
+      rowNumber = index[key] || 0;
+      try { cache.put(cacheKey, JSON.stringify(index), HM_SLOT_CACHE_TTL); } catch (err) { /* 무시 */ }
+    }
+    if (!rowNumber && !text) return;
+
+    const values = [[meta.studentNo, meta.name, meta.family, text, meta.at, meta.round, key]];
+    if (rowNumber) {
+      sheet.getRange(rowNumber, 1, 1, HM_GROUP_TAB_HEADERS.length).setValues(values);
+      return;
+    }
+    sheet.appendRow(values[0]);
+    const appended = sheet.getLastRow();
+    sheet.hideColumns(HM_GROUP_TAB_HEADERS.length);
+    try {
+      const prev = cache.get(cacheKey);
+      const index = prev ? (JSON.parse(prev) || {}) : {};
+      index[key] = appended;
+      cache.put(cacheKey, JSON.stringify(index), HM_SLOT_CACHE_TTL);
+    } catch (err) { /* 무시 */ }
+  });
+}
 
 /** 앱이 보낸 열 배치표를 고른다. 없으면 제출에 담긴 선택군 ID 로 대신한다. */
 function groupColumns_(payload, subjectsByGroup) {
