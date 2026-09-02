@@ -789,12 +789,17 @@ function saveSubmission_(payload) {
     const sheet = ensureSheet_(spreadsheet_(), HM_SELECTION.submissionsSheet, HM_SELECTION.submissionHeaders);
     const slotKey = submissionSlotKey_(session.identity_key, targetGrade, round, isTest);
     let rowNumber = submissionRowFor_(sheet, slotKey);
-    const headers = ensureGroupColumns_(sheet, Object.keys(subjectsByGroup));
-    const values = headers.map(function (header) {
+    const layout = ensureGroupColumns_(sheet, groupColumns_(payload, subjectsByGroup));
+    // 열 제목 → 그 열에 쓸 과목 목록. 제목이 곧 열이므로 제목으로 되짚는다.
+    const pickedByTitle = {};
+    Object.keys(subjectsByGroup).forEach(function (id) {
+      const title = layout.columnById[id] || id;
+      const picked = subjectsByGroup[id];
+      pickedByTitle[title] = Array.isArray(picked) ? picked.join(';') : '';
+    });
+    const values = layout.headers.map(function (header) {
       if (Object.prototype.hasOwnProperty.call(rowObject, header)) return rowObject[header];
-      // 선택군 열 — 담당자가 시트에서 바로 읽고 거르도록 «과목명;과목명» 으로 편다.
-      const picked = subjectsByGroup[header];
-      return Array.isArray(picked) ? picked.join(';') : '';
+      return Object.prototype.hasOwnProperty.call(pickedByTitle, header) ? pickedByTitle[header] : '';
     });
     if (rowNumber) {
       sheet.getRange(rowNumber, 1, 1, values.length).setValues([values]);
@@ -841,6 +846,17 @@ function saveSubmission_(payload) {
 var HM_SLOT_CACHE_KEY = 'hm_submission_rows_v1';
 var HM_SLOT_CACHE_TTL = 21600;   // 6시간 — CacheService 최대치
 
+/** 앱이 보낸 열 배치표를 고른다. 없으면 제출에 담긴 선택군 ID 로 대신한다. */
+function groupColumns_(payload, subjectsByGroup) {
+  const sent = payload && Array.isArray(payload.groupColumns) ? payload.groupColumns : null;
+  if (sent && sent.length) {
+    return sent
+      .filter(function (item) { return item && item.id; })
+      .map(function (item) { return { id: String(item.id), label: String(item.label || item.id) }; });
+  }
+  return Object.keys(subjectsByGroup).map(function (id) { return { id: id, label: id }; });
+}
+
 /**
  * 선택군 열 확보 — 제출내역 시트에 «선택군 하나 = 열 하나»를 만든다.
  *
@@ -849,25 +865,34 @@ var HM_SLOT_CACHE_TTL = 21600;   // 6시간 — CacheService 최대치
  * 그래서 고정 열 뒤에 선택군 열을 덧붙이고 과목명을 «;» 로 이어 쓴다. JSON 칸도
  * 그대로 둔다: 학생이 다시 들어왔을 때 이전 제출을 복원하는 데 그 값을 쓴다.
  *
- * 열은 처음 보는 선택군이 나올 때마다 늘어난다. 학교마다·학년마다 선택군이 다르고
- * 학기별로 쪼개지기도 해서, 미리 정해 둘 수가 없다.
+ * 열 제목과 차례는 앱이 보낸 배치표(groupColumns)를 그대로 따른다. 이 스크립트는
+ * 팩을 모르므로 «어느 학기의 무슨 선택군인지»를 알 길이 없다 — 아는 쪽이 정해서
+ * 보내야 «3-1 수학선택»처럼 학기 순으로 정리된 표가 나온다.
  *
- * @return 첫 행 제목 배열(고정 열 + 선택군 열)
+ * 배치표가 없는 옛 앱에서 들어오면 ID 를 제목으로 쓴다(동작은 유지, 모양만 투박).
+ *
+ * @param columns [{ id, label }] · @return { headers, columnById }
  */
-function ensureGroupColumns_(sheet, groupIds) {
+function ensureGroupColumns_(sheet, columns) {
   const lastColumn = Math.max(sheet.getLastColumn(), HM_SELECTION.submissionHeaders.length);
   const headers = sheet.getRange(1, 1, 1, lastColumn).getValues()[0]
     .map(function (cell) { return String(cell || ''); });
+  const columnById = {};
   const missing = [];
-  for (let i = 0; i < groupIds.length; i += 1) {
-    const id = String(groupIds[i] || '');
+  for (let i = 0; i < columns.length; i += 1) {
+    const id = String(columns[i].id || '');
     if (!id) continue;
-    if (headers.indexOf(id) === -1 && missing.indexOf(id) === -1) missing.push(id);
+    const title = String(columns[i].label || id);
+    columnById[id] = title;
+    if (headers.indexOf(title) === -1 && missing.indexOf(title) === -1) missing.push(title);
   }
-  if (!missing.length) return headers;
-  sheet.getRange(1, headers.length + 1, 1, missing.length).setValues([missing]).setFontWeight('bold');
-  return headers.concat(missing);
+  if (missing.length) {
+    sheet.getRange(1, headers.length + 1, 1, missing.length).setValues([missing]).setFontWeight('bold');
+    for (let i = 0; i < missing.length; i += 1) headers.push(missing[i]);
+  }
+  return { headers: headers, columnById: columnById };
 }
+
 
 function submissionSlotKey_(identityKey, targetGrade, round, isTest) {
   return [
