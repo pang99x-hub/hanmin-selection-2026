@@ -1,5 +1,75 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>한민고등학교 교육과정 설계</title><meta http-equiv="refresh" content="0;url=./app/">
-<script>(function(){var u=new URL("./app/",window.location.href);if(window.location.search)u.search=window.location.search;if(window.location.hash)u.hash=window.location.hash;window.location.replace(u.href)})()</script></head>
-<body><p>이동 중입니다… <a href="./app/">자동으로 이동하지 않으면 여기를 누르세요.</a></p></body></html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3차 수요조사 공지사항 — 한민고등학교 교육과정</title>
+<meta name="description" content="2차 수요조사 결과 조정해야할 부분이 많아 3차 조사 일정을 미룹니다. 세부 일정은 추후 공지합니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#002147; --mint:#7ad7c6; --surface:#f7f8fb;
+    --text:#1b1f24; --muted:#5b6570; --line:#dfe3ea;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    min-height:100vh; background:var(--surface); color:var(--text);
+    font-family:Inter,'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased; position:relative; overflow-x:hidden;
+  }
+  /* 커버 슬라이드의 배경 장식 */
+  body::before,body::after{
+    content:""; position:absolute; border-radius:50%; filter:blur(80px); pointer-events:none;
+  }
+  body::before{top:-12%;left:-12%;width:40vw;height:40vw;background:var(--navy);opacity:.05}
+  body::after{bottom:-12%;right:-12%;width:46vw;height:46vw;background:var(--mint);opacity:.10}
+  main{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:96px 24px 64px;text-align:center}
+  .overline{
+    display:block;font-size:12px;font-weight:600;letter-spacing:.3em;
+    text-transform:uppercase;color:#9bb0a8;margin-bottom:20px;
+  }
+  h1{
+    font-size:clamp(30px,6vw,48px);font-weight:900;letter-spacing:-.03em;
+    line-height:1.2;color:var(--navy);margin:0 0 24px;text-wrap:balance;
+  }
+  .lead{font-size:17px;line-height:1.8;color:var(--text);margin:0 auto;max-width:34em}
+  .actions{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:44px}
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;padding:15px 34px;border-radius:8px;
+    font-size:16px;font-weight:800;text-decoration:none;
+    box-shadow:0 6px 18px rgba(0,33,71,.10);transition:opacity .15s,background .15s;
+  }
+  .btn-primary{background:var(--navy);color:#fff}
+  .btn-primary:hover{opacity:.9}
+  .btn-mint{background:var(--mint);color:var(--navy)}
+  .btn-mint:hover{background:#fff}
+  .foot{margin-top:20px;font-size:12.5px;color:var(--muted)}
+  .sig{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+  @media (prefers-color-scheme:dark){
+    :root{--surface:#0f1419;--text:#e8eaed;--muted:#9aa4b0;--line:#2a3138}
+    h1{color:#cfe9e2}
+    body::before{background:#cfe9e2;opacity:.04}
+    .btn-primary{background:#1b3a5c}
+    .btn-mint{color:#0f1419}
+    .btn-mint:hover{background:#a9e6da}
+  }
+</style>
+</head>
+<body>
+<main>
+  <span class="overline">HM Curriculum Design · Notice</span>
+  <h1>3차 수요조사 공지사항</h1>
+  <p class="lead">
+    2차 수요조사 결과 조정해야할 부분이 많아 일정을 미룹니다.<br>
+    세부 일정은 추후 공지하겠습니다.
+  </p>
+  <div class="actions">
+    <a class="btn btn-primary" href="./slides.html">교육과정 안내 <span aria-hidden="true">→</span></a>
+  </div>
+  <p class="sig">한민고등학교 미래교육과정부</p>
+</main>
+</body>
+</html>
