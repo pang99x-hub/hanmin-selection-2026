@@ -12,21 +12,29 @@
   :root{
     --navy:#002147; --mint:#7ad7c6; --surface:#f7f8fb;
     --text:#1b1f24; --muted:#5b6570; --line:#dfe3ea;
+    /* 슬라이드와 같은 어두운 무대 — 밝은 판이 그 위에 얹혀 위아래로 띠가 남는다. */
+    --stage:#1a1b1e;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{
-    min-height:100vh; background:var(--surface); color:var(--text);
+    min-height:100vh; background:var(--stage); color:var(--text);
     font-family:Inter,'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
-    -webkit-font-smoothing:antialiased; position:relative; overflow-x:hidden;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
   }
+  .stage{
+    position:relative; overflow:hidden; background:var(--surface);
+    margin:44px 0; min-height:calc(100vh - 88px);
+    display:flex; align-items:center; justify-content:center;
+  }
+  @media (max-width:640px){ .stage{ margin:20px 0; min-height:calc(100vh - 40px); } }
   /* 커버 슬라이드의 배경 장식 */
-  body::before,body::after{
+  .stage::before,.stage::after{
     content:""; position:absolute; border-radius:50%; filter:blur(80px); pointer-events:none;
   }
-  body::before{top:-12%;left:-12%;width:40vw;height:40vw;background:var(--navy);opacity:.05}
-  body::after{bottom:-12%;right:-12%;width:46vw;height:46vw;background:var(--mint);opacity:.10}
-  main{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:96px 24px 64px;text-align:center}
+  .stage::before{top:-12%;left:-12%;width:40vw;height:40vw;background:var(--navy);opacity:.05}
+  .stage::after{bottom:-12%;right:-12%;width:46vw;height:46vw;background:var(--mint);opacity:.10}
+  main{position:relative;z-index:1;max-width:680px;padding:64px 24px;text-align:center}
   .overline{
     display:block;font-size:12px;font-weight:600;letter-spacing:.3em;
     text-transform:uppercase;color:#9bb0a8;margin-bottom:20px;
@@ -49,9 +57,9 @@
   .foot{margin-top:20px;font-size:12.5px;color:var(--muted)}
   .sig{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
   @media (prefers-color-scheme:dark){
-    :root{--surface:#0f1419;--text:#e8eaed;--muted:#9aa4b0;--line:#2a3138}
+    :root{--surface:#0f1419;--text:#e8eaed;--muted:#9aa4b0;--line:#2a3138;--stage:#000}
     h1{color:#cfe9e2}
-    body::before{background:#cfe9e2;opacity:.04}
+    .stage::before{background:#cfe9e2;opacity:.04}
     .btn-primary{background:#1b3a5c}
     .btn-mint{color:#0f1419}
     .btn-mint:hover{background:#a9e6da}
@@ -59,6 +67,7 @@
 </style>
 </head>
 <body>
+<div class="stage">
 <main>
   <span class="overline">HM Curriculum Design · Notice</span>
   <h1>3차 수요조사 공지사항</h1>
@@ -68,8 +77,11 @@
   </p>
   <div class="actions">
     <a class="btn btn-primary" href="./slides.html">교육과정 안내 <span aria-hidden="true">→</span></a>
+    <a class="btn btn-mint" href="./app/">내 선택 과목 확인</a>
   </div>
+  <p class="foot">확인은 한민고 Google 계정(@hanmin.hs.kr)으로 로그인한 뒤 볼 수 있습니다 · 지금은 조사 기간이 아니라 제출은 되지 않습니다</p>
   <p class="sig">한민고등학교 미래교육과정부</p>
 </main>
+</div>
 </body>
 </html>
