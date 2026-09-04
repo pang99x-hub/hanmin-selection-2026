@@ -23,7 +23,7 @@
   @media (min-width: 720px) { header.top .meta { display: block; } }
   main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 72px; }
   h1 { font-size: 26px; font-weight: 800; letter-spacing: -.02em; margin: 0 0 4px; color: var(--navy); }
-  .sub { color: var(--ink-2); font-size: 14px; margin: 0 0 20px; }
+  .sub { color: var(--ink-2); font-size: 14px; margin: 0 0 18px; }
   .card { background: #fff; border: 1px solid rgba(196,198,207,.45); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
   .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
   input, select, button { font: inherit; font-size: 14px; color: var(--ink); }
@@ -77,7 +77,7 @@
   .student-hit:hover td { background: var(--surface-low); }
   .login-wrap { max-width: 520px; margin: 40px auto 0; }
   .login-wrap .tag { display: inline-block; padding: 4px 12px; border-radius: 999px; background: var(--navy); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 14px; }
-  .divider { display: flex; align-items: center; gap: 12px; color: var(--outline); font-size: 12px; margin: 18px 0 14px; white-space: nowrap; }
+  .divider { display: flex; align-items: center; gap: 12px; color: var(--outline); font-size: 12px; margin: 16px 0 12px; white-space: nowrap; }
   .gsi { display: flex; justify-content: center; min-height: 44px; }
   .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--surface-high); }
   @media (max-width: 640px) { html { font-size: 14px; } th, td { padding: 7px 5px; font-size: 13px; } .bar { min-width: 60px; } .card { padding: 16px; } h1 { font-size: 22px; } }
@@ -92,17 +92,15 @@
   <section class="card login-wrap" id="login">
     <div class="tag">Teacher Mode</div>
     <h1 id="title">제출 현황</h1>
-    <p class="sub" id="subtitle">선택 과목 수요조사 — 반별 제출, 미제출자, 학생별 선택 과목, 과목별 인원을 한 화면에서 봅니다.</p>
+    <p class="sub" id="subtitle">교사 계정으로 로그인하세요.</p>
     <div id="google-login" class="hidden">
       <div id="gsi-button" class="gsi"></div>
-      <p class="note" style="margin:10px 0 0;text-align:center">교직원 명단에 등록된 학교 구글 계정으로 로그인합니다.</p>
-      <div class="divider">또는 관리자 코드로</div>
+      <div class="divider">또는</div>
     </div>
     <div class="row" style="flex-wrap:nowrap">
       <input type="password" id="admin-code" placeholder="관리자 코드" style="flex:1;min-width:0" autocomplete="off">
-      <button id="admin-login" class="primary">코드로 보기</button>
+      <button id="admin-login" class="primary">보기</button>
     </div>
-    <p class="note" style="margin:10px 0 0">관리자 코드는 담당 교사가 데스크톱 앱의 «제출 현황»에서 확인해 알려 줍니다.</p>
     <p class="err" id="login-error"></p>
   </section>
 
@@ -411,7 +409,7 @@
   $('tabs').addEventListener('click', (e) => { const b = e.target.closest('button[data-tab]'); if (b) showTab(b.dataset.tab); });
   $('admin-login').addEventListener('click', async () => {
     const code = $('admin-code').value.trim();
-    if (!code) { $('login-error').textContent = '관리자 코드를 넣으세요.'; return; }
+    if (!code) { $('login-error').textContent = '관리자 코드를 넣으세요. 담당 교사가 데스크톱 앱 «제출 현황»에서 확인해 알려 줍니다.'; return; }
     auth.token = code; auth.sessionToken = '';
     sessionStorage.setItem('teacher_status_auth', JSON.stringify(auth));
     showDash(); await load();
