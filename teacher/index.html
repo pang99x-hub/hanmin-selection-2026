@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>제출 현황</title>
+<style>
+  :root { color-scheme: light; --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb; --soft:#f3f4f6; --navy:#002147; --accent:#4f46e5; --bad:#b91c1c; --good:#047857; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif; background: #f6f7fb; color: var(--ink); }
+  main { max-width: 1040px; margin: 0 auto; padding: 20px 16px 64px; }
+  h1 { font-size: 22px; margin: 0 0 2px; }
+  .sub { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  input, select, button { font: inherit; font-size: 14px; }
+  input[type=text], input[type=search], input[type=password], select { height: 36px; padding: 0 10px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff; }
+  button { height: 36px; padding: 0 14px; border-radius: 8px; border: 1px solid #d1d5db; background: #fff; cursor: pointer; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button:disabled { opacity: .5; cursor: default; }
+  .note { font-size: 13px; color: var(--muted); }
+  .err { color: var(--bad); font-size: 13px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { padding: 7px 6px; border-bottom: 1px solid var(--soft); text-align: left; vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; white-space: nowrap; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .bar { height: 8px; background: #eef0f6; border-radius: 4px; overflow: hidden; min-width: 100px; }
+  .bar > i { display: block; height: 100%; background: var(--accent); }
+  tr.cls { cursor: pointer; }
+  tr.cls:hover td { background: #f9fafb; }
+  .chip { display: inline-block; margin: 0 6px 4px 0; padding: 1px 9px; border-radius: 999px; background: #fef2f2; color: var(--bad); font-size: 13px; }
+  .chip.ok { background: #ecfdf5; color: var(--good); }
+  .grade-title { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 8px; gap: 10px; flex-wrap: wrap; }
+  .grade-title h2 { font-size: 16px; margin: 0; }
+  h3 { font-size: 14px; margin: 14px 0 6px; color: var(--navy); }
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; }
+  .tabs button { height: 34px; padding: 0 12px; border-radius: 999px; font-size: 13px; }
+  .tabs button.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+  .kpi { border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+  .kpi b { display: block; font-size: 24px; margin: 2px 0 4px; }
+  .kpi span { font-size: 12px; color: var(--muted); }
+  .hidden { display: none !important; }
+  .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+  .sticky { position: sticky; top: 0; background: #f6f7fb; padding: 8px 0; z-index: 5; }
+  .student-hit { cursor: pointer; }
+  .student-hit:hover td { background: #f9fafb; }
+  .muted { color: var(--muted); }
+  button.mini { height: 26px; padding: 0 10px; font-size: 12px; margin-left: 6px; }
+  @media (max-width: 640px) { th, td { padding: 6px 4px; font-size: 13px; } .bar { min-width: 60px; } }
+</style>
+</head>
+<body>
+<main>
+  <h1 id="title">제출 현황</h1>
+  <p class="sub" id="subtitle">선택 과목 수요조사 — 교사용 대시보드</p>
+
+  <section class="card" id="login">
+    <div class="row" id="google-login" style="display:none">
+      <div id="gsi-button"></div>
+      <span class="note">교직원 명단에 등록된 학교 구글 계정으로 로그인합니다.</span>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <input type="password" id="admin-code" placeholder="또는 관리자 코드" style="width:220px" autocomplete="off">
+      <button id="admin-login">코드로 보기</button>
+      <span class="note">관리자 코드는 담당 교사가 데스크톱 앱의 «제출 현황»에서 확인해 알려 줍니다.</span>
+    </div>
+    <p class="err" id="login-error"></p>
+  </section>
+
+  <div class="hidden" id="dash">
+    <section class="card sticky" id="controls">
+      <div class="row">
+        <label>차수 <select id="round"></select></label>
+        <button id="refresh">새로 고침</button>
+        <span class="note" id="schedule"></span>
+        <span style="flex:1"></span>
+        <button id="logout">로그아웃</button>
+      </div>
+      <p class="err" id="error"></p>
+      <nav class="tabs" id="tabs">
+        <button data-tab="summary" class="on">요약</button>
+        <button data-tab="submit">제출 현황</button>
+        <button data-tab="students">학생별 선택</button>
+        <button data-tab="stats">과목·계열 통계</button>
+      </nav>
+    </section>
+    <div id="view-summary"></div>
+    <div id="view-submit" class="hidden"></div>
+    <div id="view-students" class="hidden"></div>
+    <div id="view-stats" class="hidden"></div>
+  </div>
+</main>
+<script>
+(async function () {
+  const $ = (id) => document.getElementById(id);
+  const esc = (v) => String(v == null ? '' : v).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  let config = {};
+  try { config = await (await fetch('./config.json', { cache: 'no-cache' })).json(); } catch { config = {}; }
+  const SUBMIT_URL = String(config.submitUrl || '');
+  const FINAL_ROUND = Math.max(1, Math.min(3, Number(config.finalRound) || 1));
+  if (config.schoolName) { $('title').textContent = config.schoolName + ' 제출 현황'; document.title = config.schoolName + ' 제출 현황'; }
+  if (!SUBMIT_URL) $('login-error').textContent = '응답 저장 주소가 설정되지 않은 사이트입니다. 데스크톱 앱에서 사이트를 다시 만들어 올리세요.';
+
+  const auth = { token: '', sessionToken: '' };
+  try { const saved = JSON.parse(sessionStorage.getItem('teacher_status_auth') || 'null'); if (saved && (saved.token || saved.sessionToken)) Object.assign(auth, saved); } catch { /* 무시 */ }
+  const state = { report: null, counts: {}, round: null, choices: {}, groupIds: [] };
+
+  function authBody(extra) { const b = Object.assign({}, extra); if (auth.token) b.token = auth.token; else b.sessionToken = auth.sessionToken; return b; }
+  async function postJson(body) {
+    const res = await fetch(SUBMIT_URL, { method: 'POST', mode: 'cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) });
+    const data = await res.json();
+    if (!data || !data.ok) throw new Error((data && (data.err || data.msg)) || '요청을 처리하지 못했습니다.');
+    return data;
+  }
+  async function getCounts(targetGrade, round) {
+    try {
+      const res = await fetch(SUBMIT_URL + '?counts=1&grade=' + targetGrade + '&round=' + round, { mode: 'cors' });
+      const data = await res.json();
+      if (!data || !data.ok) return null;
+      const byGroup = {};
+      Object.keys(data.byGroup || {}).forEach((gid) => {
+        const bucket = {};
+        Object.entries(data.byGroup[gid] || {}).forEach(([cell, n]) => {
+          String(cell).split(';').filter(Boolean).forEach((name) => { bucket[name] = (bucket[name] || 0) + Number(n); });
+        });
+        byGroup[gid] = bucket;
+      });
+      return { respondents: Number(data.respondents) || 0, byGroup };
+    } catch { return null; }
+  }
+  function groupLabel(id) { const m = /^g(\d)-s(\d)-(.+)$/.exec(String(id)); return m ? m[3] + ' (' + m[1] + '-' + m[2] + ')' : String(id); }
+  function groupKey(id) { const m = /^g(\d)-s(\d)-(.+)$/.exec(String(id)); return m ? m[1] + '-' + m[2] + '-' + m[3] : 'z-' + id; }
+  function fmt(iso) { if (!iso) return '미정'; const d = new Date(iso); return isNaN(d) ? String(iso) : (d.getMonth() + 1) + '/' + d.getDate() + ' ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }
+  function pct(a, b) { return b ? Math.round(a / b * 100) : 0; }
+  function seatSort(a, b) { return (a.class_no || 0) - (b.class_no || 0) || (a.number || 0) - (b.number || 0); }
+  function byGradeOf(students) { const m = {}; students.forEach((s) => { const g = s.grade == null ? '?' : String(s.grade); (m[g] = m[g] || []).push(s); }); return m; }
+  function byClassOf(list) { const m = {}; list.forEach((s) => { const c = s.class_no == null ? '반 미상' : s.class_no + '반'; (m[c] = m[c] || []).push(s); }); return Object.keys(m).sort((a, b) => (parseInt(a) || 999) - (parseInt(b) || 999)).map((c) => [c, m[c].sort(seatSort)]); }
+
+  function showDash() {
+    $('login').classList.add('hidden'); $('dash').classList.remove('hidden');
+    const sel = $('round');
+    if (!sel.options.length) {
+      const auto = document.createElement('option'); auto.value = ''; auto.textContent = '접수 중인 차수'; sel.appendChild(auto);
+      for (let r = 1; r <= FINAL_ROUND; r += 1) { const o = document.createElement('option'); o.value = String(r); o.textContent = r + '차'; sel.appendChild(o); }
+    }
+  }
+  function showTab(name) {
+    document.querySelectorAll('#tabs button').forEach((b) => b.classList.toggle('on', b.dataset.tab === name));
+    ['summary', 'submit', 'students', 'stats'].forEach((t) => $('view-' + t).classList.toggle('hidden', t !== name));
+  }
+
+  async function load(round) {
+    $('error').textContent = ''; $('refresh').disabled = true;
+    try {
+      const report = await postJson(authBody({ action: 'status', ...(round ? { round } : {}) }));
+      state.report = report; state.round = report.round;
+      $('round').value = String(report.round);
+      const sc = report.schedule && report.schedule['round' + report.round];
+      $('schedule').textContent = (report.finalized ? '마감됨 · ' : (report.currentRound === report.round ? '접수 중 · ' : '')) + (sc ? fmt(sc.start) + ' ~ ' + fmt(sc.end) : '기간 미정') + ' · ' + report.submitted + '/' + report.total + '명 제출 · ' + new Date(report.generatedAt).toLocaleTimeString('ko-KR') + ' 기준';
+      state.counts = {};
+      for (const g of [2, 3]) { const c = await getCounts(g, report.round); if (c) state.counts[g] = c; }
+      state.choices = {}; state.groupIds = [];
+      try {
+        const ex = await postJson(authBody({ action: 'export', round: report.round }));
+        const gids = new Set();
+        (ex.rows || []).forEach((row) => { state.choices[String(row.student_id)] = row; Object.keys(row.subjects_by_group || {}).forEach((g) => gids.add(g)); });
+        state.groupIds = Array.from(gids).sort((a, b) => groupKey(a).localeCompare(groupKey(b), 'ko'));
+      } catch (e) { console.warn('export', e); }
+      renderAll();
+    } catch (e) {
+      $('error').textContent = e && e.message ? e.message : String(e);
+      if (/로그인|코드|교직원/.test($('error').textContent)) { sessionStorage.removeItem('teacher_status_auth'); }
+    } finally { $('refresh').disabled = false; }
+  }
+
+  function renderAll() { renderSummary(); renderSubmit(); renderStudents(); renderStats(); }
+
+  function renderSummary() {
+    const r = state.report; const grades = byGradeOf(r.students);
+    const kpis = ['<div class="kpi"><span>전체</span><b>' + r.submitted + ' / ' + r.total + '</b><span>' + pct(r.submitted, r.total) + '% 제출</span></div>']
+      .concat(Object.keys(grades).sort().map((g) => { const l = grades[g]; const s = l.filter((x) => x.submitted).length; return '<div class="kpi"><span>' + esc(g) + '학년</span><b>' + s + ' / ' + l.length + '</b><span>' + pct(s, l.length) + '% 제출 · 미제출 ' + (l.length - s) + '명</span></div>'; }));
+    const worst = [];
+    Object.keys(grades).forEach((g) => byClassOf(grades[g]).forEach(([c, cl]) => { const s = cl.filter((x) => x.submitted).length; worst.push({ g, c, rate: pct(s, cl.length), missing: cl.length - s }); }));
+    worst.sort((a, b) => a.rate - b.rate);
+    const low = worst.filter((w) => w.missing > 0).slice(0, 6);
+    $('view-summary').innerHTML = '<section class="card"><div class="kpis">' + kpis.join('') + '</div>'
+      + (low.length ? '<h3>제출률 낮은 반</h3><table><thead><tr><th>반</th><th class="num">제출률</th><th class="num">미제출</th></tr></thead><tbody>' + low.map((w) => '<tr class="cls" data-go-class="' + esc(w.g) + '|' + esc(w.c) + '"><td>' + esc(w.g) + '학년 ' + esc(w.c) + '</td><td class="num">' + w.rate + '%</td><td class="num">' + w.missing + '</td></tr>').join('') + '</tbody></table>' : '<p class="note" style="margin:12px 0 0">모든 반이 제출을 마쳤습니다.</p>')
+      + '</section>';
+    $('view-summary').querySelectorAll('tr[data-go-class]').forEach((tr) => tr.addEventListener('click', () => { showTab('submit'); const [g, c] = tr.dataset.goClass.split('|'); const el = document.getElementById('c-' + g + '-' + c); if (el) { el.classList.remove('hidden'); el.scrollIntoView({ block: 'center' }); } }));
+  }
+
+  function renderClasses() {
+    const grades = byGradeOf(state.report.students); const out = [];
+    Object.keys(grades).sort().forEach((g) => {
+      const list = grades[g]; const s = list.filter((x) => x.submitted).length; let rows = '';
+      byClassOf(list).forEach(([c, cl]) => {
+        const done = cl.filter((x) => x.submitted).length; const missing = cl.filter((x) => !x.submitted); const p = pct(done, cl.length); const key = 'c-' + g + '-' + c;
+        rows += '<tr class="cls" data-toggle="' + key + '"><td>' + esc(c) + '</td><td class="num">' + cl.length + '</td><td class="num">' + done + '</td><td class="num">' + missing.length + '</td><td><div class="bar"><i style="width:' + p + '%"></i></div></td><td class="num">' + p + '%</td></tr>';
+        rows += '<tr class="hidden" id="' + key + '"><td colspan="6">' + (missing.length ? '미제출: ' + missing.map((x) => '<span class="chip">' + (x.number || '') + ' ' + esc(x.name) + '</span>').join('') : '<span class="chip ok">전원 제출</span>') + ' <button class="mini" data-go-students="' + esc(g) + '|' + esc(c) + '">이 반 선택 과목 보기</button></td></tr>';
+      });
+      out.push('<section class="card"><div class="grade-title"><h2>' + esc(g) + '학년</h2><span class="note">' + s + ' / ' + list.length + '명 제출 · 반을 누르면 미제출 학생이 보입니다</span></div><table><thead><tr><th>반</th><th class="num">대상</th><th class="num">제출</th><th class="num">미제출</th><th>비율</th><th class="num"></th></tr></thead><tbody>' + rows + '</tbody></table></section>');
+    });
+    return out.join('') || '<section class="card"><span class="note">명단에 학생이 없습니다.</span></section>';
+  }
+
+  function missingLines(g) {
+    return (byGradeOf(state.report.students)[g] || []).filter((s) => !s.submitted).sort(seatSort).map((s) => [g, s.class_no ?? '', s.number ?? '', s.name, s.student_id]);
+  }
+  function renderMissing() {
+    const grades = byGradeOf(state.report.students); const out = [];
+    Object.keys(grades).sort().forEach((g) => {
+      const lines = missingLines(g);
+      const rows = lines.map((l) => '<tr><td>' + esc(l[1]) + '반</td><td class="num">' + esc(l[2]) + '</td><td>' + esc(l[3]) + '</td><td class="muted">' + esc(l[4]) + '</td></tr>').join('');
+      out.push('<section class="card"><div class="grade-title"><h2>' + esc(g) + '학년 미제출 ' + lines.length + '명</h2><span class="row"><button data-copy="' + esc(g) + '">목록 복사</button><button data-csv="' + esc(g) + '">CSV 내려받기</button></span></div>'
+        + (lines.length ? '<table><thead><tr><th>반</th><th class="num">번호</th><th>이름</th><th>학번</th></tr></thead><tbody>' + rows + '</tbody></table>' : '<p class="note">전원 제출했습니다.</p>') + '</section>');
+    });
+    return out.join('');
+  }
+  function renderSubmit() {
+    const v = $('view-submit');
+    v.innerHTML = '<h3 style="margin-top:0">반별 제출</h3>' + renderClasses() + '<h3>미제출자 명단</h3>' + renderMissing();
+    v.querySelectorAll('tr.cls').forEach((tr) => tr.addEventListener('click', () => $(tr.dataset.toggle).classList.toggle('hidden')));
+    v.querySelectorAll('button[data-go-students]').forEach((btn) => btn.addEventListener('click', (e) => { e.stopPropagation(); const [g, c] = btn.dataset.goStudents.split('|'); showTab('students'); $('cls-grade').value = g; fillClassSelect(); $('cls-class').value = c; renderClassTable(); }));
+    v.querySelectorAll('button[data-copy]').forEach((btn) => btn.addEventListener('click', async () => {
+      const text = missingLines(btn.dataset.copy).map((l) => l[0] + '학년 ' + l[1] + '반 ' + l[2] + '번 ' + l[3]).join('\n');
+      try { await navigator.clipboard.writeText(text); btn.textContent = '복사됨'; setTimeout(() => { btn.textContent = '목록 복사'; }, 1500); } catch { window.prompt('복사할 목록', text); }
+    }));
+    v.querySelectorAll('button[data-csv]').forEach((btn) => btn.addEventListener('click', () => {
+      const g = btn.dataset.csv; csvDownload('미제출자_' + g + '학년_' + state.round + '차.csv', [['학년', '반', '번호', '이름', '학번']].concat(missingLines(g)));
+    }));
+  }
+
+  function renderSubjects() {
+    const out = [];
+    [2, 3].forEach((tg) => {
+      const c = state.counts[tg]; if (!c) return;
+      const groups = Object.keys(c.byGroup).sort((a, b) => groupKey(a).localeCompare(groupKey(b), 'ko'));
+      const body = groups.map((gid) => {
+        const rows = Object.entries(c.byGroup[gid]).sort((a, b) => b[1] - a[1]);
+        const max = rows.length ? rows[0][1] : 0;
+        return '<h3>' + esc(groupLabel(gid)) + '</h3><table><thead><tr><th>과목</th><th class="num">인원</th><th></th></tr></thead><tbody>' + rows.map(([name, n]) => '<tr><td>' + esc(name) + '</td><td class="num">' + n + '</td><td><div class="bar"><i style="width:' + pct(n, max) + '%"></i></div></td></tr>').join('') + '</tbody></table>';
+      }).join('');
+      out.push('<section class="card"><div class="grade-title"><h2>' + tg + '학년 과목</h2><span class="note">응답 ' + c.respondents + '명 · ' + state.round + '차 · 한 학생이 여러 과목을 고르므로 합계는 응답 수보다 큽니다</span></div>' + (body || '<p class="note">아직 제출이 없습니다.</p>') + '</section>');
+    });
+    return out.join('') || '<section class="card"><span class="note">과목별 인원을 읽지 못했습니다.</span></section>';
+  }
+
+  function renderFamily() {
+    const grades = byGradeOf(state.report.students); const out = [];
+    Object.keys(grades).sort().forEach((g) => {
+      const list = grades[g].filter((s) => s.submitted);
+      const fams = {}; list.forEach((s) => { const f = s.track_family || '미정'; fams[f] = (fams[f] || 0) + 1; });
+      const names = Object.keys(fams).sort((a, b) => fams[b] - fams[a]);
+      if (!list.length) { out.push('<section class="card"><h2 style="font-size:16px;margin:0">' + esc(g) + '학년</h2><p class="note">아직 제출이 없습니다.</p></section>'); return; }
+      const kpis = names.map((f) => '<div class="kpi"><span>' + esc(f) + '</span><b>' + fams[f] + '</b><span>' + pct(fams[f], list.length) + '%</span></div>').join('');
+      const rows = byClassOf(grades[g]).map(([c, cl]) => { const sub = cl.filter((s) => s.submitted); const cnt = {}; sub.forEach((s) => { const f = s.track_family || '미정'; cnt[f] = (cnt[f] || 0) + 1; }); return '<tr><td>' + esc(c) + '</td>' + names.map((f) => '<td class="num">' + (cnt[f] || 0) + '</td>').join('') + '<td class="num muted">' + sub.length + '</td></tr>'; }).join('');
+      out.push('<section class="card"><div class="grade-title"><h2>' + esc(g) + '학년 계열</h2><span class="note">제출한 ' + list.length + '명 기준 · 제출할 때 고른 진로의 계열</span></div><div class="kpis" style="margin-bottom:12px">' + kpis + '</div><table><thead><tr><th>반</th>' + names.map((f) => '<th class="num">' + esc(f) + '</th>').join('') + '<th class="num">제출</th></tr></thead><tbody>' + rows + '</tbody></table></section>');
+    });
+    return out.join('');
+  }
+  function renderStats() { $('view-stats').innerHTML = '<h3 style="margin-top:0">과목별 인원</h3>' + renderSubjects() + '<h3>계열 분포</h3>' + renderFamily(); }
+
+  function csvDownload(name, lines) {
+    const csv = '\ufeff' + lines.map((l) => l.map((v) => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"').join(',')).join('\r\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+  function groupsForGrade(g) { return state.groupIds.filter((gid) => { const m = /^g(\d)-/.exec(gid); return !m || Number(m[1]) === Number(g) + 1; }); }
+  function fillClassSelect() {
+    const g = $('cls-grade').value; const sel = $('cls-class'); const keep = sel.value; sel.innerHTML = '';
+    byClassOf(byGradeOf(state.report.students)[g] || []).forEach(([c]) => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
+    if (Array.from(sel.options).some((o) => o.value === keep)) sel.value = keep;
+  }
+  function renderStudents() {
+    const v = $('view-students');
+    if (!$('cls-grade')) {
+      v.innerHTML = '<section class="card"><div class="row"><label>학년 <select id="cls-grade"></select></label><label>반 <select id="cls-class"></select></label><label>과목 <select id="cls-filter"><option value="">전체</option></select></label><span style="flex:1"></span><input type="search" id="student-q" placeholder="이름·학번 검색" style="width:170px"><button id="cls-csv">CSV 내려받기</button></div><div id="student-list" style="margin-top:10px"></div><div id="cls-table" style="margin-top:10px"></div><div id="student-detail" style="margin-top:10px"></div></section>';
+      $('cls-grade').addEventListener('change', () => { fillClassSelect(); renderClassTable(); });
+      $('cls-class').addEventListener('change', renderClassTable);
+      $('cls-filter').addEventListener('change', renderClassTable);
+      $('student-q').addEventListener('input', renderStudentList);
+      $('cls-csv').addEventListener('click', () => { const t = classRows(); csvDownload('선택과목_' + $('cls-grade').value + '학년' + $('cls-class').value + '_' + state.round + '차.csv', [t.header].concat(t.rows.map((r) => r.cells))); });
+    }
+    const gsel = $('cls-grade'); const keep = gsel.value; gsel.innerHTML = '';
+    Object.keys(byGradeOf(state.report.students)).sort().forEach((g) => { const o = document.createElement('option'); o.value = g; o.textContent = g + '학년'; gsel.appendChild(o); });
+    if (Array.from(gsel.options).some((o) => o.value === keep)) gsel.value = keep;
+    fillClassSelect(); renderClassTable(); renderStudentList();
+  }
+  function classRows() {
+    const g = $('cls-grade').value; const c = $('cls-class').value; const filter = $('cls-filter').value;
+    const gids = groupsForGrade(g);
+    const list = ((byGradeOf(state.report.students)[g] || []).filter((s) => (s.class_no == null ? '반 미상' : s.class_no + '반') === c)).sort(seatSort);
+    const header = ['번호', '이름', '계열'].concat(gids.map(groupLabel)).concat(['제출']);
+    const rows = list.map((s) => {
+      const ch = state.choices[String(s.student_id)];
+      const picks = gids.map((gid) => ch ? ((ch.subjects_by_group || {})[gid] || []).join(', ') : '');
+      const all = picks.join(',');
+      if (filter && !all.split(',').map((x) => x.trim()).includes(filter)) return null;
+      return { s, ch, cells: [s.number ?? '', s.name, ch ? (ch.track_family || '') : ''].concat(picks).concat([s.submitted ? fmt(s.updated_at) : '미제출']) };
+    }).filter(Boolean);
+    return { header, rows, gids, list };
+  }
+  function renderClassTable() {
+    const box = $('cls-table'); $('student-detail').innerHTML = ''; if (!$('cls-grade').value) { box.innerHTML = ''; return; }
+    const t = classRows();
+    const subjects = new Set(); t.list.forEach((s) => { const ch = state.choices[String(s.student_id)]; if (ch) Object.values(ch.subjects_by_group || {}).forEach((arr) => arr.forEach((n) => subjects.add(n))); });
+    const fsel = $('cls-filter'); const keep = fsel.value; fsel.innerHTML = '<option value="">전체 과목</option>';
+    Array.from(subjects).sort((a, b) => a.localeCompare(b, 'ko')).forEach((n) => { const o = document.createElement('option'); o.value = n; o.textContent = n; fsel.appendChild(o); });
+    if (Array.from(fsel.options).some((o) => o.value === keep)) fsel.value = keep;
+    const submitted = t.list.filter((s) => s.submitted).length;
+    box.innerHTML = '<p class="note" style="margin:0 0 6px">' + t.list.length + '명 중 ' + submitted + '명 제출' + (fsel.value ? ' · «' + esc(fsel.value) + '» 고른 학생 ' + t.rows.length + '명' : '') + ' · 학생을 누르면 차수별 상세가 보입니다</p>'
+      + '<div style="overflow-x:auto"><table><thead><tr>' + t.header.map((h, i) => '<th' + (i === 0 ? ' class="num"' : '') + '>' + esc(h) + '</th>').join('') + '</tr></thead><tbody>'
+      + (t.rows.length ? t.rows.map((r) => '<tr class="student-hit" data-id="' + esc(r.s.student_id) + '"' + (r.s.submitted ? '' : ' style="color:#b91c1c"') + '>' + r.cells.map((cell, i) => '<td' + (i === 0 ? ' class="num"' : '') + '>' + esc(cell) + '</td>').join('') + '</tr>').join('') : '<tr><td colspan="' + t.header.length + '" class="note">해당하는 학생이 없습니다.</td></tr>')
+      + '</tbody></table></div>';
+    box.querySelectorAll('tr.student-hit').forEach((tr) => tr.addEventListener('click', () => showStudent(tr.dataset.id)));
+  }
+  function renderStudentList() {
+    const q = ($('student-q').value || '').trim().toLowerCase();
+    const box = $('student-list');
+    if (!q) { box.innerHTML = ''; return; }
+    const hits = state.report.students.filter((s) => (s.name || '').toLowerCase().includes(q) || String(s.student_id || '').includes(q)).sort((a, b) => (a.grade || 0) - (b.grade || 0) || seatSort(a, b)).slice(0, 20);
+    box.innerHTML = hits.length
+      ? '<table><thead><tr><th>학년·반·번호</th><th>이름</th><th>학번</th><th>제출</th></tr></thead><tbody>' + hits.map((s) => '<tr class="student-hit" data-id="' + esc(s.student_id) + '"><td>' + (s.grade ?? '?') + '학년 ' + (s.class_no ?? '?') + '반 ' + (s.number ?? '?') + '번</td><td>' + esc(s.name) + '</td><td class="muted">' + esc(s.student_id) + '</td><td>' + (s.submitted ? '<span class="chip ok">제출 ' + fmt(s.updated_at) + '</span>' : '<span class="chip">미제출</span>') + '</td></tr>').join('') + '</tbody></table>'
+      : '<p class="note">찾는 학생이 없습니다.</p>';
+    box.querySelectorAll('tr.student-hit').forEach((tr) => tr.addEventListener('click', () => showStudent(tr.dataset.id)));
+  }
+  async function showStudent(id) {
+    const box = $('student-detail'); box.innerHTML = '<p class="note">불러오는 중…</p>';
+    try {
+      const d = await postJson(authBody({ action: 'studentDetail', studentId: id }));
+      const head = '<h3>' + esc(d.name) + ' · ' + (d.grade ?? '?') + '학년 ' + (d.class_no ?? '?') + '반 ' + (d.number ?? '?') + '번 <span class="muted">' + esc(d.student_id) + (d.email ? ' · ' + esc(d.email) : '') + '</span></h3>';
+      if (!d.rounds.length) { box.innerHTML = head + '<p class="note">제출 기록이 없습니다.</p>'; return; }
+      box.innerHTML = head + d.rounds.slice().reverse().map((r) => {
+        const gids = Object.keys(r.subjects_by_group || {}).sort((a, b) => groupKey(a).localeCompare(groupKey(b), 'ko'));
+        const rows = gids.map((gid) => '<tr><td>' + esc(groupLabel(gid)) + '</td><td>' + esc((r.subjects_by_group[gid] || []).join(', ')) + '</td></tr>').join('');
+        const credits = Object.entries(r.credits || {}).sort().map(([k, v]) => k + '학기 ' + v).join(' · ');
+        return '<div class="card" style="margin-top:8px"><div class="grade-title"><b>' + r.round + '차</b><span class="note">' + fmt(r.updated_at) + (r.track_family ? ' · ' + esc(r.track_family) + ' 계열' : '') + (r.track_major ? ' · ' + esc(r.track_major) : '') + '</span></div>'
+          + (rows ? '<table><thead><tr><th>선택군</th><th>고른 과목</th></tr></thead><tbody>' + rows + '</tbody></table>' : '<p class="note">고른 과목이 없습니다.</p>')
+          + (r.locked_by_track && r.locked_by_track.length ? '<p class="note" style="margin:8px 0 0">자동 배정: ' + esc(r.locked_by_track.join(', ')) + '</p>' : '')
+          + (credits ? '<p class="note" style="margin:4px 0 0">학점: ' + esc(credits) + '</p>' : '') + '</div>';
+      }).join('');
+    } catch (e) { box.innerHTML = '<p class="err">' + esc(e && e.message ? e.message : e) + '</p>'; }
+  }
+
+  $('tabs').addEventListener('click', (e) => { const b = e.target.closest('button[data-tab]'); if (b) showTab(b.dataset.tab); });
+  $('admin-login').addEventListener('click', async () => {
+    const code = $('admin-code').value.trim();
+    if (!code) { $('login-error').textContent = '관리자 코드를 넣으세요.'; return; }
+    auth.token = code; auth.sessionToken = '';
+    sessionStorage.setItem('teacher_status_auth', JSON.stringify(auth));
+    showDash(); await load();
+    if ($('error').textContent) { $('dash').classList.add('hidden'); $('login').classList.remove('hidden'); $('login-error').textContent = $('error').textContent; auth.token = ''; }
+  });
+  $('refresh').addEventListener('click', () => load(Number($('round').value) || undefined));
+  $('round').addEventListener('change', () => load(Number($('round').value) || undefined));
+  $('logout').addEventListener('click', () => { sessionStorage.removeItem('teacher_status_auth'); location.reload(); });
+
+  if (config.loginMode === 'google' && config.googleClientId) {
+    $('google-login').style.display = 'flex';
+    const s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true;
+    s.onload = () => {
+      try {
+        window.google.accounts.id.initialize({ client_id: config.googleClientId, callback: async (resp) => {
+          try {
+            const data = await postJson({ action: 'googleLogin', credential: resp.credential });
+            if (!data.auth || data.auth.role !== 'teacher') throw new Error('교직원 명단(_teachers)에 등록된 계정만 볼 수 있습니다.');
+            auth.sessionToken = data.auth.sessionToken; auth.token = '';
+            sessionStorage.setItem('teacher_status_auth', JSON.stringify(auth));
+            showDash(); await load();
+          } catch (e) { $('login-error').textContent = e && e.message ? e.message : String(e); }
+        } });
+        window.google.accounts.id.renderButton($('gsi-button'), { theme: 'outline', size: 'large', text: 'signin_with' });
+      } catch { $('login-error').textContent = 'Google 로그인 버튼을 준비하지 못했습니다. 관리자 코드로 보세요.'; }
+    };
+    document.head.appendChild(s);
+  }
+  if (auth.token || auth.sessionToken) { showDash(); await load(); }
+})();
+</script>
+</body>
+</html>
