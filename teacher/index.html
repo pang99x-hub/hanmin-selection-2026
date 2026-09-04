@@ -40,7 +40,13 @@
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
   th, td { padding: 9px 8px; border-bottom: 1px solid var(--surface-mid); text-align: left; vertical-align: top; }
   th { color: var(--ink-2); font-weight: 600; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
-  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; width: 72px; }
+  .tbl { overflow-x: auto; }
+  .tbl table { table-layout: fixed; min-width: 520px; }
+  .tbl td { overflow-wrap: anywhere; }
+  th.w-cls, td.w-cls { width: 110px; white-space: nowrap; }
+  th.w-name, td.w-name { width: 120px; }
+  td.bar-cell { padding-right: 16px; }
   .bar { height: 8px; background: var(--surface-high); border-radius: 999px; overflow: hidden; min-width: 100px; }
   .bar > i { display: block; height: 100%; background: var(--navy); border-radius: 999px; }
   tr.cls { cursor: pointer; }
@@ -213,7 +219,7 @@
     worst.sort((a, b) => b.rate - a.rate || a.missing - b.missing || String(a.g + a.c).localeCompare(String(b.g + b.c), 'ko'));
     const low = worst;
     $('view-summary').innerHTML = '<section class="card"><div class="kpis">' + kpis.join('') + '</div>'
-      + (low.length ? '<h3>반별 제출률 (높은 순)</h3><table><thead><tr><th>반</th><th style="width:40%"></th><th class="num">제출률</th><th class="num">미제출</th></tr></thead><tbody>' + low.map((w) => '<tr class="cls" data-go-class="' + esc(w.g) + '|' + esc(w.c) + '"><td>' + esc(w.g) + '학년 ' + esc(w.c) + '</td><td><div class="bar"><i style="width:' + w.rate + '%"></i></div></td><td class="num">' + w.rate + '%</td><td class="num">' + w.missing + '</td></tr>').join('') + '</tbody></table>' : '')
+      + (low.length ? '<h3>반별 제출률 (높은 순)</h3><div class="tbl"><table><thead><tr><th class="w-cls">반</th><th>제출</th><th class="num">제출률</th><th class="num">미제출</th></tr></thead><tbody>' + low.map((w) => '<tr class="cls" data-go-class="' + esc(w.g) + '|' + esc(w.c) + '"><td class="w-cls">' + esc(w.g) + '학년 ' + esc(w.c) + '</td><td class="bar-cell"><div class="bar"><i style="width:' + w.rate + '%"></i></div></td><td class="num">' + w.rate + '%</td><td class="num">' + w.missing + '</td></tr>').join('') + '</tbody></table></div>' : '')
       + '</section>';
     $('view-summary').querySelectorAll('tr[data-go-class]').forEach((tr) => tr.addEventListener('click', () => { showTab('submit'); const [g, c] = tr.dataset.goClass.split('|'); const el = document.getElementById('c-' + g + '-' + c); if (el) { el.classList.remove('hidden'); el.scrollIntoView({ block: 'center' }); } }));
   }
@@ -224,10 +230,10 @@
       const list = grades[g]; const s = list.filter((x) => x.submitted).length; let rows = '';
       byClassOf(list).forEach(([c, cl]) => {
         const done = cl.filter((x) => x.submitted).length; const missing = cl.filter((x) => !x.submitted); const p = pct(done, cl.length); const key = 'c-' + g + '-' + c;
-        rows += '<tr class="cls" data-toggle="' + key + '"><td>' + esc(c) + '</td><td class="num">' + cl.length + '</td><td class="num">' + done + '</td><td class="num">' + missing.length + '</td><td><div class="bar"><i style="width:' + p + '%"></i></div></td><td class="num">' + p + '%</td></tr>';
+        rows += '<tr class="cls" data-toggle="' + key + '"><td class="w-cls">' + esc(c) + '</td><td class="num">' + cl.length + '</td><td class="num">' + done + '</td><td class="num">' + missing.length + '</td><td class="bar-cell"><div class="bar"><i style="width:' + p + '%"></i></div></td><td class="num">' + p + '%</td></tr>';
         rows += '<tr class="hidden" id="' + key + '"><td colspan="6">' + (missing.length ? '미제출: ' + missing.map((x) => '<span class="chip">' + (x.number || '') + ' ' + esc(x.name) + '</span>').join('') : '<span class="chip ok">전원 제출</span>') + ' <button class="mini" data-go-students="' + esc(g) + '|' + esc(c) + '">이 반 선택 과목 보기</button></td></tr>';
       });
-      out.push('<section class="card"><div class="grade-title"><h2>' + esc(g) + '학년</h2><span class="note">' + s + ' / ' + list.length + '명 제출 · 반을 누르면 미제출 학생이 보입니다</span></div><table><thead><tr><th>반</th><th class="num">대상</th><th class="num">제출</th><th class="num">미제출</th><th>비율</th><th class="num"></th></tr></thead><tbody>' + rows + '</tbody></table></section>');
+      out.push('<section class="card"><div class="grade-title"><h2>' + esc(g) + '학년</h2><span class="note">' + s + ' / ' + list.length + '명 제출 · 반을 누르면 미제출 학생이 보입니다</span></div><div class="tbl"><table><thead><tr><th class="w-cls">반</th><th class="num">대상</th><th class="num">제출</th><th class="num">미제출</th><th>비율</th><th class="num"></th></tr></thead><tbody>' + rows + '</tbody></table></div></section>');
     });
     return out.join('') || '<section class="card"><span class="note">명단에 학생이 없습니다.</span></section>';
   }
@@ -239,9 +245,9 @@
     const grades = byGradeOf(state.report.students); const out = [];
     Object.keys(grades).sort().forEach((g) => {
       const lines = missingLines(g);
-      const rows = lines.map((l) => '<tr><td>' + esc(l[1]) + '반</td><td class="num">' + esc(l[2]) + '</td><td>' + esc(l[3]) + '</td><td class="muted">' + esc(l[4]) + '</td></tr>').join('');
+      const rows = lines.map((l) => '<tr><td class="w-cls">' + esc(l[1]) + '반</td><td class="num">' + esc(l[2]) + '</td><td class="w-name">' + esc(l[3]) + '</td><td class="muted">' + esc(l[4]) + '</td></tr>').join('');
       out.push('<section class="card"><div class="grade-title"><h2>' + esc(g) + '학년 미제출 ' + lines.length + '명</h2><span class="row"><button data-copy="' + esc(g) + '">목록 복사</button><button data-csv="' + esc(g) + '">CSV 내려받기</button></span></div>'
-        + (lines.length ? '<table><thead><tr><th>반</th><th class="num">번호</th><th>이름</th><th>학번</th></tr></thead><tbody>' + rows + '</tbody></table>' : '<p class="note">전원 제출했습니다.</p>') + '</section>');
+        + (lines.length ? '<div class="tbl"><table><thead><tr><th class="w-cls">반</th><th class="num">번호</th><th class="w-name">이름</th><th>학번</th></tr></thead><tbody>' + rows + '</tbody></table></div>' : '<p class="note">전원 제출했습니다.</p>') + '</section>');
     });
     return out.join('');
   }
@@ -267,7 +273,7 @@
       const body = groups.map((gid) => {
         const rows = Object.entries(c.byGroup[gid]).sort((a, b) => b[1] - a[1]);
         const max = rows.length ? rows[0][1] : 0;
-        return '<h3>' + esc(groupLabel(gid)) + '</h3><table><thead><tr><th>과목</th><th class="num">인원</th><th></th></tr></thead><tbody>' + rows.map(([name, n]) => '<tr><td>' + esc(name) + '</td><td class="num">' + n + '</td><td><div class="bar"><i style="width:' + pct(n, max) + '%"></i></div></td></tr>').join('') + '</tbody></table>';
+        return '<h3>' + esc(groupLabel(gid)) + '</h3><div class="tbl"><table><thead><tr><th style="width:40%">과목</th><th class="num">인원</th><th></th></tr></thead><tbody>' + rows.map(([name, n]) => '<tr><td>' + esc(name) + '</td><td class="num">' + n + '</td><td class="bar-cell"><div class="bar"><i style="width:' + pct(n, max) + '%"></i></div></td></tr>').join('') + '</tbody></table></div>';
       }).join('');
       out.push('<section class="card"><div class="grade-title"><h2>' + tg + '학년 과목</h2><span class="note">응답 ' + c.respondents + '명 · ' + state.round + '차 · 한 학생이 여러 과목을 고르므로 합계는 응답 수보다 큽니다</span></div>' + (body || '<p class="note">아직 제출이 없습니다.</p>') + '</section>');
     });
@@ -282,8 +288,8 @@
       const names = Object.keys(fams).sort((a, b) => fams[b] - fams[a]);
       if (!list.length) { out.push('<section class="card"><h2 style="font-size:16px;margin:0">' + esc(g) + '학년</h2><p class="note">아직 제출이 없습니다.</p></section>'); return; }
       const kpis = names.map((f) => '<div class="kpi"><span>' + esc(f) + '</span><b>' + fams[f] + '</b><span>' + pct(fams[f], list.length) + '%</span></div>').join('');
-      const rows = byClassOf(grades[g]).map(([c, cl]) => { const sub = cl.filter((s) => s.submitted); const cnt = {}; sub.forEach((s) => { const f = s.track_family || '미정'; cnt[f] = (cnt[f] || 0) + 1; }); return '<tr><td>' + esc(c) + '</td>' + names.map((f) => '<td class="num">' + (cnt[f] || 0) + '</td>').join('') + '<td class="num muted">' + sub.length + '</td></tr>'; }).join('');
-      out.push('<section class="card"><div class="grade-title"><h2>' + esc(g) + '학년 계열</h2><span class="note">제출한 ' + list.length + '명 기준 · 제출할 때 고른 진로의 계열</span></div><div class="kpis" style="margin-bottom:12px">' + kpis + '</div><table><thead><tr><th>반</th>' + names.map((f) => '<th class="num">' + esc(f) + '</th>').join('') + '<th class="num">제출</th></tr></thead><tbody>' + rows + '</tbody></table></section>');
+      const rows = byClassOf(grades[g]).map(([c, cl]) => { const sub = cl.filter((s) => s.submitted); const cnt = {}; sub.forEach((s) => { const f = s.track_family || '미정'; cnt[f] = (cnt[f] || 0) + 1; }); return '<tr><td class="w-cls">' + esc(c) + '</td>' + names.map((f) => '<td class="num">' + (cnt[f] || 0) + '</td>').join('') + '<td class="num muted">' + sub.length + '</td></tr>'; }).join('');
+      out.push('<section class="card"><div class="grade-title"><h2>' + esc(g) + '학년 계열</h2><span class="note">제출한 ' + list.length + '명 기준 · 제출할 때 고른 진로의 계열</span></div><div class="kpis" style="margin-bottom:12px">' + kpis + '</div><div class="tbl"><table><thead><tr><th class="w-cls">반</th>' + names.map((f) => '<th class="num">' + esc(f) + '</th>').join('') + '<th class="num">제출</th></tr></thead><tbody>' + rows + '</tbody></table></div></section>');
     });
     return out.join('');
   }
@@ -337,7 +343,7 @@
     if (Array.from(fsel.options).some((o) => o.value === keep)) fsel.value = keep;
     const submitted = t.list.filter((s) => s.submitted).length;
     box.innerHTML = '<p class="note" style="margin:0 0 6px">' + t.list.length + '명 중 ' + submitted + '명 제출' + (fsel.value ? ' · «' + esc(fsel.value) + '» 고른 학생 ' + t.rows.length + '명' : '') + ' · 학생을 누르면 차수별 상세가 보입니다</p>'
-      + '<div style="overflow-x:auto"><table><thead><tr>' + t.header.map((h, i) => '<th' + (i === 0 ? ' class="num"' : '') + '>' + esc(h) + '</th>').join('') + '</tr></thead><tbody>'
+      + '<div class="tbl"><table><thead><tr>' + t.header.map((h, i) => '<th' + (i === 0 ? ' class="num" style="width:52px"' : i === 1 ? ' class="w-name"' : i === 2 ? ' style="width:80px"' : i === t.header.length - 1 ? ' style="width:110px"' : '') + '>' + esc(h) + '</th>').join('') + '</tr></thead><tbody>'
       + (t.rows.length ? t.rows.map((r) => '<tr class="student-hit" data-id="' + esc(r.s.student_id) + '"' + (r.s.submitted ? '' : ' style="color:#b91c1c"') + '>' + r.cells.map((cell, i) => '<td' + (i === 0 ? ' class="num"' : '') + '>' + esc(cell) + '</td>').join('') + '</tr>').join('') : '<tr><td colspan="' + t.header.length + '" class="note">해당하는 학생이 없습니다.</td></tr>')
       + '</tbody></table></div>';
     box.querySelectorAll('tr.student-hit').forEach((tr) => tr.addEventListener('click', () => showStudent(tr.dataset.id)));
@@ -348,7 +354,7 @@
     if (!q) { box.innerHTML = ''; return; }
     const hits = state.report.students.filter((s) => (s.name || '').toLowerCase().includes(q) || String(s.student_id || '').includes(q)).sort((a, b) => (a.grade || 0) - (b.grade || 0) || seatSort(a, b)).slice(0, 20);
     box.innerHTML = hits.length
-      ? '<table><thead><tr><th>학년·반·번호</th><th>이름</th><th>학번</th><th>제출</th></tr></thead><tbody>' + hits.map((s) => '<tr class="student-hit" data-id="' + esc(s.student_id) + '"><td>' + (s.grade ?? '?') + '학년 ' + (s.class_no ?? '?') + '반 ' + (s.number ?? '?') + '번</td><td>' + esc(s.name) + '</td><td class="muted">' + esc(s.student_id) + '</td><td>' + (s.submitted ? '<span class="chip ok">제출 ' + fmt(s.updated_at) + '</span>' : '<span class="chip">미제출</span>') + '</td></tr>').join('') + '</tbody></table>'
+      ? '<div class="tbl"><table><thead><tr><th style="width:150px">학년·반·번호</th><th class="w-name">이름</th><th>학번</th><th style="width:170px">제출</th></tr></thead><tbody>' + hits.map((s) => '<tr class="student-hit" data-id="' + esc(s.student_id) + '"><td>' + (s.grade ?? '?') + '학년 ' + (s.class_no ?? '?') + '반 ' + (s.number ?? '?') + '번</td><td>' + esc(s.name) + '</td><td class="muted">' + esc(s.student_id) + '</td><td>' + (s.submitted ? '<span class="chip ok">제출 ' + fmt(s.updated_at) + '</span>' : '<span class="chip">미제출</span>') + '</td></tr>').join('') + '</tbody></table></div>'
       : '<p class="note">찾는 학생이 없습니다.</p>';
     box.querySelectorAll('tr.student-hit').forEach((tr) => tr.addEventListener('click', () => showStudent(tr.dataset.id)));
   }
@@ -363,7 +369,7 @@
         const rows = gids.map((gid) => '<tr><td>' + esc(groupLabel(gid)) + '</td><td>' + esc((r.subjects_by_group[gid] || []).join(', ')) + '</td></tr>').join('');
         const credits = Object.entries(r.credits || {}).sort().map(([k, v]) => k + '학기 ' + v).join(' · ');
         return '<div class="card" style="margin-top:8px"><div class="grade-title"><b>' + r.round + '차</b><span class="note">' + fmt(r.updated_at) + (r.track_family ? ' · ' + esc(r.track_family) + ' 계열' : '') + (r.track_major ? ' · ' + esc(r.track_major) : '') + '</span></div>'
-          + (rows ? '<table><thead><tr><th>선택군</th><th>고른 과목</th></tr></thead><tbody>' + rows + '</tbody></table>' : '<p class="note">고른 과목이 없습니다.</p>')
+          + (rows ? '<table><thead><tr><th style="width:180px">선택군</th><th>고른 과목</th></tr></thead><tbody>' + rows + '</tbody></table>' : '<p class="note">고른 과목이 없습니다.</p>')
           + (r.locked_by_track && r.locked_by_track.length ? '<p class="note" style="margin:8px 0 0">자동 배정: ' + esc(r.locked_by_track.join(', ')) + '</p>' : '')
           + (credits ? '<p class="note" style="margin:4px 0 0">학점: ' + esc(credits) + '</p>' : '') + '</div>';
       }).join('');
