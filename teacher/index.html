@@ -4,74 +4,101 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>제출 현황</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-  :root { color-scheme: light; --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb; --soft:#f3f4f6; --navy:#002147; --accent:#4f46e5; --bad:#b91c1c; --good:#047857; }
+  :root { color-scheme: light; --navy:#002147; --navy-deep:#000a1e; --navy-soft:#d6e3ff; --navy-mid:#2d476f; --navy-dim:#708ab5; --mint:#7ad7c6; --mint-soft:#97f3e2; --mint-deep:#005047; --mint-ink:#00201b;
+    --surface:#faf9fd; --surface-low:#f4f3f7; --surface-mid:#efedf1; --surface-high:#e9e7eb; --line:#c4c6cf; --ink:#1a1b1e; --ink-2:#44474e; --outline:#74777f; --error:#ba1a1a; --error-soft:#ffdad6; --error-ink:#93000a; --shadow:0 10px 35px rgba(0,33,71,.08); }
   * { box-sizing: border-box; }
-  body { margin: 0; font-family: -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif; background: #f6f7fb; color: var(--ink); }
-  main { max-width: 1040px; margin: 0 auto; padding: 20px 16px 64px; }
-  h1 { font-size: 22px; margin: 0 0 2px; }
-  .sub { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
-  .card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+  html { font-size: 15px; }
+  body { margin: 0; font-family: Inter, system-ui, "Malgun Gothic", "Apple SD Gothic Neo", Pretendard, sans-serif; background: var(--surface); color: var(--ink); -webkit-font-smoothing: antialiased; }
+  header.top { position: sticky; top: 0; z-index: 40; background: var(--navy); color: #fff; box-shadow: var(--shadow); }
+  header.top .in { max-width: 1080px; margin: 0 auto; height: 64px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  header.top .brand { display: flex; align-items: baseline; gap: 8px; font-weight: 700; letter-spacing: -.01em; }
+  header.top .brand small { font-size: 12px; color: var(--mint); font-weight: 500; }
+  header.top .meta { font-size: 12.5px; color: rgba(255,255,255,.72); display: none; }
+  @media (min-width: 720px) { header.top .meta { display: block; } }
+  main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 72px; }
+  h1 { font-size: 26px; font-weight: 800; letter-spacing: -.02em; margin: 0 0 4px; color: var(--navy); }
+  .sub { color: var(--ink-2); font-size: 14px; margin: 0 0 20px; }
+  .card { background: #fff; border: 1px solid rgba(196,198,207,.45); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
   .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-  input, select, button { font: inherit; font-size: 14px; }
-  input[type=text], input[type=search], input[type=password], select { height: 36px; padding: 0 10px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff; }
-  button { height: 36px; padding: 0 14px; border-radius: 8px; border: 1px solid #d1d5db; background: #fff; cursor: pointer; }
-  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  input, select, button { font: inherit; font-size: 14px; color: var(--ink); }
+  input[type=text], input[type=search], input[type=password], select { height: 40px; padding: 0 12px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+  input:focus, select:focus { outline: 2px solid var(--navy); outline-offset: 1px; border-color: var(--navy); }
+  button { height: 40px; padding: 0 16px; border-radius: 8px; border: 1px solid var(--line); background: #fff; cursor: pointer; font-weight: 600; transition: background .15s, color .15s; }
+  button:hover { background: var(--surface-low); }
+  button.primary { background: var(--navy); border-color: var(--navy); color: #fff; }
+  button.primary:hover { background: var(--navy-deep); }
   button:disabled { opacity: .5; cursor: default; }
-  .note { font-size: 13px; color: var(--muted); }
-  .err { color: var(--bad); font-size: 13px; }
+  button.mini { height: 28px; padding: 0 10px; font-size: 12px; margin-left: 6px; border-color: var(--navy); color: var(--navy); background: #fff; }
+  button.mini:hover { background: var(--navy); color: #fff; }
+  .note { font-size: 13px; color: var(--ink-2); }
+  .err { color: var(--error); font-size: 13px; margin: 8px 0 0; }
+  .muted { color: var(--outline); }
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  th, td { padding: 7px 6px; border-bottom: 1px solid var(--soft); text-align: left; vertical-align: top; }
-  th { color: var(--muted); font-weight: 600; font-size: 12px; white-space: nowrap; }
+  th, td { padding: 9px 8px; border-bottom: 1px solid var(--surface-mid); text-align: left; vertical-align: top; }
+  th { color: var(--ink-2); font-weight: 600; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
   td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .bar { height: 8px; background: #eef0f6; border-radius: 4px; overflow: hidden; min-width: 100px; }
-  .bar > i { display: block; height: 100%; background: var(--accent); }
+  .bar { height: 8px; background: var(--surface-high); border-radius: 999px; overflow: hidden; min-width: 100px; }
+  .bar > i { display: block; height: 100%; background: var(--navy); border-radius: 999px; }
   tr.cls { cursor: pointer; }
-  tr.cls:hover td { background: #f9fafb; }
-  .chip { display: inline-block; margin: 0 6px 4px 0; padding: 1px 9px; border-radius: 999px; background: #fef2f2; color: var(--bad); font-size: 13px; }
-  .chip.ok { background: #ecfdf5; color: var(--good); }
-  .grade-title { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 8px; gap: 10px; flex-wrap: wrap; }
-  .grade-title h2 { font-size: 16px; margin: 0; }
-  h3 { font-size: 14px; margin: 14px 0 6px; color: var(--navy); }
-  .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; }
-  .tabs button { height: 34px; padding: 0 12px; border-radius: 999px; font-size: 13px; }
-  .tabs button.on { background: var(--navy); border-color: var(--navy); color: #fff; }
-  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
-  .kpi { border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
-  .kpi b { display: block; font-size: 24px; margin: 2px 0 4px; }
-  .kpi span { font-size: 12px; color: var(--muted); }
+  tr.cls:hover td { background: var(--surface-low); }
+  .chip { display: inline-block; margin: 0 6px 4px 0; padding: 2px 10px; border-radius: 999px; background: var(--error-soft); color: var(--error-ink); font-size: 13px; font-weight: 500; }
+  .chip.ok { background: var(--mint-soft); color: var(--mint-deep); }
+  .grade-title { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 12px; gap: 10px; flex-wrap: wrap; }
+  .grade-title h2 { font-size: 18px; font-weight: 800; letter-spacing: -.01em; margin: 0; color: var(--navy); }
+  h3 { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--navy-dim); margin: 22px 0 8px; }
+  .card h3:first-child { margin-top: 0; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 0; }
+  .tabs button { height: 36px; padding: 0 16px; border-radius: 999px; font-size: 13.5px; border-color: transparent; background: var(--surface-low); color: var(--ink-2); }
+  .tabs button:hover { background: var(--surface-high); }
+  .tabs button.on { background: var(--navy); color: #fff; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+  .kpi { border-radius: 12px; padding: 16px 18px; background: var(--surface-low); }
+  .kpi:first-child { background: var(--navy); color: #fff; }
+  .kpi b { display: block; font-size: 28px; font-weight: 800; letter-spacing: -.02em; margin: 4px 0 4px; font-variant-numeric: tabular-nums; }
+  .kpi span { font-size: 12.5px; color: var(--ink-2); }
+  .kpi:first-child span { color: var(--mint); }
   .hidden { display: none !important; }
-  .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
-  .sticky { position: sticky; top: 0; background: #f6f7fb; padding: 8px 0; z-index: 5; }
+  .sticky { position: sticky; top: 64px; z-index: 5; }
   .student-hit { cursor: pointer; }
-  .student-hit:hover td { background: #f9fafb; }
-  .muted { color: var(--muted); }
-  button.mini { height: 26px; padding: 0 10px; font-size: 12px; margin-left: 6px; }
-  @media (max-width: 640px) { th, td { padding: 6px 4px; font-size: 13px; } .bar { min-width: 60px; } }
+  .student-hit:hover td { background: var(--surface-low); }
+  .login-wrap { max-width: 520px; margin: 40px auto 0; }
+  .login-wrap .tag { display: inline-block; padding: 4px 12px; border-radius: 999px; background: var(--navy); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 14px; }
+  .divider { display: flex; align-items: center; gap: 12px; color: var(--outline); font-size: 12px; margin: 16px 0; }
+  .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--surface-high); }
+  @media (max-width: 640px) { html { font-size: 14px; } th, td { padding: 7px 5px; font-size: 13px; } .bar { min-width: 60px; } .card { padding: 16px; } h1 { font-size: 22px; } }
 </style>
 </head>
 <body>
+<header class="top"><div class="in">
+  <div class="brand"><span id="brand-school">교육과정 설계</span><small>제출 현황</small></div>
+  <div class="meta" id="head-meta"></div>
+</div></header>
 <main>
-  <h1 id="title">제출 현황</h1>
-  <p class="sub" id="subtitle">선택 과목 수요조사 — 교사용 대시보드</p>
-
-  <section class="card" id="login">
-    <div class="row" id="google-login" style="display:none">
+  <section class="card login-wrap" id="login">
+    <div class="tag">Teacher Mode</div>
+    <h1 id="title">제출 현황</h1>
+    <p class="sub" id="subtitle">선택 과목 수요조사 — 반별 제출, 미제출자, 학생별 선택 과목, 과목별 인원을 한 화면에서 봅니다.</p>
+    <div id="google-login" style="display:none">
       <div id="gsi-button"></div>
-      <span class="note">교직원 명단에 등록된 학교 구글 계정으로 로그인합니다.</span>
+      <p class="note" style="margin:8px 0 0">교직원 명단에 등록된 학교 구글 계정으로 로그인합니다.</p>
+      <div class="divider">또는</div>
     </div>
-    <div class="row" style="margin-top:10px">
-      <input type="password" id="admin-code" placeholder="또는 관리자 코드" style="width:220px" autocomplete="off">
-      <button id="admin-login">코드로 보기</button>
-      <span class="note">관리자 코드는 담당 교사가 데스크톱 앱의 «제출 현황»에서 확인해 알려 줍니다.</span>
+    <div class="row">
+      <input type="password" id="admin-code" placeholder="관리자 코드" style="flex:1;min-width:180px" autocomplete="off">
+      <button id="admin-login" class="primary">코드로 보기</button>
     </div>
+    <p class="note" style="margin:10px 0 0">관리자 코드는 담당 교사가 데스크톱 앱의 «제출 현황»에서 확인해 알려 줍니다.</p>
     <p class="err" id="login-error"></p>
   </section>
 
   <div class="hidden" id="dash">
     <section class="card sticky" id="controls">
       <div class="row">
-        <label>차수 <select id="round"></select></label>
+        <label class="row" style="gap:8px">차수 <select id="round"></select></label>
         <button id="refresh">새로 고침</button>
         <span class="note" id="schedule"></span>
         <span style="flex:1"></span>
@@ -99,7 +126,7 @@
   try { config = await (await fetch('./config.json', { cache: 'no-cache' })).json(); } catch { config = {}; }
   const SUBMIT_URL = String(config.submitUrl || '');
   const FINAL_ROUND = Math.max(1, Math.min(3, Number(config.finalRound) || 1));
-  if (config.schoolName) { $('title').textContent = config.schoolName + ' 제출 현황'; document.title = config.schoolName + ' 제출 현황'; }
+  if (config.schoolName) { $('title').textContent = config.schoolName + ' 제출 현황'; document.title = config.schoolName + ' 제출 현황'; $('brand-school').textContent = config.schoolName; }
   if (!SUBMIT_URL) $('login-error').textContent = '응답 저장 주소가 설정되지 않은 사이트입니다. 데스크톱 앱에서 사이트를 다시 만들어 올리세요.';
 
   const auth = { token: '', sessionToken: '' };
@@ -157,6 +184,7 @@
       state.report = report; state.round = report.round;
       $('round').value = String(report.round);
       const sc = report.schedule && report.schedule['round' + report.round];
+      $('head-meta').textContent = report.round + '차 · ' + report.submitted + '/' + report.total + '명 제출';
       $('schedule').textContent = (report.finalized ? '마감됨 · ' : (report.currentRound === report.round ? '접수 중 · ' : '')) + (sc ? fmt(sc.start) + ' ~ ' + fmt(sc.end) : '기간 미정') + ' · ' + report.submitted + '/' + report.total + '명 제출 · ' + new Date(report.generatedAt).toLocaleTimeString('ko-KR') + ' 기준';
       state.counts = {};
       for (const g of [2, 3]) { const c = await getCounts(g, report.round); if (c) state.counts[g] = c; }
@@ -182,10 +210,10 @@
       .concat(Object.keys(grades).sort().map((g) => { const l = grades[g]; const s = l.filter((x) => x.submitted).length; return '<div class="kpi"><span>' + esc(g) + '학년</span><b>' + s + ' / ' + l.length + '</b><span>' + pct(s, l.length) + '% 제출 · 미제출 ' + (l.length - s) + '명</span></div>'; }));
     const worst = [];
     Object.keys(grades).forEach((g) => byClassOf(grades[g]).forEach(([c, cl]) => { const s = cl.filter((x) => x.submitted).length; worst.push({ g, c, rate: pct(s, cl.length), missing: cl.length - s }); }));
-    worst.sort((a, b) => a.rate - b.rate);
-    const low = worst.filter((w) => w.missing > 0).slice(0, 6);
+    worst.sort((a, b) => b.rate - a.rate || a.missing - b.missing || String(a.g + a.c).localeCompare(String(b.g + b.c), 'ko'));
+    const low = worst;
     $('view-summary').innerHTML = '<section class="card"><div class="kpis">' + kpis.join('') + '</div>'
-      + (low.length ? '<h3>제출률 낮은 반</h3><table><thead><tr><th>반</th><th class="num">제출률</th><th class="num">미제출</th></tr></thead><tbody>' + low.map((w) => '<tr class="cls" data-go-class="' + esc(w.g) + '|' + esc(w.c) + '"><td>' + esc(w.g) + '학년 ' + esc(w.c) + '</td><td class="num">' + w.rate + '%</td><td class="num">' + w.missing + '</td></tr>').join('') + '</tbody></table>' : '<p class="note" style="margin:12px 0 0">모든 반이 제출을 마쳤습니다.</p>')
+      + (low.length ? '<h3>반별 제출률 (높은 순)</h3><table><thead><tr><th>반</th><th style="width:40%"></th><th class="num">제출률</th><th class="num">미제출</th></tr></thead><tbody>' + low.map((w) => '<tr class="cls" data-go-class="' + esc(w.g) + '|' + esc(w.c) + '"><td>' + esc(w.g) + '학년 ' + esc(w.c) + '</td><td><div class="bar"><i style="width:' + w.rate + '%"></i></div></td><td class="num">' + w.rate + '%</td><td class="num">' + w.missing + '</td></tr>').join('') + '</tbody></table>' : '')
       + '</section>';
     $('view-summary').querySelectorAll('tr[data-go-class]').forEach((tr) => tr.addEventListener('click', () => { showTab('submit'); const [g, c] = tr.dataset.goClass.split('|'); const el = document.getElementById('c-' + g + '-' + c); if (el) { el.classList.remove('hidden'); el.scrollIntoView({ block: 'center' }); } }));
   }
