@@ -137,7 +137,7 @@
 
   const auth = { token: '', sessionToken: '' };
   try { const saved = JSON.parse(sessionStorage.getItem('teacher_status_auth') || 'null'); if (saved && (saved.token || saved.sessionToken)) Object.assign(auth, saved); } catch { /* 무시 */ }
-  const state = { report: null, counts: {}, round: null, choices: {}, groupIds: [] };
+  const state = { report: null, counts: {}, round: null, choices: {}, groupIds: [], loadingDetail: false };
 
   function authBody(extra) { const b = Object.assign({}, extra); if (auth.token) b.token = auth.token; else b.sessionToken = auth.sessionToken; return b; }
   async function postJson(body) {
@@ -185,6 +185,7 @@
 
   async function load(round) {
     $('error').textContent = ''; $('refresh').disabled = true;
+    if (!state.report) $('view-summary').innerHTML = '<section class="card"><p class="note" style="margin:0">제출 현황을 불러오는 중입니다… (수백 명 명단이라 10초 안팎 걸립니다)</p></section>';
     try {
       const report = await postJson(authBody({ action: 'status', ...(round ? { round } : {}) }));
       state.report = report; state.round = report.round;
@@ -192,15 +193,18 @@
       const sc = report.schedule && report.schedule['round' + report.round];
       $('head-meta').textContent = report.round + '차 · ' + report.submitted + '/' + report.total + '명 제출';
       $('schedule').textContent = (report.finalized ? '마감됨 · ' : (report.currentRound === report.round ? '접수 중 · ' : '')) + (sc ? fmt(sc.start) + ' ~ ' + fmt(sc.end) : '기간 미정') + ' · ' + report.submitted + '/' + report.total + '명 제출 · ' + new Date(report.generatedAt).toLocaleTimeString('ko-KR') + ' 기준';
-      state.counts = {};
-      for (const g of [2, 3]) { const c = await getCounts(g, report.round); if (c) state.counts[g] = c; }
-      state.choices = {}; state.groupIds = [];
+      state.counts = {}; state.choices = {}; state.groupIds = [];
+      // 명단·제출 여부는 왔으니 먼저 그린다 — 과목 자료(수백 명 분)는 몇십 초 더 걸린다.
+      state.loadingDetail = true;
+      renderAll();
+      const countJobs = [2, 3].map((g) => getCounts(g, report.round).then((c) => { if (c) state.counts[g] = c; }));
       try {
-        const ex = await postJson(authBody({ action: 'export', round: report.round }));
+        const [ex] = await Promise.all([postJson(authBody({ action: 'export', round: report.round })), ...countJobs]);
         const gids = new Set();
         (ex.rows || []).forEach((row) => { state.choices[String(row.student_id)] = row; Object.keys(row.subjects_by_group || {}).forEach((g) => gids.add(g)); });
         state.groupIds = Array.from(gids).sort((a, b) => groupKey(a).localeCompare(groupKey(b), 'ko'));
       } catch (e) { console.warn('export', e); }
+      state.loadingDetail = false;
       renderAll();
     } catch (e) {
       $('error').textContent = e && e.message ? e.message : String(e);
@@ -293,7 +297,7 @@
     });
     return out.join('');
   }
-  function renderStats() { $('view-stats').innerHTML = '<h3 style="margin-top:0">과목별 인원</h3>' + renderSubjects() + '<h3>계열 분포</h3>' + renderFamily(); }
+  function renderStats() { $('view-stats').innerHTML = (state.loadingDetail ? '<p class="note" style="margin:0 0 12px;color:var(--navy)">과목별 인원을 불러오는 중입니다…</p>' : '') + '<h3 style="margin-top:0">과목별 인원</h3>' + renderSubjects() + '<h3>계열 분포</h3>' + renderFamily(); }
 
   function csvDownload(name, lines) {
     const csv = '\ufeff' + lines.map((l) => l.map((v) => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"').join(',')).join('\r\n');
@@ -342,8 +346,8 @@
     Array.from(subjects).sort((a, b) => a.localeCompare(b, 'ko')).forEach((n) => { const o = document.createElement('option'); o.value = n; o.textContent = n; fsel.appendChild(o); });
     if (Array.from(fsel.options).some((o) => o.value === keep)) fsel.value = keep;
     const submitted = t.list.filter((s) => s.submitted).length;
-    box.innerHTML = '<p class="note" style="margin:0 0 6px">' + t.list.length + '명 중 ' + submitted + '명 제출' + (fsel.value ? ' · «' + esc(fsel.value) + '» 고른 학생 ' + t.rows.length + '명' : '') + ' · 학생을 누르면 차수별 상세가 보입니다</p>'
-      + '<div class="tbl"><table><thead><tr>' + t.header.map((h, i) => '<th' + (i === 0 ? ' class="num" style="width:52px"' : i === 1 ? ' class="w-name"' : i === 2 ? ' style="width:80px"' : i === t.header.length - 1 ? ' style="width:110px"' : '') + '>' + esc(h) + '</th>').join('') + '</tr></thead><tbody>'
+    box.innerHTML = (state.loadingDetail ? '<p class="note" style="margin:0 0 6px;color:var(--navy)">과목 자료를 불러오는 중입니다… 제출 여부는 먼저 보입니다.</p>' : '') + '<p class="note" style="margin:0 0 6px">' + t.list.length + '명 중 ' + submitted + '명 제출' + (fsel.value ? ' · «' + esc(fsel.value) + '» 고른 학생 ' + t.rows.length + '명' : '') + ' · 학생을 누르면 차수별 상세가 보입니다</p>'
+      + '<div class="tbl"><table style="min-width:' + (360 + t.gids.length * 150) + 'px"><thead><tr>' + t.header.map((h, i) => '<th' + (i === 0 ? ' class="num" style="width:52px"' : i === 1 ? ' class="w-name" style="width:90px"' : i === 2 ? ' style="width:84px"' : i === t.header.length - 1 ? ' style="width:100px"' : ' style="width:150px"') + '>' + esc(h) + '</th>').join('') + '</tr></thead><tbody>'
       + (t.rows.length ? t.rows.map((r) => '<tr class="student-hit" data-id="' + esc(r.s.student_id) + '"' + (r.s.submitted ? '' : ' style="color:#b91c1c"') + '>' + r.cells.map((cell, i) => '<td' + (i === 0 ? ' class="num"' : '') + '>' + esc(cell) + '</td>').join('') + '</tr>').join('') : '<tr><td colspan="' + t.header.length + '" class="note">해당하는 학생이 없습니다.</td></tr>')
       + '</tbody></table></div>';
     box.querySelectorAll('tr.student-hit').forEach((tr) => tr.addEventListener('click', () => showStudent(tr.dataset.id)));
