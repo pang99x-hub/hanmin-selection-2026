@@ -12,22 +12,20 @@
   :root{
     --navy:#002147; --mint:#7ad7c6; --surface:#f7f8fb;
     --text:#1b1f24; --muted:#5b6570; --line:#dfe3ea;
-    /* 슬라이드와 같은 어두운 무대 — 밝은 판이 그 위에 얹혀 위아래로 띠가 남는다. */
-    --stage:#1a1b1e;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{
-    min-height:100vh; background:var(--stage); color:var(--text);
+    min-height:100vh; background:var(--surface); color:var(--text);
     font-family:Inter,'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
     -webkit-font-smoothing:antialiased; overflow-x:hidden;
   }
+  /* 화면을 가득 채운다 — 예전에는 위아래 44px 여백 밖으로 어두운 바탕이 띠처럼 보였다. */
   .stage{
     position:relative; overflow:hidden; background:var(--surface);
-    margin:44px 0; min-height:calc(100vh - 88px);
+    min-height:100vh;
     display:flex; align-items:center; justify-content:center;
   }
-  @media (max-width:640px){ .stage{ margin:20px 0; min-height:calc(100vh - 40px); } }
   /* 커버 슬라이드의 배경 장식 */
   .stage::before,.stage::after{
     content:""; position:absolute; border-radius:50%; filter:blur(80px); pointer-events:none;
@@ -57,7 +55,7 @@
   .foot{margin-top:20px;font-size:12.5px;color:var(--muted)}
   .sig{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
   @media (prefers-color-scheme:dark){
-    :root{--surface:#0f1419;--text:#e8eaed;--muted:#9aa4b0;--line:#2a3138;--stage:#000}
+    :root{--surface:#0f1419;--text:#e8eaed;--muted:#9aa4b0;--line:#2a3138}
     h1{color:#cfe9e2}
     .stage::before{background:#cfe9e2;opacity:.04}
     .btn-primary{background:#1b3a5c}
