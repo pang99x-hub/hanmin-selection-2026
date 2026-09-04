@@ -1,54 +1,58 @@
 {
-  "packVersion": 1,
-  "schoolName": "한민고등학교",
-  "grades": [
-    2,
-    3
-  ],
-  "auth": {
-    "mode": "google",
-    "allowedDomain": "hanmin.hs.kr",
-    "identitySource": "roster"
+ "packVersion": 1,
+ "schoolName": "한민고등학교",
+ "grades": [
+  2,
+  3
+ ],
+ "auth": {
+  "mode": "google",
+  "allowedDomain": "hanmin.hs.kr",
+  "identitySource": "roster"
+ },
+ "creditLimits": {
+  "2-1": {
+   "max": 31
   },
-  "creditLimits": {
-    "2-1": {
-      "max": 31
-    },
-    "2-2": {
-      "max": 31
-    },
-    "3-1": {
-      "max": 25
-    },
-    "3-2": {
-      "max": 25
-    }
+  "2-2": {
+   "max": 31
   },
-  "families": [
-    {
-      "id": "sci",
-      "label": "자연"
-    },
-    {
-      "id": "hum",
-      "label": "인문"
-    }
-  ],
-  "finalRound": 3,
-  "savedStateKey": "hm_saved_r2",
-  "features": {
-    "classifyMode": "inferred",
-    "prerequisites": "enforce",
-    "creditGate": "exact",
-    "liveCounts": true,
-    "recommendations": true,
-    "confirmationSheet": true,
-    "careerGuide": true,
-    "blockMissingPrerequisites": true,
-    "prefillPreviousRound": {
-      "1": false,
-      "2": false,
-      "3": true
-    }
+  "3-1": {
+   "max": 25
+  },
+  "3-2": {
+   "max": 25
   }
+ },
+ "families": [
+  {
+   "id": "sci",
+   "label": "자연"
+  },
+  {
+   "id": "hum",
+   "label": "인문"
+  }
+ ],
+ "finalRound": 3,
+ "savedStateKey": "hm_saved_r2",
+ "features": {
+  "classifyMode": "inferred",
+  "prerequisites": "enforce",
+  "creditGate": "exact",
+  "liveCounts": {
+   "1": true,
+   "2": true,
+   "3": false
+  },
+  "recommendations": true,
+  "confirmationSheet": true,
+  "careerGuide": true,
+  "blockMissingPrerequisites": true,
+  "prefillPreviousRound": {
+   "1": false,
+   "2": false,
+   "3": true
+  }
+ }
 }
