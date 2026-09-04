@@ -322,6 +322,7 @@
   function groupsForGrade(g) { return state.groupIds.filter((gid) => { const m = /^g(\d)-/.exec(gid); return !m || Number(m[1]) === Number(g) + 1; }); }
   function fillClassSelect() {
     const g = $('cls-grade').value; const sel = $('cls-class'); const keep = sel.value; sel.innerHTML = '';
+    const all = document.createElement('option'); all.value = ''; all.textContent = '전체'; sel.appendChild(all);
     byClassOf(byGradeOf(state.report.students)[g] || []).forEach(([c]) => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
     if (Array.from(sel.options).some((o) => o.value === keep)) sel.value = keep;
   }
@@ -333,7 +334,7 @@
       $('cls-class').addEventListener('change', renderClassTable);
       $('cls-filter').addEventListener('change', renderClassTable);
       $('student-q').addEventListener('input', renderStudentList);
-      $('cls-csv').addEventListener('click', () => { const t = classRows(); csvDownload('선택과목_' + $('cls-grade').value + '학년' + $('cls-class').value + '_' + state.round + '차.csv', [t.header].concat(t.rows.map((r) => r.cells))); });
+      $('cls-csv').addEventListener('click', () => { const t = classRows(); csvDownload('선택과목_' + $('cls-grade').value + '학년' + ($('cls-class').value || '전체') + '_' + state.round + '차.csv', [t.header].concat(t.rows.map((r) => r.cells))); });
     }
     const gsel = $('cls-grade'); const keep = gsel.value; gsel.innerHTML = '';
     Object.keys(byGradeOf(state.report.students)).sort().forEach((g) => { const o = document.createElement('option'); o.value = g; o.textContent = g + '학년'; gsel.appendChild(o); });
@@ -343,28 +344,35 @@
   function classRows() {
     const g = $('cls-grade').value; const c = $('cls-class').value; const filter = $('cls-filter').value;
     const gids = groupsForGrade(g);
-    const list = ((byGradeOf(state.report.students)[g] || []).filter((s) => (s.class_no == null ? '반 미상' : s.class_no + '반') === c)).sort(seatSort);
-    const header = ['번호', '이름', '계열'].concat(gids.map(groupLabel)).concat(['제출']);
+    const gradeList = byGradeOf(state.report.students)[g] || [];
+    const wholeGrade = c === '';
+    const list = (wholeGrade ? gradeList.slice() : gradeList.filter((s) => (s.class_no == null ? '반 미상' : s.class_no + '반') === c)).sort(seatSort);
+    const header = (wholeGrade ? ['반', '번호', '이름', '계열'] : ['번호', '이름', '계열']).concat(gids.map(groupLabel)).concat(['제출']);
     const rows = list.map((s) => {
       const ch = state.choices[String(s.student_id)];
       const picks = gids.map((gid) => ch ? ((ch.subjects_by_group || {})[gid] || []).join(', ') : '');
       const all = picks.join(',');
       if (filter && !all.split(',').map((x) => x.trim()).includes(filter)) return null;
-      return { s, ch, cells: [s.number ?? '', s.name, ch ? (ch.track_family || '') : ''].concat(picks).concat([s.submitted ? fmt(s.updated_at) : '미제출']) };
+      const head = wholeGrade ? [s.class_no == null ? '' : s.class_no + '반', s.number ?? ''] : [s.number ?? ''];
+      return { s, ch, cells: head.concat([s.name, ch ? (ch.track_family || '') : '']).concat(picks).concat([s.submitted ? fmt(s.updated_at) : '미제출']) };
     }).filter(Boolean);
-    return { header, rows, gids, list };
+    return { header, rows, gids, list, wholeGrade };
   }
   function renderClassTable() {
     const box = $('cls-table'); $('student-detail').innerHTML = ''; if (!$('cls-grade').value) { box.innerHTML = ''; return; }
     const t = classRows();
-    const subjects = new Set(); t.list.forEach((s) => { const ch = state.choices[String(s.student_id)]; if (ch) Object.values(ch.subjects_by_group || {}).forEach((arr) => arr.forEach((n) => subjects.add(n))); });
+    const byGid = {}; t.list.forEach((s) => { const ch = state.choices[String(s.student_id)]; if (!ch) return; Object.entries(ch.subjects_by_group || {}).forEach(([gid, arr]) => { byGid[gid] = byGid[gid] || {}; (arr || []).forEach((n) => { byGid[gid][n] = (byGid[gid][n] || 0) + 1; }); }); });
     const fsel = $('cls-filter'); const keep = fsel.value; fsel.innerHTML = '<option value="">전체 과목</option>';
-    Array.from(subjects).sort((a, b) => a.localeCompare(b, 'ko')).forEach((n) => { const o = document.createElement('option'); o.value = n; o.textContent = n; fsel.appendChild(o); });
+    t.gids.filter((gid) => byGid[gid]).forEach((gid) => {
+      const og = document.createElement('optgroup'); og.label = groupLabel(gid);
+      Object.keys(byGid[gid]).sort((a, b) => a.localeCompare(b, 'ko')).forEach((n) => { const o = document.createElement('option'); o.value = n; o.textContent = n + ' (' + byGid[gid][n] + '명)'; og.appendChild(o); });
+      fsel.appendChild(og);
+    });
     if (Array.from(fsel.options).some((o) => o.value === keep)) fsel.value = keep;
     const submitted = t.list.filter((s) => s.submitted).length;
-    box.innerHTML = '<p class="note" style="margin:0 0 6px">' + t.list.length + '명 중 ' + submitted + '명 제출' + (fsel.value ? ' · «' + esc(fsel.value) + '» 고른 학생 ' + t.rows.length + '명' : '') + ' · 학생을 누르면 차수별 상세가 보입니다</p>'
-      + '<div class="tbl"><table style="min-width:' + (360 + t.gids.length * 150) + 'px"><thead><tr>' + t.header.map((h, i) => '<th' + (i === 0 ? ' class="num" style="width:52px"' : i === 1 ? ' class="w-name" style="width:90px"' : i === 2 ? ' style="width:84px"' : i === t.header.length - 1 ? ' style="width:100px"' : ' style="width:150px"') + '>' + esc(h) + '</th>').join('') + '</tr></thead><tbody>'
-      + (t.rows.length ? t.rows.map((r) => '<tr class="student-hit" data-id="' + esc(r.s.student_id) + '"' + (r.s.submitted ? '' : ' style="color:#b91c1c"') + '>' + r.cells.map((cell, i) => '<td' + (i === 0 ? ' class="num"' : '') + '>' + esc(cell) + '</td>').join('') + '</tr>').join('') : '<tr><td colspan="' + t.header.length + '" class="note">해당하는 학생이 없습니다.</td></tr>')
+    box.innerHTML = '<p class="note" style="margin:0 0 6px">' + (t.wholeGrade ? $('cls-grade').value + '학년 전체 ' : '') + t.list.length + '명 중 ' + submitted + '명 제출' + (fsel.value ? ' · «' + esc(fsel.value) + '» 고른 학생 ' + t.rows.length + '명' : '') + ' · 학생을 누르면 차수별 상세가 보입니다</p>'
+      + '<div class="tbl"><table style="min-width:' + ((t.wholeGrade ? 420 : 360) + t.gids.length * 150) + 'px"><thead><tr>' + t.header.map((h, i) => { const k = t.wholeGrade ? i - 1 : i; return '<th' + (k === -1 ? ' class="w-cls" style="width:60px"' : k === 0 ? ' class="num" style="width:52px"' : k === 1 ? ' class="w-name" style="width:90px"' : k === 2 ? ' style="width:84px"' : i === t.header.length - 1 ? ' style="width:100px"' : ' style="width:150px"') + '>' + esc(h) + '</th>'; }).join('') + '</tr></thead><tbody>'
+      + (t.rows.length ? t.rows.map((r) => '<tr class="student-hit" data-id="' + esc(r.s.student_id) + '"' + (r.s.submitted ? '' : ' style="color:#b91c1c"') + '>' + r.cells.map((cell, i) => '<td' + ((t.wholeGrade ? i === 1 : i === 0) ? ' class="num"' : '') + '>' + esc(cell) + '</td>').join('') + '</tr>').join('') : '<tr><td colspan="' + t.header.length + '" class="note">해당하는 학생이 없습니다.</td></tr>')
       + '</tbody></table></div>';
     box.querySelectorAll('tr.student-hit').forEach((tr) => tr.addEventListener('click', () => showStudent(tr.dataset.id)));
   }
