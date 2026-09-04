@@ -77,7 +77,8 @@
   .student-hit:hover td { background: var(--surface-low); }
   .login-wrap { max-width: 520px; margin: 40px auto 0; }
   .login-wrap .tag { display: inline-block; padding: 4px 12px; border-radius: 999px; background: var(--navy); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 14px; }
-  .divider { display: flex; align-items: center; gap: 12px; color: var(--outline); font-size: 12px; margin: 16px 0; }
+  .divider { display: flex; align-items: center; gap: 12px; color: var(--outline); font-size: 12px; margin: 18px 0 14px; white-space: nowrap; }
+  .gsi { display: flex; justify-content: center; min-height: 44px; }
   .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--surface-high); }
   @media (max-width: 640px) { html { font-size: 14px; } th, td { padding: 7px 5px; font-size: 13px; } .bar { min-width: 60px; } .card { padding: 16px; } h1 { font-size: 22px; } }
 </style>
@@ -92,13 +93,13 @@
     <div class="tag">Teacher Mode</div>
     <h1 id="title">제출 현황</h1>
     <p class="sub" id="subtitle">선택 과목 수요조사 — 반별 제출, 미제출자, 학생별 선택 과목, 과목별 인원을 한 화면에서 봅니다.</p>
-    <div id="google-login" style="display:none">
-      <div id="gsi-button"></div>
-      <p class="note" style="margin:8px 0 0">교직원 명단에 등록된 학교 구글 계정으로 로그인합니다.</p>
-      <div class="divider">또는</div>
+    <div id="google-login" class="hidden">
+      <div id="gsi-button" class="gsi"></div>
+      <p class="note" style="margin:10px 0 0;text-align:center">교직원 명단에 등록된 학교 구글 계정으로 로그인합니다.</p>
+      <div class="divider">또는 관리자 코드로</div>
     </div>
-    <div class="row">
-      <input type="password" id="admin-code" placeholder="관리자 코드" style="flex:1;min-width:180px" autocomplete="off">
+    <div class="row" style="flex-wrap:nowrap">
+      <input type="password" id="admin-code" placeholder="관리자 코드" style="flex:1;min-width:0" autocomplete="off">
       <button id="admin-login" class="primary">코드로 보기</button>
     </div>
     <p class="note" style="margin:10px 0 0">관리자 코드는 담당 교사가 데스크톱 앱의 «제출 현황»에서 확인해 알려 줍니다.</p>
@@ -421,7 +422,7 @@
   $('logout').addEventListener('click', () => { sessionStorage.removeItem('teacher_status_auth'); location.reload(); });
 
   if (config.loginMode === 'google' && config.googleClientId) {
-    $('google-login').style.display = 'flex';
+    $('google-login').classList.remove('hidden');
     const s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true;
     s.onload = () => {
       try {
@@ -434,7 +435,7 @@
             showDash(); await load();
           } catch (e) { $('login-error').textContent = e && e.message ? e.message : String(e); }
         } });
-        window.google.accounts.id.renderButton($('gsi-button'), { theme: 'outline', size: 'large', text: 'signin_with' });
+        window.google.accounts.id.renderButton($('gsi-button'), { theme: 'outline', size: 'large', text: 'signin_with', width: 320 });
       } catch { $('login-error').textContent = 'Google 로그인 버튼을 준비하지 못했습니다. 관리자 코드로 보세요.'; }
     };
     document.head.appendChild(s);
