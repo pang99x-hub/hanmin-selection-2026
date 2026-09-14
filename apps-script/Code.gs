@@ -367,6 +367,7 @@ function doPost(event) {
     const raw = String(event && event.postData && event.postData.contents || '');
     if (!raw || raw.length > 100000) throw new Error('제출 데이터가 비어 있거나 너무 큽니다.');
     const payload = JSON.parse(raw);
+    if (payload.action === 'axLogin') return jsonOutput_(axCourseLogin_(payload));
     if (payload.action === 'googleLogin') return jsonOutput_(googleLogin_(payload));
     if (payload.action === 'passwordLogin') return jsonOutput_(passwordLogin_(payload));
     if (payload.action === 'changePassword') return jsonOutput_(changePassword_(payload));
@@ -1391,4 +1392,24 @@ function jsonOutput_(value) {
   return ContentService
     .createTextOutput(JSON.stringify(value))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+/** Called only on the target server; never trust a browser-provided email. */
+function axRedeemTeacher_(ticket, audience) {
+ if(!/^[a-f0-9]{64}$/.test(String(ticket||'')))throw new Error('AX 접속권을 확인해 주세요.');
+ var response=UrlFetchApp.fetch('https://nhafpqtwspqbhpbawhns.supabase.co/functions/v1/student-app-sso',{
+  method:'post',contentType:'application/json',payload:JSON.stringify({action:'redeem',audience:audience,ticket:ticket}),muteHttpExceptions:true
+ });
+ if(response.getResponseCode()!==200)throw new Error('AX에서 다시 연결해 주세요.');
+ var identity=JSON.parse(response.getContentText()).identity;
+ if(!identity||identity.role!=='teacher'||identity.audience!==audience||typeof identity.email!=='string'||!/@hanmin\.hs\.kr$/i.test(identity.email))throw new Error('학교 교사 계정을 확인해 주세요.');
+ return identity;
+}
+
+function axCourseLogin_(payload) {
+ var identity=axRedeemTeacher_(payload.ticket,'course');
+ var email=normalizedEmail_(identity.email);
+ var teacher=teacherByEmail_(email);
+ if(!teacher||!bool_(teacher.active))throw new Error('과목선택 시스템의 교사 명단에 등록되지 않은 계정입니다.');
+ return {ok:true,auth:issueAuth_({identityKey:'teacher:'+email,studentNo:'',email:email,name:String(teacher.name||identity.name),grade:null,entryYear:null,role:'teacher',isTest:true},false,'')};
 }
