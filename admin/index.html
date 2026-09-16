@@ -60,6 +60,8 @@
     display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px 12px; align-items: center; }
   li.subject[data-closed="1"] { background: var(--danger-bg); border-color: var(--danger); }
   .name { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+  .sem { margin-left: .5rem; font-size: 12px; font-weight: 500; color: var(--faint);
+    border: 1px solid var(--line); border-radius: 999px; padding: .05rem .4rem; white-space: nowrap; }
   .meta { grid-column: 1 / -1; font-size: 12px; color: var(--faint); overflow-wrap: anywhere; }
   .count { font-variant-numeric: tabular-nums; font-size: 13px; color: var(--muted); white-space: nowrap; }
   .count strong { color: var(--ink); font-size: 15px; }
@@ -142,7 +144,7 @@
     if (saved && saved.sessionToken) auth = saved;
   } catch (e) { /* 무시 */ }
 
-  var state = { closures: {}, subjects: [], counts: {}, schedule: null, requests: [] };
+  var state = { closures: {}, subjects: [], counts: {}, schedule: null, requests: [], cohorts: [] };
 
   function say(text, kind) {
     var box = $('msg');
@@ -182,32 +184,47 @@
   function saveAuth() { try { sessionStorage.setItem('selection_admin_auth', JSON.stringify(auth)); } catch (e) { /* 무시 */ } }
   function clearAuth() { auth = { sessionToken: '' }; try { sessionStorage.removeItem('selection_admin_auth'); } catch (e) { /* 무시 */ } }
 
-  // ── 과목 카탈로그는 학생 앱과 같은 팩에서 읽는다. 이름이 겹치는 과목이 있으므로 id 로 다룬다.
-  //
-  // 팩은 입학년도(코호트)마다 따로 구워진다. 폐강은 한 학교의 운영 상태이므로 코호트를 가리지
-  // 않고 모두 읽어 합친다 — 2학년용 팩에만 있는 과목을 관리자 화면에서 못 보면 안 된다.
-  async function loadSubjects() {
-    var manifest = await fetch('../site-manifest.json', { cache: 'no-cache' });
-    if (!manifest.ok) throw new Error('사이트 정보를 읽지 못했습니다 (HTTP ' + manifest.status + ')');
-    var info = await manifest.json();
-    var years = (info.cohorts || []).map(function (row) { return row.enrollYear; });
-    if (!years.length && info.defaultCohort) years = [info.defaultCohort];
-    if (!years.length) throw new Error('사이트에 등록된 입학년도가 없습니다.');
-    var seen = {};
-    var out = [];
-    for (var i = 0; i < years.length; i++) {
-      var res = await fetch('../app/cohorts/' + years[i] + '/pack/subjects.json', { cache: 'no-cache' });
-      if (!res.ok) continue;
+  /*
+   * 과목 카탈로그 — 학생 앱과 같은 팩에서 읽는다. 이름이 겹치므로 id 로 다룬다.
+   *
+   * 팩은 입학년도(코호트)마다 따로 구워지고, 같은 3학년 과목이라도 2025학번의 3학년과
+   * 2026학번의 3학년은 다른 해의 다른 조사다. 코호트를 합치면 같은 과목이 두 번 뜨고
+   * 집계도 남의 조사 것과 섞인다 — «대상 학년»에 해당하는 코호트 하나만 읽는다.
+   * 대상 학년은 그 코호트가 지금 몇 학년인지에 1을 더한 값이다.
+   */
+  async function loadCohorts() {
+    var res = await fetch('../site-manifest.json', { cache: 'no-cache' });
+    if (!res.ok) throw new Error('사이트 정보를 읽지 못했습니다 (HTTP ' + res.status + ')');
+    var info = await res.json();
+    var rows = (info.cohorts || []).filter(function (row) { return Number(row.currentGrade) > 0; });
+    if (!rows.length) throw new Error('사이트에 등록된 입학년도가 없습니다.');
+    return rows;
+  }
+
+  function cohortForGrade(grade) {
+    for (var i = 0; i < state.cohorts.length; i++) {
+      if (Number(state.cohorts[i].currentGrade) + 1 === Number(grade)) return state.cohorts[i];
+    }
+    return null;
+  }
+
+  var packCache = {};
+  async function loadSubjects(grade) {
+    var cohort = cohortForGrade(grade);
+    if (!cohort) return [];
+    var year = cohort.enrollYear;
+    if (!packCache[year]) {
+      var res = await fetch('../app/cohorts/' + year + '/pack/subjects.json', { cache: 'no-cache' });
+      if (!res.ok) throw new Error('과목 목록을 읽지 못했습니다 (HTTP ' + res.status + ')');
       var data = await res.json();
-      var rows = Array.isArray(data) ? data : (data.subjects || []);
-      rows.forEach(function (row) {
-        if (!row || !row.id || !row.name || seen[row.id]) return;
-        seen[row.id] = true;
-        out.push(row);
+      packCache[year] = (Array.isArray(data) ? data : (data.subjects || [])).filter(function (row) {
+        return row && row.id && row.name;
       });
     }
-    if (!out.length) throw new Error('과목 목록을 읽지 못했습니다.');
-    return out;
+    // 학교지정 필수는 고르는 과목이 아니라 폐강할 것도 없다. 선택군에 든 것만 보여 준다.
+    return packCache[year].filter(function (row) {
+      return Number(row.grade) === Number(grade) && row.isReadOnly !== true && !/-fixed$/.test(String(row.groupId || ''));
+    });
   }
 
   async function loadCounts(grade, round) {
@@ -215,29 +232,49 @@
     var res = await fetch(url, { cache: 'no-store' });
     var data = await res.json();
     if (!data.ok) throw new Error(data.err || '집계를 읽지 못했습니다.');
-    // 집계는 과목 «이름» 기준이다. 같은 이름이 학년별로 있으므로 학년을 맞춰 쓴다.
-    var byName = {};
+    /*
+     * 제출은 «선택군 → 고른 과목 이름»으로 온다. 이름만 보고 합치면 같은 이름이 1학기와
+     * 2학기에 있는 과목(전문 수학·인공지능 수학 등)의 인원이 두 학기 것으로 합쳐진다.
+     * 선택군까지 같이 열쇠로 써서 과목 하나에 그 학기 인원만 붙인다.
+     */
+    var byGroupName = {};
     Object.keys(data.byGroup || {}).forEach(function (groupId) {
       Object.keys(data.byGroup[groupId]).forEach(function (combination) {
         var hits = data.byGroup[groupId][combination];
         combination.split(';').forEach(function (name) {
           if (!name) return;
-          byName[name] = (byName[name] || 0) + hits;
+          var key = groupId + '\u0000' + name;
+          byGroupName[key] = (byGroupName[key] || 0) + hits;
         });
       });
     });
-    return byName;
+    return byGroupName;
+  }
+
+  function countOf(row) {
+    return state.counts[String(row.groupId || '') + '\u0000' + String(row.name)];
+  }
+
+  /** «3-1» 같은 학기 표시. 같은 이름이 두 학기에 있어 이게 없으면 구분이 안 된다. */
+  function semesterLabel(row) {
+    var m = String(row.semester || '').match(/^(\d)-(\d)$/);
+    return m ? m[1] + '학년 ' + m[2] + '학기' : '';
   }
 
   function render() {
     var list = $('list');
     var grade = Number($('grade').value);
     list.innerHTML = '';
-    var rows = state.subjects.filter(function (row) { return Number(row.grade) === grade; });
+    var rows = state.subjects.slice();
     $('list-empty').className = rows.length ? 'empty hide' : 'empty';
-    if (!rows.length) { $('list-empty').textContent = grade + '학년 과목이 팩에 없습니다.'; return; }
+    if (!rows.length) { $('list-empty').textContent = grade + '학년 선택과목이 팩에 없습니다.'; return; }
 
-    rows.sort(function (a, b) { return String(a.name).localeCompare(String(b.name), 'ko'); });
+    // 학기 → 선택군 → 이름. 같은 이름이 두 학기에 있으니 학기가 먼저 갈라져야 읽힌다.
+    rows.sort(function (a, b) {
+      return String(a.semester).localeCompare(String(b.semester))
+        || String(a.groupId).localeCompare(String(b.groupId), 'ko')
+        || String(a.name).localeCompare(String(b.name), 'ko');
+    });
     rows.forEach(function (row) {
       var closure = state.closures[row.id];
       var closed = !!(closure && closure.closed);
@@ -248,13 +285,20 @@
       var name = document.createElement('span');
       name.className = 'name';
       name.textContent = row.name;
+      var when = semesterLabel(row);
+      if (when) {
+        var tag = document.createElement('span');
+        tag.className = 'sem';
+        tag.textContent = when;
+        name.appendChild(tag);
+      }
       item.appendChild(name);
 
       var right = document.createElement('span');
       right.className = 'row';
       var count = document.createElement('span');
       count.className = 'count';
-      var n = state.counts[row.name];
+      var n = countOf(row);
       count.innerHTML = n === undefined ? '<span style="color:var(--faint)">집계 없음</span>' : '<strong>' + n + '</strong>명';
       right.appendChild(count);
 
@@ -268,7 +312,7 @@
 
       var meta = document.createElement('span');
       meta.className = 'meta';
-      meta.textContent = row.id;
+      meta.textContent = (row.groupLabel || String(row.groupId || '').replace(/^g\d-s\d-/, '')) + ' · ' + row.id;
       item.appendChild(meta);
 
       if (closed && closure.reason) {
@@ -440,7 +484,8 @@
       (boot.closures || []).forEach(function (row) {
         if (row.closed) state.closures[row.subjectId] = { closed: true, reason: row.reason, updatedBy: row.updatedBy, updatedAt: row.updatedAt };
       });
-      if (!state.subjects.length) state.subjects = await loadSubjects();
+      if (!state.cohorts.length) state.cohorts = await loadCohorts();
+      state.subjects = await loadSubjects($('grade').value);
       state.counts = await loadCounts($('grade').value, $('round').value).catch(function () { return {}; });
       $('login').className = 'card hide';
       $('panel').className = 'card';
@@ -524,9 +569,12 @@
   $('round').addEventListener('change', function () { refresh(); });
 
   // 대상 학년과 차수 — 차수는 설정의 마지막 차수까지 보여 준다.
+  // «2학년»은 지금 1학년이 내년에 들을 과목이라는 뜻이다. 그 말을 적어 두지 않으면
+  // 지금 2학년 이야기로 읽힌다 — 폐강을 엉뚱한 학년에 걸 수 있다.
   [2, 3].forEach(function (grade) {
     var option = document.createElement('option');
-    option.value = String(grade); option.textContent = grade + '학년';
+    option.value = String(grade);
+    option.textContent = grade + '학년 대상 (현 ' + (grade - 1) + '학년)';
     $('grade').appendChild(option);
   });
   var finalRound = Math.max(1, Math.min(3, Number(config.finalRound) || 2));
