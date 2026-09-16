@@ -51,6 +51,8 @@
   button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
   .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  /* 고르는 칸과 날짜 칸은 안쪽 여백이 같아도 기본 높이가 달라 한 줄에 두면 어긋난다. */
+  .row.fields select, .row.fields input { height: 42px; }
   .msg { padding: 10px 13px; border-radius: 8px; font-size: 13.5px; margin-bottom: 12px; }
   .msg.err { background: var(--danger-bg); color: var(--danger); }
   .msg.ok { background: var(--ok-bg); color: var(--ok); }
@@ -189,7 +191,7 @@
   <section class="card hide" id="schedule-card" data-pane="schedule">
     <h2>조사 기간</h2>
     <p class="sub" style="margin:-6px 0 12px">기간 안에 있을 때만 학생이 제출할 수 있습니다. 종료일은 그날 23:59까지입니다.</p>
-    <div class="row" style="align-items:flex-end">
+    <div class="row fields" style="align-items:flex-end">
       <div style="width:120px"><label for="sc-round">차수</label><select id="sc-round"></select></div>
       <div style="width:190px"><label for="sc-start">시작</label><input type="date" id="sc-start"></div>
       <div style="width:190px"><label for="sc-end">종료</label><input type="date" id="sc-end"></div>
