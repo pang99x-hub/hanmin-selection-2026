@@ -2019,8 +2019,9 @@ function requestSubjectOpen_(payload) {
   if (!isTest && String(session.role || 'student') !== 'student') throw new Error('학생 계정만 요청할 수 있습니다.');
   const subjectId = String(payload.subjectId || '').trim();
   if (!subjectId || subjectId.length > 200) throw new Error('과목을 확인해 주세요.');
-  const reason = String(payload.reason || '').trim().slice(0, 500);
-  if (reason.length < 5) throw new Error('왜 이 과목을 듣고 싶은지 적어 주세요.');
+  // 학생 화면이 «자세히» 받는 자리다. 500 자로 자르면 쓰다 만 글이 올라온다.
+  const reason = String(payload.reason || '').trim().slice(0, 1000);
+  if (reason.length < 30) throw new Error('왜 이 과목이 필요한지 30자 이상 적어 주세요.');
   const status = scheduleStatus_();
   if (!status.currentRound && !isTest) throw new Error('지금은 신청 기간이 아닙니다.');
 
