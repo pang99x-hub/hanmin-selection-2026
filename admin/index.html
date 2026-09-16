@@ -74,6 +74,9 @@
   .dock label { margin: 0; font-size: 12px; color: var(--faint); white-space: nowrap; }
   .dock input, .dock select { width: auto; margin: 0; height: 38px; }
   .dock #stu-id { width: 96px; }
+  .dock #ros-kind { width: 104px; }
+  .dock #ros-email { flex: 1; min-width: 200px; }
+  .dock #ros-name { width: 110px; }
   .dock #stu-name { width: 110px; }
   .dock #stu-new-grade { width: 92px; }
   .dock #stu-email { flex: 1; min-width: 200px; }
@@ -192,14 +195,15 @@
 
   <!-- 명단 -->
   <section class="card hide" id="roster-card" data-pane="roster">
+    <div class="row" style="margin-bottom:14px">
+      <input type="search" id="ros-q" placeholder="이름 · 이메일 검색" style="flex:1;min-width:180px">
+      <span class="count" id="ros-count"></span>
+    </div>
+
     <h2>관리자</h2>
     <p class="sub" style="margin:-6px 0 12px">이 화면을 쓸 수 있는 계정입니다. 교직원 명단에도 들어 있어야 로그인이 됩니다.</p>
     <ul class="subjects" id="admin-list"></ul>
-    <div class="row" style="margin-top:12px">
-      <input type="email" id="admin-email" placeholder="이메일" autocomplete="off" style="flex:2;min-width:180px">
-      <input type="text" id="admin-name" placeholder="이름" autocomplete="off" style="flex:1;min-width:110px">
-      <button type="button" class="primary" id="admin-add">넣기</button>
-    </div>
+    <p class="empty hide" id="admin-empty">찾는 계정이 없습니다.</p>
 
     <h2 style="margin-top:26px">교직원</h2>
     <p class="sub" style="margin:-6px 0 12px">
@@ -208,11 +212,7 @@
       교사 표에 없으면 사라집니다.
     </p>
     <ul class="subjects" id="teacher-list"></ul>
-    <div class="row" style="margin-top:12px">
-      <input type="email" id="teacher-email" placeholder="이메일" autocomplete="off" style="flex:2;min-width:180px">
-      <input type="text" id="teacher-name" placeholder="이름" autocomplete="off" style="flex:1;min-width:110px">
-      <button type="button" class="primary" id="teacher-add">넣기</button>
-    </div>
+    <p class="empty hide" id="teacher-empty">찾는 계정이 없습니다.</p>
   </section>
 
   <!-- 기록 -->
@@ -227,6 +227,20 @@
   넣는 줄은 화면 맨 아래에 붙여 둔다. 목록이 682줄이라 아래에 두면 끝까지 내려가야
   하고, 위에 두면 목록을 밀어낸다. 보는 자리와 넣는 자리를 따로 둔다.
 -->
+<!--
+  명단에 넣는 줄. 관리자와 교직원이 따로 있어 칸을 둘로 두면 화면 아래가 복잡해진다 —
+  어디에 넣을지 고르게 하고 줄은 하나만 둔다.
+-->
+<div class="dock hide" id="ros-dock">
+  <div class="wrap dock__inner">
+    <label for="ros-kind">넣을 곳</label>
+    <select id="ros-kind"><option value="teacher">교직원</option><option value="admin">관리자</option></select>
+    <label for="ros-email">이메일</label><input type="email" id="ros-email" autocomplete="off" placeholder="hong@hanmin.hs.kr">
+    <label for="ros-name">이름</label><input type="text" id="ros-name" autocomplete="off" placeholder="홍길동">
+    <button type="button" class="primary" id="ros-add">넣기</button>
+  </div>
+</div>
+
 <div class="dock hide" id="stu-dock">
   <div class="wrap dock__inner">
     <label for="stu-id">학번</label><input type="text" id="stu-id" autocomplete="off" placeholder="10101">
@@ -650,6 +664,7 @@
       btn.className = btn.getAttribute('data-tab') === name ? 'on' : '';
     });
     $('stu-dock').className = name === 'students' ? 'dock' : 'dock hide';
+    $('ros-dock').className = name === 'roster' ? 'dock' : 'dock hide';
     // 기록은 자주 볼 것이 아니라 탭을 열 때 부른다 — 새로 읽을 때마다 싣지 않는다.
     if (name === 'log' && !state.log) loadLog();
     // 학생은 많아서 따로 부른다 — 화면을 새로 읽을 때마다 싣지 않는다.
@@ -775,14 +790,36 @@
 
   /* ── 명단 ───────────────────────────────────────────────────────────────── */
 
+  /** 교직원 명단에 적힌 이름 — 관리자 줄에 이름이 비어 있을 때 여기서 찾아 보여 준다. */
+  function nameFromTeachers(email) {
+    var key = String(email).toLowerCase();
+    for (var i = 0; i < (state.teachers || []).length; i++) {
+      if (String(state.teachers[i].email).toLowerCase() === key) return state.teachers[i].name || '';
+    }
+    return '';
+  }
+
   function renderRoster() {
-    [['admin', 'admin-list', state.admins], ['teacher', 'teacher-list', state.teachers]].forEach(function (entry) {
+    var q = $('ros-q').value.trim().toLowerCase();
+    var seen = 0;
+    var total = 0;
+    [['admin', 'admin-list', 'admin-empty', state.admins],
+     ['teacher', 'teacher-list', 'teacher-empty', state.teachers]].forEach(function (entry) {
       var kind = entry[0];
       var list = $(entry[1]);
-      var rows = (entry[2] || []).slice().sort(function (a, b) {
+      var all = (entry[3] || []).slice().sort(function (a, b) {
         return (a.active === b.active ? 0 : a.active ? -1 : 1)
           || String(a.name || a.email).localeCompare(String(b.name || b.email), 'ko');
       });
+      var rows = q
+        ? all.filter(function (row) {
+            var label = String(row.name || nameFromTeachers(row.email)).toLowerCase();
+            return label.indexOf(q) >= 0 || String(row.email).toLowerCase().indexOf(q) >= 0;
+          })
+        : all;
+      total += all.length;
+      seen += rows.length;
+      $(entry[2]).className = rows.length ? 'empty hide' : 'empty';
       list.innerHTML = '';
       rows.forEach(function (row) {
         var item = document.createElement('li');
@@ -791,7 +828,7 @@
 
         var name = document.createElement('span');
         name.className = 'name';
-        name.textContent = row.name || row.email;
+        name.textContent = row.name || nameFromTeachers(row.email) || row.email;
         if (String(row.email).toLowerCase() === String(state.me || '').toLowerCase()) {
           var mine = document.createElement('span');
           mine.className = 'sem';
@@ -825,6 +862,7 @@
         list.appendChild(item);
       });
     });
+    $('ros-count').textContent = q ? seen + ' / ' + total + '명' : total + '명';
   }
 
   async function removeRoster(kind, email, button) {
@@ -948,6 +986,7 @@
   function showLogin() {
     $('tabs').className = 'tabs hide';
     $('stu-dock').className = 'dock hide';
+    $('ros-dock').className = 'dock hide';
     TABS.forEach(function (key) {
       var pane = document.querySelector('[data-pane="' + key + '"]');
       if (pane) pane.className = 'card hide';
@@ -987,15 +1026,13 @@
       say(done ? '확정을 풀었습니다.' : '최종 확정했습니다.', 'ok');
     } catch (e) { say(e.message); } finally { $('fin-toggle').disabled = false; }
   });
-  [['admin', 'admin-email', 'admin-name', 'admin-add'], ['teacher', 'teacher-email', 'teacher-name', 'teacher-add']]
-    .forEach(function (entry) {
-      $(entry[3]).addEventListener('click', function () {
-        var email = $(entry[1]).value.trim();
-        if (!email) { say('이메일을 적어 주세요.'); return; }
-        saveRoster(entry[0], { email: email, name: $(entry[2]).value.trim(), active: true }, $(entry[3]))
-          .then(function () { $(entry[1]).value = ''; $(entry[2]).value = ''; state.log = null; });
-      });
-    });
+  $('ros-q').addEventListener('input', function () { renderRoster(); });
+  $('ros-add').addEventListener('click', function () {
+    var email = $('ros-email').value.trim();
+    if (!email) { say('이메일을 적어 주세요.'); return; }
+    saveRoster($('ros-kind').value, { email: email, name: $('ros-name').value.trim(), active: true }, $('ros-add'))
+      .then(function () { $('ros-email').value = ''; $('ros-name').value = ''; state.log = null; });
+  });
   $('stu-load').addEventListener('click', function () { state.students = null; loadStudents(); });
   $('stu-q').addEventListener('input', function () { if (state.students) renderStudents(); });
   $('stu-grade').addEventListener('change', function () { if (state.students) renderStudents(); });
