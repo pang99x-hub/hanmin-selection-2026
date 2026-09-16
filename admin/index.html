@@ -145,9 +145,9 @@
   <nav class="tabs hide" id="tabs" role="tablist">
     <button type="button" role="tab" data-tab="subjects" class="on">과목</button>
     <button type="button" role="tab" data-tab="requests">오픈 요청 <span id="req-badge" class="count"></span></button>
-    <button type="button" role="tab" data-tab="schedule">설정</button>
     <button type="button" role="tab" data-tab="students">학생</button>
     <button type="button" role="tab" data-tab="roster">명단</button>
+    <button type="button" role="tab" data-tab="schedule">설정</button>
     <button type="button" role="tab" data-tab="log">기록</button>
     <a class="out" id="to-teacher" href="../teacher/" target="_blank" rel="noopener">제출 현황·결과 내려받기 ↗</a>
   </nav>
@@ -726,7 +726,7 @@
 
   /* ── 탭 ─────────────────────────────────────────────────────────────────── */
 
-  var TABS = ['subjects', 'requests', 'schedule', 'students', 'roster', 'log'];
+  var TABS = ['subjects', 'requests', 'students', 'roster', 'schedule', 'log'];
   var activeTab = 'subjects';
 
   function showTab(name) {
