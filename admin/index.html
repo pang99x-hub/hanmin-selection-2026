@@ -461,28 +461,52 @@
     }
   }
 
+  /**
+   * 구글 로그인 단추를 붙인다.
+   *
+   * 종전에는 화면을 그릴 때 window.google 이 있는지 한 번만 보고, 없으면 비밀번호 칸으로
+   * 떨어뜨렸다. 구글 스크립트는 async 로 실려서 그 시점에 아직 없는 것이 보통이다 —
+   * 그래서 구글 로그인을 쓰는 학교인데도 비밀번호 칸이 떴다. 담임 페이지처럼 스크립트를
+   * 직접 심고 onload 에서 붙인다.
+   */
+  function mountGoogleLogin() {
+    function attach() {
+      try {
+        window.google.accounts.id.initialize({
+          client_id: config.googleClientId,
+          callback: async function (response) {
+            say('');
+            try {
+              var data = await post({ action: 'googleLogin', credential: response.credential });
+              auth.sessionToken = data.sessionToken || (data.auth && data.auth.sessionToken) || '';
+              if (!auth.sessionToken) throw new Error('로그인 응답을 확인하지 못했습니다.');
+              saveAuth();
+              refresh();
+            } catch (e) { say(e.message); }
+          },
+        });
+        $('google-btn').className = '';
+        window.google.accounts.id.renderButton($('google-btn'), { theme: 'outline', size: 'large', text: 'signin_with', locale: 'ko' });
+      } catch (e) {
+        // 단추를 못 붙이면 들어올 길이 없어진다. 비밀번호 칸이라도 열어 둔다.
+        $('password-form').className = '';
+        say('Google 로그인 단추를 준비하지 못했습니다.');
+      }
+    }
+    if (window.google && window.google.accounts) { attach(); return; }
+    var s = document.createElement('script');
+    s.src = 'https://accounts.google.com/gsi/client';
+    s.async = true;
+    s.onload = attach;
+    s.onerror = function () { $('password-form').className = ''; say('Google 로그인을 불러오지 못했습니다.'); };
+    document.head.appendChild(s);
+  }
+
   function showLogin() {
     $('panel').className = 'card hide';
     $('login').className = 'card';
-    if (config.loginMode === 'google' && config.googleClientId && window.google && window.google.accounts) {
-      $('google-btn').className = '';
-      window.google.accounts.id.initialize({
-        client_id: config.googleClientId,
-        callback: async function (response) {
-          say('');
-          try {
-            var data = await post({ action: 'googleLogin', credential: response.credential });
-            auth.sessionToken = data.sessionToken || (data.auth && data.auth.sessionToken) || '';
-            if (!auth.sessionToken) throw new Error('로그인 응답을 확인하지 못했습니다.');
-            saveAuth();
-            refresh();
-          } catch (e) { say(e.message); }
-        },
-      });
-      window.google.accounts.id.renderButton($('google-btn'), { theme: 'outline', size: 'large', text: 'signin_with', locale: 'ko' });
-    } else {
-      $('password-form').className = '';
-    }
+    if (config.loginMode === 'google' && config.googleClientId) mountGoogleLogin();
+    else $('password-form').className = '';
   }
 
   $('login-go').addEventListener('click', async function () {
@@ -524,6 +548,5 @@
   if (auth.sessionToken) refresh(); else showLogin();
 })();
 </script>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 </body>
 </html>
