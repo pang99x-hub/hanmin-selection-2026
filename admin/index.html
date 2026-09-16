@@ -693,8 +693,21 @@
         action: 'adminConsole', sessionToken: auth.sessionToken,
         grade: Number($('grade').value), round: Number($('round').value),
       });
-      // 빈 껍데기를 그대로 그리면 «기간도 명단도 없는» 화면이 되어 더 헷갈린다.
-      if (!data.schedule) throw new Error('운영 자료를 받지 못했습니다. 다시 불러와 주세요.');
+      /*
+       * 빈 껍데기를 그대로 그리면 «기간도 명단도 없는» 화면이 되어 더 헷갈린다.
+       * 무엇이 왔는지 함께 적는다 — 왜 비었는지 아직 못 잡아서 단서가 필요하다.
+       */
+      // 로그인 응답에 실려 온 것이 이상하면 제 길로 한 번 더 물어본다.
+      if (!data.schedule && ready) {
+        data = await post({
+          action: 'adminConsole', sessionToken: auth.sessionToken,
+          grade: Number($('grade').value), round: Number($('round').value),
+        });
+      }
+      if (!data.schedule) {
+        throw new Error('운영 자료를 받지 못했습니다. 다시 불러와 주세요. (받은 것: '
+          + Object.keys(data || {}).join(', ') + ')');
+      }
       state.me = data.admin && data.admin.email ? data.admin.email : '';
       $('who').textContent = state.me;
       state.teachers = data.teachers || [];
@@ -719,7 +732,9 @@
       if (data.requestsError) say('요청 목록을 읽지 못했습니다 — ' + data.requestsError);
       if (data.countsError) say('집계를 읽지 못했습니다 — ' + data.countsError);
     } catch (e) {
-      if (/로그인/.test(e.message)) { clearAuth(); showLogin(); }
+      // 못 들어간 채로 멈추면 로그인 단추라도 붙어 있어야 다시 시도할 수 있다.
+      if (/로그인/.test(e.message)) clearAuth();
+      if ($('login').className.indexOf('hide') < 0 || /로그인/.test(e.message)) showLogin();
       say(e.message);
     }
   }
