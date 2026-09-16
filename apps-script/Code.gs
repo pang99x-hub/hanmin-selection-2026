@@ -439,6 +439,7 @@ function doPost(event) {
     if (payload.action === 'removeStudent') return jsonOutput_(removeStudent_(payload));
     if (payload.action === 'setClosure') return jsonOutput_(setClosure_(payload));
     if (payload.action === 'setSchedule') return jsonOutput_(setSchedule_(payload));
+    if (payload.action === 'setConfirmationDue') return jsonOutput_(setConfirmationDue_(payload));
     if (payload.action === 'requestSubjectOpen') return jsonOutput_(requestSubjectOpen_(payload));
     if (payload.action === 'myOpenRequests') return jsonOutput_(myOpenRequests_(payload));
     if (payload.action === 'listOpenRequests') return jsonOutput_(listOpenRequests_(payload));
@@ -1702,6 +1703,13 @@ function scheduleStatus_() {
     finalizedAt: config.FINALIZED_AT || null,
     finalRound: finalRound,
     schedule: schedule,
+    /*
+     * 확인서(가정통신문)를 언제까지 내는지. 학생 첫 화면이 그대로 적는다.
+     *
+     * 종전에는 데스크톱에서 공지 글을 쓰고 사이트를 다시 구워 올려야 바뀌었다. 날짜 하나
+     * 고치자고 팩을 다시 굽는 것은 과하다 — 조사 기간과 같은 자리(_config)에 둔다.
+     */
+    confirmationDue: String(config.CONFIRMATION_DUE || ''),
   };
 }
 
@@ -2506,6 +2514,20 @@ function setSchedule_(payload) {
   put('FINALIZED', 'FALSE', '최종 확정 여부');
   HM_CONFIG_MEMO = null;
   logAdminChange_(session, 'schedule', round + '차 ' + start + ' ~ ' + end);
+  return { ok: true, schedule: scheduleStatus_() };
+}
+
+/**
+ * 확인서 제출일 — 학생 첫 화면에 그대로 적힌다.
+ *
+ * 형식을 묶어 두지 않는다. «9월 28일(월)» 처럼 사람이 읽는 말이 그대로 나가야 하고,
+ * 날짜로 계산하는 곳이 없다.
+ */
+function setConfirmationDue_(payload) {
+  const session = requireAdmin_(payload);
+  const text = String(payload.text || '').trim().slice(0, 60);
+  putConfig_('CONFIRMATION_DUE', text, '확인서 제출일(첫 화면 안내)');
+  logAdminChange_(session, 'confirmation-due', text || '(비움)');
   return { ok: true, schedule: scheduleStatus_() };
 }
 

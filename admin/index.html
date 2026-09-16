@@ -160,6 +160,16 @@
     </div>
     <p class="empty" id="sc-now"></p>
 
+    <h2 style="margin-top:26px">확인서 제출일</h2>
+    <p class="sub" style="margin:-6px 0 12px">
+      학생 첫 화면 안내에 그대로 적힙니다 — 「… 담임 선생님께 반드시 제출합니다」.
+      사람이 읽는 말로 적으세요(예: 9월 28일(월)). 비우면 그 줄에 날짜가 빠집니다.
+    </p>
+    <div class="row">
+      <input type="text" id="due-text" placeholder="9월 28일(월)" autocomplete="off" style="flex:1;min-width:180px">
+      <button type="button" class="primary" id="due-save">저장</button>
+    </div>
+
     <h2 style="margin-top:26px">최종 확정</h2>
     <p class="sub" style="margin:-6px 0 12px">
       켜면 기간과 상관없이 아무도 제출할 수 없습니다. 기간이 끝나도 나중에 기간을 늘리면
@@ -632,6 +642,7 @@
       $('login').className = 'card hide';
       state.schedule = data.schedule || null;
       renderSchedule();
+      renderDue();
       renderFinalized();
       renderRoster();
       render();
@@ -903,6 +914,10 @@
 
   /* ── 최종 확정 ──────────────────────────────────────────────────────────── */
 
+  function renderDue() {
+    $('due-text').value = (state.schedule && state.schedule.confirmationDue) || '';
+  }
+
   function renderFinalized() {
     var done = !!(state.schedule && state.schedule.finalized);
     var at = state.schedule && state.schedule.finalizedAt;
@@ -1008,6 +1023,17 @@
   });
   Array.prototype.forEach.call($('tabs').querySelectorAll('button'), function (btn) {
     btn.addEventListener('click', function () { showTab(btn.getAttribute('data-tab')); });
+  });
+  $('due-save').addEventListener('click', async function () {
+    $('due-save').disabled = true;
+    say('');
+    try {
+      var data = await post({ action: 'setConfirmationDue', sessionToken: auth.sessionToken, text: $('due-text').value.trim() });
+      state.schedule = data.schedule || null;
+      state.log = null;
+      renderDue();
+      say('확인서 제출일을 저장했습니다.', 'ok');
+    } catch (e) { say(e.message); } finally { $('due-save').disabled = false; }
   });
   $('fin-toggle').addEventListener('click', async function () {
     var done = !!(state.schedule && state.schedule.finalized);
