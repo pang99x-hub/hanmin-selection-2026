@@ -1857,9 +1857,25 @@ function bool_(value) {
   return value === true || String(value).toLowerCase() === 'true';
 }
 
+/**
+ * _config 의 날짜 칸을 읽는다.
+ *
+ * 우리가 적는 모양은 «YYYY-MM-DD HH:MM» 이지만, 시트가 날짜로 바꿔 둔 칸은
+ * «2026. 9. 24» 나 «2026. 9. 27 오후 11:59» 로 돌아온다. 그 모양도 받는다 —
+ * 안 받으면 조사 기간이 통째로 비어 보인다.
+ */
 function configDate_(value) {
   if (!value) return null;
-  const date = new Date(String(value).replace(' ', 'T'));
+  const raw = String(value).trim();
+  if (!raw) return null;
+  const direct = new Date(raw.replace(' ', 'T'));
+  if (!Number.isNaN(direct.getTime())) return direct;
+  const parts = raw.match(/^(\d{4})\D+(\d{1,2})\D+(\d{1,2})(?:\D+?(오전|오후)?\s*(\d{1,2}):(\d{2}))?/);
+  if (!parts) return null;
+  let hour = Number(parts[5] || 0);
+  if (parts[4] === '오후' && hour < 12) hour += 12;
+  if (parts[4] === '오전' && hour === 12) hour = 0;
+  const date = new Date(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3]), hour, Number(parts[6] || 0));
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
@@ -1979,13 +1995,19 @@ function setSchedule_(payload) {
 
   const sheet = ensureSheet_(spreadsheet_(), HM_SELECTION.configSheet, ['key', 'value', '설명']);
   const values = sheet.getDataRange().getValues();
+  /*
+   * 값은 «글자»로 못박아 넣는다. 그냥 넣으면 시트가 «2026-09-24 00:00» 을 날짜로 바꾸고,
+   * 다시 읽을 때(getDisplayValues) 제 형식으로 돌려줘 시작 시각이 통째로 사라진다.
+   * 자정이라 시각이 안 보이는 시작만 없어지고 23:59 인 종료는 남아 더 헷갈렸다(2026-09-16).
+   */
   function put(key, value, note) {
     for (let i = 1; i < values.length; i++) {
       if (String(values[i][0]).trim() !== key) continue;
-      sheet.getRange(i + 1, 2).setValue(value);
+      sheet.getRange(i + 1, 2).setNumberFormat('@').setValue(value);
       return;
     }
     sheet.appendRow([key, value, note]);
+    sheet.getRange(sheet.getLastRow(), 2).setNumberFormat('@').setValue(value);
   }
   put('ROUND_' + round + '_START', start, round + '차 시작');
   put('ROUND_' + round + '_END', end, round + '차 종료');
