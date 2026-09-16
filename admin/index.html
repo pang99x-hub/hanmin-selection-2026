@@ -1060,7 +1060,7 @@
             say('');
             try {
               var data = await post({
-                action: 'googleLogin', credential: response.credential,
+                action: 'googleLogin', credential: response.credential, withConsole: true,
                 grade: Number($('grade').value), round: Number($('round').value),
               });
               auth.sessionToken = data.sessionToken || (data.auth && data.auth.sessionToken) || '';

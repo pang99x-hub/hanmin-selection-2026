@@ -501,10 +501,14 @@ function googleLogin_(payload) {
   const auth = issueAuth_(identity, false, String(token.picture || ''), config);
   const result = { ok: true, auth: auth, bootstrap: loginBootstrap_(identity) };
   /*
-   * 관리자면 운영 화면 자료를 같이 실어 보낸다. 로그인 한 번, 화면 자료 한 번 —
-   * 두 왕복이 곧 6~8초였다. 이 요청은 이미 시트를 열어 둔 참이라 훨씬 싸다.
+   * 관리자 화면에서 온 요청일 때만 운영 자료를 같이 싣는다. 로그인 한 번, 화면 자료
+   * 한 번 — 두 왕복이 곧 6~8초였다.
+   *
+   * 학생 앱 로그인에도 실었더니 교사 계정이 들어가지 못했다. 학생 앱은 grade·round 를
+   * 보내지 않아 엉뚱한 집계를 돌렸고, 정작 이 자료를 쓰지도 않는다. 부를 쪽이
+   * 명시적으로 달라고 할 때만 짓는다(2026-09-17).
    */
-  if (identity.role === 'teacher' && isAdminEmail_(email)) {
+  if (bool_(payload.withConsole) && identity.role === 'teacher' && isAdminEmail_(email)) {
     try {
       const session = { email: email, name: identity.name, role: 'teacher', identity_key: identity.identityKey };
       result.console = adminConsolePayload_(session, payload.grade, payload.round);
