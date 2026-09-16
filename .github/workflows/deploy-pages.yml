@@ -34,14 +34,19 @@ jobs:
           test -n "$(find app/cohorts -name deployment.json -print -quit)"
           test -n "$(find app/cohorts -path '*/pack/school.json' -print -quit)"
 
+      # 저장소 전체(path: .)를 올리지 않는다. 설정 키트를 저장소에 함께 두는 학교가
+      # 많은데, 그러면 Apps Script 원본과 편성표 엑셀이 학생 주소로 그대로 열린다.
+      # 올릴 것을 여기 적힌 목록으로만 한정한다 — 나머지는 저장소에 둬도 공개되지 않는다.
       - name: 공개 사이트만 묶기
         shell: bash
         run: |
           mkdir -p _site
-          cp index.html slides.html site-manifest.json .nojekyll _site/
+          cp index.html site-manifest.json .nojekyll _site/
+          if [ -f slides.html ]; then cp slides.html _site/; fi
           cp -R app _site/app
           if [ -d teacher ]; then cp -R teacher _site/teacher; fi
           if [ -d admin ]; then cp -R admin _site/admin; fi
+          if [ -f CNAME ]; then cp CNAME _site/; fi
 
       - name: GitHub Pages 준비
         uses: actions/configure-pages@v5
