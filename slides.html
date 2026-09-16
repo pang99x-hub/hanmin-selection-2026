@@ -2593,19 +2593,43 @@ tailwind.config = {
     return Math.max(0, Math.min(TOTAL - 1, idx));
   }
 
-  function goTo(n) {
+  function goTo(n, instant) {
     n = Math.max(0, Math.min(TOTAL - 1, n));
+    var how = instant ? 'auto' : 'smooth';
     // 모바일(≤768): 각 슬라이드가 세로로 쌓여 있으므로 해당 슬라이드로 scrollIntoView
     if (window.matchMedia('(max-width: 768px)').matches) {
       var el = document.getElementById('slide-' + n);
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (el) el.scrollIntoView({ behavior: how, block: 'start' });
     } else if (container) {
-      container.scrollTo({ left: n * window.innerWidth, behavior: 'smooth' });
+      container.scrollTo({ left: n * window.innerWidth, behavior: how });
     }
     current = n;
   }
 
   window.goTo = goTo;
+
+  /*
+   * 주소로 특정 장을 연다 — «#1» 또는 «#slide-1».
+   *
+   * 학생 첫 화면의 «교육과정 안내» 가 이 길로 온다. 표지에서 또 «교육과정 안내» 를
+   * 눌러야 본문으로 들어가는 것은 같은 단추를 두 번 누르는 셈이라 막힌 것처럼 보인다
+   * (2026-09-16 지적).
+   *
+   * 들어오자마자 옮기므로 애니메이션 없이 붙인다. 가로 스크롤은 창 너비로 자리를
+   * 계산하는데, 레이아웃이 자리 잡기 전에는 그 값이 0 이라 두 번 기다렸다 옮긴다.
+   */
+  function openFromHash(instant) {
+    var hit = String(location.hash || '').match(/^#(?:slide-)?(\d+)$/);
+    if (!hit) return;
+    var n = Number(hit[1]);
+    if (instant) {
+      requestAnimationFrame(function () { requestAnimationFrame(function () { goTo(n, true); }); });
+    } else {
+      goTo(n);
+    }
+  }
+  openFromHash(true);
+  window.addEventListener('hashchange', function () { openFromHash(false); });
 
   window.openIndex = function() {
     document.getElementById('slide-index-modal').classList.add('open');
