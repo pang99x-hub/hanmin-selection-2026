@@ -161,7 +161,7 @@
   let axIdentity = '';
   let axInitialLoad = false;
   try { const saved = !axEmbedded && !axExternal && JSON.parse(sessionStorage.getItem('teacher_status_auth') || 'null'); if (saved && (saved.token || saved.sessionToken)) Object.assign(auth, saved); } catch { /* 무시 */ }
-  const state = { report: null, counts: {}, round: null, choices: {}, groupIds: [] };
+  const state = { report: null, counts: {}, round: null, choices: {}, groupIds: [], groupIdsByGrade: {} };
 
   function authBody(extra) { const b = Object.assign({}, extra); if (auth.token) b.token = auth.token; else b.sessionToken = auth.sessionToken; return b; }
   const readCache = createTeacherReadCache();
@@ -239,10 +239,29 @@
     });
     return { respondents, byGroup };
   }
+  /*
+   * 선택군은 «어느 학년의 조사에서 쓰였나» 로 나눠 담는다.
+   *
+   * 한 이름이 학년마다 다르게 적혀 있을 수 있다 — 지금 1학년은 «수학선택», 2학년은
+   * «수학 선택» 으로 3학년 1학기 수학을 낸다. 제출 전체에서 한 뭉치로 모으면 2학년
+   * 화면에 1학년 쪽 칸이 빈 열로 따라 붙는다(2026-09-16).
+   */
   function absorbRows(rows) {
-    state.choices = {}; const gids = new Set();
-    (rows || []).forEach((row) => { state.choices[String(row.student_id)] = row; Object.keys(row.subjects_by_group || {}).forEach((g) => gids.add(g)); });
-    state.groupIds = Array.from(gids).sort((a, b) => groupKey(a).localeCompare(groupKey(b), 'ko'));
+    state.choices = {}; const gids = new Set(); const byGrade = {};
+    (rows || []).forEach((row) => {
+      state.choices[String(row.student_id)] = row;
+      // dashboard 행은 대상 학년(target_grade)만 싣는다. 현재 학년은 그보다 하나 아래다.
+      const g = row.target_grade == null ? '' : String(Number(row.target_grade) - 1);
+      Object.keys(row.subjects_by_group || {}).forEach((id) => {
+        gids.add(id);
+        if (!g) return;
+        (byGrade[g] = byGrade[g] || new Set()).add(id);
+      });
+    });
+    const sortIds = (set) => Array.from(set).sort((a, b) => groupKey(a).localeCompare(groupKey(b), 'ko'));
+    state.groupIdsByGrade = {};
+    Object.keys(byGrade).forEach((g) => { state.groupIdsByGrade[g] = sortIds(byGrade[g]); });
+    state.groupIds = sortIds(gids);
     state.counts = {}; [2, 3].forEach((g) => { const c = countsFromRows(rows || [], g); if (c.respondents) state.counts[g] = c; });
   }
   function showLoading(msg) {
@@ -372,7 +391,15 @@
     const csv = '\ufeff' + lines.map((l) => l.map((v) => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"').join(',')).join('\r\n');
     const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   }
-  function groupsForGrade(g) { return state.groupIds.filter((gid) => { const m = /^g(\d)-/.exec(gid); return !m || Number(m[1]) === Number(g) + 1; }); }
+  /**
+   * 그 학년 학생들이 실제로 낸 선택군만. 아직 아무도 안 냈으면 학년으로만 걸러 둔다 —
+   * 조사 첫날에 칸이 통째로 비어 보이지 않게.
+   */
+  function groupsForGrade(g) {
+    const mine = (state.groupIdsByGrade || {})[String(g)];
+    const pool = mine && mine.length ? mine : state.groupIds;
+    return pool.filter((gid) => { const m = /^g(\d)-/.exec(gid); return !m || Number(m[1]) === Number(g) + 1; });
+  }
   function fillClassSelect() {
     const g = $('cls-grade').value; const sel = $('cls-class'); const keep = sel.value; sel.innerHTML = '';
     const all = document.createElement('option'); all.value = ''; all.textContent = '전체'; sel.appendChild(all);
