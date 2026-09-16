@@ -1424,9 +1424,29 @@ function latestResult_(row) {
     trackMajorId: String(row.track_major_id || ''),
     trackFamilyId: String(row.track_family_id || ''),
     subjectsByGroup: parseObject_(row.subjects_by_group),
+    /*
+     * 고른 과목의 ID — 되읽기는 이쪽이 정확하다.
+     *
+     * 시트의 선택군 열은 사람이 읽으라고 한글 이름으로 적는다. 이름만으로는 어느
+     * 과목인지 되짚을 수 없어서(같은 이름이 학기마다 있고, 칸 이름이 바뀌면 짝을
+     * 잃는다) 앱이 ID 도 함께 보낸다. 사람이 보는 열은 그대로 두려고 따로 칸을
+     * 만들지 않고 payload_json 에 실려 온 것을 꺼내 준다(2026-09-16).
+     *
+     * ID 를 안 싣던 때의 제출(1·2차)은 빈 배열이 나가고, 앱이 종전대로 이름으로 되짚는다.
+     */
+    subjectIds: submittedSubjectIds_(row),
     lockedByTrack: parseArray_(row.locked_by_track),
     credits: parseObject_(row.credits),
   };
+}
+
+function submittedSubjectIds_(row) {
+  try {
+    const payload = JSON.parse(String(row.payload_json || '{}'));
+    const ids = payload && payload.subjectIds;
+    if (!Array.isArray(ids)) return [];
+    return ids.map(String).filter(Boolean);
+  } catch (error) { return []; }
 }
 
 function subjectCounts_(targetGradeValue, roundValue) {
