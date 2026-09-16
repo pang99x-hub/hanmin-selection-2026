@@ -421,6 +421,9 @@ function doPost(event) {
     if (payload.action === 'latest') return jsonOutput_(latestForSession_(payload));
     if (payload.action === 'adminBootstrap') return jsonOutput_(adminBootstrap_(payload));
     if (payload.action === 'adminConsole') return jsonOutput_(adminConsole_(payload));
+    if (payload.action === 'setRosterEntry') return jsonOutput_(setRosterEntry_(payload));
+    if (payload.action === 'setFinalized') return jsonOutput_(setFinalized_(payload));
+    if (payload.action === 'adminLog') return jsonOutput_(adminLog_(payload));
     if (payload.action === 'setClosure') return jsonOutput_(setClosure_(payload));
     if (payload.action === 'setSchedule') return jsonOutput_(setSchedule_(payload));
     if (payload.action === 'requestSubjectOpen') return jsonOutput_(requestSubjectOpen_(payload));
@@ -1732,6 +1735,119 @@ function currentSubmissionHeaders_(sheet) {
  */
 var HM_SHEET_MEMO = {};
 
+/* ─────────────────────────────────────────────────────────────────────────────
+ * 명단 · 확정 · 기록
+ * ─────────────────────────────────────────────────────────────────────────────
+ * 담임과 관리자 명단은 그동안 시트를 직접 열어 고쳐야 했다. 그러다 «관리자가 아무도 없어서
+ * 관리자 화면에 못 들어가는» 자리가 생기고, 원격에서는 손댈 방법이 없었다(2026-09-16).
+ */
+
+/** _config 한 칸을 글자 그대로 넣는다. 시트가 날짜·숫자로 바꿔 두면 읽는 쪽이 깨진다. */
+function putConfig_(key, value, note) {
+  const sheet = ensureSheet_(spreadsheet_(), HM_SELECTION.configSheet, ['key', 'value', '설명']);
+  const values = sheet.getDataRange().getValues();
+  for (let i = 1; i < values.length; i++) {
+    if (String(values[i][0]).trim() !== key) continue;
+    sheet.getRange(i + 1, 2).setNumberFormat('@').setValue(value);
+    HM_CONFIG_MEMO = null;
+    return;
+  }
+  sheet.appendRow([key, value, note]);
+  sheet.getRange(sheet.getLastRow(), 2).setNumberFormat('@').setValue(value);
+  HM_CONFIG_MEMO = null;
+}
+
+function rosterSheetFor_(kind) {
+  if (kind === 'admin') return { sheet: adminSheet_(), headers: HM_SELECTION.adminHeaders, label: '관리자' };
+  if (kind === 'teacher') return { sheet: ensureSheet_(spreadsheet_(), HM_SELECTION.teachersSheet, HM_SELECTION.teacherHeaders), headers: HM_SELECTION.teacherHeaders, label: '교직원' };
+  throw new Error('명단 종류를 확인해 주세요.');
+}
+
+function rosterRows_(kind) {
+  const target = rosterSheetFor_(kind);
+  const rows = target.sheet.getDataRange().getValues().slice(1);
+  const out = [];
+  for (let i = 0; i < rows.length; i++) {
+    const row = objectFromRow_(target.headers, rows[i]);
+    const email = String(row.email || '').trim();
+    if (!email) continue;
+    // 빈 칸은 «켜짐»으로 읽는다. 학교가 손으로 적은 줄에 active 가 비어 있는 일이 흔하다.
+    const active = row.active === '' || row.active === undefined ? true : bool_(row.active);
+    out.push({ email: email, name: String(row.name || ''), active: active, rowNumber: i + 2 });
+  }
+  return out;
+}
+
+function rosterView_(kind) {
+  return rosterRows_(kind).map(function (row) { return { email: row.email, name: row.name, active: row.active }; });
+}
+
+/**
+ * 명단 한 줄을 넣거나 고친다.
+ *
+ * 관리자 명단에서 자기 자신을 끄는 것은 막는다 — 그 순간 아무도 들어올 수 없게 되고,
+ * 되돌리려면 시트를 직접 열어야 한다. 마지막 남은 관리자도 같은 이유로 막는다.
+ */
+function setRosterEntry_(payload) {
+  const session = requireAdmin_(payload);
+  const kind = String(payload.kind || '');
+  const target = rosterSheetFor_(kind);
+  const email = String(payload.email || '').trim().toLowerCase();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || email.length > 200) throw new Error('이메일을 확인해 주세요.');
+  const name = String(payload.name || '').trim().slice(0, 100);
+  const active = bool_(payload.active);
+  const rows = rosterRows_(kind);
+  const me = String(session.email || '').trim().toLowerCase();
+
+  if (kind === 'admin' && !active) {
+    if (email === me) throw new Error('자기 자신을 관리자에서 뺄 수 없습니다. 다른 관리자가 해 주어야 합니다.');
+    const left = rows.filter(function (row) { return row.active && row.email.toLowerCase() !== email; });
+    if (!left.length) throw new Error('관리자가 한 명도 남지 않습니다. 먼저 다른 관리자를 넣어 주세요.');
+  }
+  // 교직원 명단에서 빠지면 관리자 화면에도 못 들어온다 — 로그인 자체가 교직원 계정이라야 된다.
+  if (kind === 'teacher' && !active && email === me) {
+    throw new Error('자기 자신을 교직원 명단에서 뺄 수 없습니다. 로그인이 막힙니다.');
+  }
+
+  const record = [email, name, active ? 'TRUE' : 'FALSE'];
+  for (let i = 0; i < rows.length; i++) {
+    if (rows[i].email.toLowerCase() !== email) continue;
+    target.sheet.getRange(rows[i].rowNumber, 1, 1, target.headers.length).setValues([record]);
+    logAdminChange_(session, 'roster', target.label + ' ' + email + ' → ' + (active ? '켬' : '끔'));
+    return { ok: true, kind: kind, roster: rosterView_(kind) };
+  }
+  target.sheet.appendRow(record);
+  logAdminChange_(session, 'roster', target.label + ' ' + email + ' 새로 넣음');
+  return { ok: true, kind: kind, roster: rosterView_(kind) };
+}
+
+/**
+ * 최종 확정 — 켜면 아무도 제출할 수 없다.
+ *
+ * 기간이 끝나도 시계만 지날 뿐이라, 뒤늦게 기간을 늘리면 제출이 다시 열린다. 확정은
+ * 그것과 별개로 «여기서 끝»을 못박는 자리다. 되돌릴 수 있게 두되 누가 언제 했는지 남긴다.
+ */
+function setFinalized_(payload) {
+  const session = requireAdmin_(payload);
+  const finalized = bool_(payload.finalized);
+  putConfig_('FINALIZED', finalized ? 'TRUE' : 'FALSE', '최종 확정 여부');
+  putConfig_('FINALIZED_AT', finalized ? new Date().toISOString() : '', '확정 시각(선택)');
+  logAdminChange_(session, 'finalize', finalized ? '최종 확정' : '확정 해제');
+  return { ok: true, schedule: scheduleStatus_() };
+}
+
+/** 누가 언제 무엇을 바꿨는지. 새 것이 위로 온다. */
+function adminLog_(payload) {
+  requireAdmin_(payload);
+  const limit = Math.max(1, Math.min(200, Number(payload.limit) || 50));
+  const sheet = ensureSheet_(spreadsheet_(), '_admin_log', ['at', 'email', 'kind', 'detail']);
+  const rows = sheet.getDataRange().getValues().slice(1).filter(function (row) { return row[0] !== ''; });
+  const out = rows.slice(-limit).reverse().map(function (row) {
+    return { at: String(row[0] || ''), email: String(row[1] || ''), kind: String(row[2] || ''), detail: String(row[3] || '') };
+  });
+  return { ok: true, entries: out };
+}
+
 function ensureSheet_(spreadsheet, name, headers) {
   if (HM_SHEET_MEMO[name]) return HM_SHEET_MEMO[name];
   let sheet = spreadsheet.getSheetByName(name);
@@ -2242,6 +2358,9 @@ function adminConsole_(payload) {
     admin: { email: session.email, name: session.name || '' },
     schedule: scheduleStatus_(),
     closures: closureRows_(),
+    // 명단은 작아서 같이 싣는다 — 탭을 열 때마다 2~3초를 또 쓰지 않는다.
+    teachers: rosterView_('teacher'),
+    admins: rosterView_('admin'),
   };
   try {
     result.counts = subjectCounts_(payload.grade, payload.round);

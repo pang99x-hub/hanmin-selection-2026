@@ -40,7 +40,7 @@
   .card h2 { font-size: 15px; margin: 0 0 12px; }
 
   label { display: block; font-size: 12.5px; color: var(--muted); margin-bottom: 5px; }
-  input[type=text], input[type=password], select, textarea {
+  input[type=text], input[type=password], input[type=email], input[type=date], select, textarea {
     width: 100%; font: inherit; color: var(--ink); background: var(--bg);
     border: 1px solid var(--line-2); border-radius: 8px; padding: 9px 11px;
   }
@@ -60,6 +60,12 @@
     display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px 12px; align-items: center; }
   li.subject[data-closed="1"] { background: var(--danger-bg); border-color: var(--danger); }
   .name { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+  .tabs { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin: 0 0 14px; }
+  .tabs button { width: auto; background: none; border: 1px solid transparent; color: var(--faint);
+    font-weight: 600; padding: .4rem .7rem; border-radius: 8px; }
+  .tabs button.on { background: var(--card); border-color: var(--line); color: var(--ink); }
+  .tabs .out { margin-left: auto; font-size: 13px; color: var(--faint); text-decoration: none; white-space: nowrap; }
+  .tabs .out:hover { color: var(--ink); text-decoration: underline; }
   .sem { margin-left: .5rem; font-size: 12px; font-weight: 500; color: var(--faint);
     border: 1px solid var(--line); border-radius: 999px; padding: .05rem .4rem; white-space: nowrap; }
   .meta { grid-column: 1 / -1; font-size: 12px; color: var(--faint); overflow-wrap: anywhere; }
@@ -77,7 +83,7 @@
     <h1 id="brand">과목 운영</h1>
     <span class="who" id="who"></span>
   </header>
-  <p class="sub">2차 인원을 보며 폐강을 켜고 끕니다. 누르는 즉시 학생 화면에 반영됩니다.</p>
+  <p class="sub">과목을 열고 닫고, 조사 기간을 정하고, 명단을 손봅니다. 누르는 즉시 학생 화면에 반영됩니다.</p>
 
   <div id="msg" class="msg hide"></div>
 
@@ -96,8 +102,38 @@
     </div>
   </section>
 
-  <!-- 차수 -->
-  <section class="card hide" id="schedule-card">
+  <nav class="tabs hide" id="tabs" role="tablist">
+    <button type="button" role="tab" data-tab="subjects" class="on">과목</button>
+    <button type="button" role="tab" data-tab="requests">오픈 요청 <span id="req-badge" class="count"></span></button>
+    <button type="button" role="tab" data-tab="schedule">기간·확정</button>
+    <button type="button" role="tab" data-tab="roster">명단</button>
+    <button type="button" role="tab" data-tab="log">기록</button>
+    <a class="out" id="to-teacher" href="../teacher/" target="_blank" rel="noopener">제출 현황·결과 내려받기 ↗</a>
+  </nav>
+
+  <!-- 과목 -->
+  <section class="card hide" id="panel" data-pane="subjects">
+    <h2>과목 목록</h2>
+    <p class="sub" style="margin:-6px 0 12px">고른 차수의 인원을 보며 폐강을 켜고 끕니다. 학교지정 필수는 고르는 과목이 아니라 빠집니다.</p>
+    <div class="row" style="margin-bottom:14px">
+      <select id="grade" style="width:auto"></select>
+      <select id="round" style="width:auto"></select>
+      <button type="button" id="reload">다시 읽기</button>
+    </div>
+    <ul class="subjects" id="list"></ul>
+    <p class="empty hide" id="list-empty">과목을 불러오지 못했습니다.</p>
+  </section>
+
+  <!-- 오픈 요청 -->
+  <section class="card hide" id="requests-card" data-pane="requests">
+    <h2>과목 오픈 요청</h2>
+    <p class="sub" style="margin:-6px 0 12px">받아들이면 그 학생에게만 열립니다. 거절할 때는 사유를 적어 주세요 — 학생이 봅니다.</p>
+    <ul class="subjects" id="req-list"></ul>
+    <p class="empty hide" id="req-empty">들어온 요청이 없습니다.</p>
+  </section>
+
+  <!-- 기간·확정 -->
+  <section class="card hide" id="schedule-card" data-pane="schedule">
     <h2>조사 기간</h2>
     <p class="sub" style="margin:-6px 0 12px">기간 안에 있을 때만 학생이 제출할 수 있습니다. 종료일은 그날 23:59까지입니다.</p>
     <div class="row" style="align-items:flex-end">
@@ -107,26 +143,45 @@
       <button type="button" class="primary" id="sc-save">기간 저장</button>
     </div>
     <p class="empty" id="sc-now"></p>
-  </section>
 
-  <!-- 오픈 요청 -->
-  <section class="card hide" id="requests-card">
-    <h2>과목 오픈 요청 <span id="req-badge" class="count"></span></h2>
-    <p class="sub" style="margin:-6px 0 12px">받아들이면 그 학생에게만 열립니다. 거절할 때는 사유를 적어 주세요 — 학생이 봅니다.</p>
-    <ul class="subjects" id="req-list"></ul>
-    <p class="empty hide" id="req-empty">들어온 요청이 없습니다.</p>
-  </section>
-
-  <!-- 본문 -->
-  <section class="card hide" id="panel">
-    <h2>과목 목록</h2>
-    <div class="row" style="margin-bottom:14px">
-      <select id="grade" style="width:auto"></select>
-      <select id="round" style="width:auto"></select>
-      <button type="button" id="reload">다시 읽기</button>
+    <h2 style="margin-top:26px">최종 확정</h2>
+    <p class="sub" style="margin:-6px 0 12px">
+      켜면 기간과 상관없이 아무도 제출할 수 없습니다. 기간이 끝나도 나중에 기간을 늘리면
+      제출이 다시 열리므로, 조사를 끝낼 때는 여기서 못박아 주세요.
+    </p>
+    <div class="row">
+      <span id="fin-state" class="empty" style="flex:1"></span>
+      <button type="button" id="fin-toggle">최종 확정</button>
     </div>
-    <ul class="subjects" id="list"></ul>
-    <p class="empty hide" id="list-empty">과목을 불러오지 못했습니다.</p>
+  </section>
+
+  <!-- 명단 -->
+  <section class="card hide" id="roster-card" data-pane="roster">
+    <h2>관리자</h2>
+    <p class="sub" style="margin:-6px 0 12px">이 화면을 쓸 수 있는 계정입니다. 교직원 명단에도 들어 있어야 로그인이 됩니다.</p>
+    <ul class="subjects" id="admin-list"></ul>
+    <div class="row" style="margin-top:12px">
+      <input type="email" id="admin-email" placeholder="이메일" autocomplete="off" style="flex:2;min-width:180px">
+      <input type="text" id="admin-name" placeholder="이름" autocomplete="off" style="flex:1;min-width:110px">
+      <button type="button" class="primary" id="admin-add">넣기</button>
+    </div>
+
+    <h2 style="margin-top:26px">교직원</h2>
+    <p class="sub" style="margin:-6px 0 12px">제출 현황을 볼 수 있는 계정입니다. 학생 앱에서는 시험 제출이 됩니다.</p>
+    <ul class="subjects" id="teacher-list"></ul>
+    <div class="row" style="margin-top:12px">
+      <input type="email" id="teacher-email" placeholder="이메일" autocomplete="off" style="flex:2;min-width:180px">
+      <input type="text" id="teacher-name" placeholder="이름" autocomplete="off" style="flex:1;min-width:110px">
+      <button type="button" class="primary" id="teacher-add">넣기</button>
+    </div>
+  </section>
+
+  <!-- 기록 -->
+  <section class="card hide" id="log-card" data-pane="log">
+    <h2>변경 기록</h2>
+    <p class="sub" style="margin:-6px 0 12px">이 화면에서 바꾼 것만 남습니다. 시트를 직접 고친 것은 남지 않습니다.</p>
+    <ul class="subjects" id="log-list"></ul>
+    <p class="empty hide" id="log-empty">기록이 없습니다.</p>
   </section>
 </div>
 
@@ -144,7 +199,8 @@
     if (saved && saved.sessionToken) auth = saved;
   } catch (e) { /* 무시 */ }
 
-  var state = { closures: {}, subjects: [], counts: {}, schedule: null, requests: [], cohorts: [] };
+  var state = { closures: {}, subjects: [], counts: {}, schedule: null, requests: [], cohorts: [],
+    teachers: [], admins: [], me: '', log: null };
 
   function say(text, kind) {
     var box = $('msg');
@@ -322,7 +378,18 @@
     });
   }
 
-  function ymd(iso) { return iso ? String(iso).slice(0, 10) : ''; }
+  /*
+   * 서버는 시각을 UTC(ISO)로 준다. 앞 10자를 그냥 자르면 한국 시간 9월 24일 00:00 이
+   * «9월 23일»로 보인다 — 자정 기준이라 하루가 통째로 밀린다. 보는 사람의 시간대로 옮겨
+   * 적는다. 시트에 넣는 값은 종전대로 화면이 고른 날짜 그대로다.
+   */
+  function ymd(iso) {
+    if (!iso) return '';
+    var date = new Date(iso);
+    if (isNaN(date.getTime())) return String(iso).slice(0, 10);
+    var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+    return date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate());
+  }
 
   function renderSchedule() {
     var status = state.schedule || {};
@@ -488,29 +555,161 @@
         action: 'adminConsole', sessionToken: auth.sessionToken,
         grade: Number($('grade').value), round: Number($('round').value),
       });
-      $('who').textContent = data.admin && data.admin.email ? data.admin.email : '';
+      state.me = data.admin && data.admin.email ? data.admin.email : '';
+      $('who').textContent = state.me;
+      state.teachers = data.teachers || [];
+      state.admins = data.admins || [];
       applyClosures((data.closures || []).filter(function (row) { return row.closed; }));
       state.subjects = await loadSubjects($('grade').value);
       state.counts = data.counts ? countsFromReport(data.counts) : {};
       $('login').className = 'card hide';
-      $('panel').className = 'card';
-      $('schedule-card').className = 'card';
       state.schedule = data.schedule || null;
       renderSchedule();
+      renderFinalized();
+      renderRoster();
       render();
+      $('tabs').className = 'tabs';
+      showTab(activeTab);
       // 요청 목록을 못 읽어도 폐강·기간은 쓸 수 있어야 한다. 그 칸만 접는다.
-      if (data.requests) {
-        state.requests = data.requests;
-        $('requests-card').className = 'card';
-        renderRequests();
-      } else {
-        $('requests-card').className = 'card hide';
-      }
+      state.requests = data.requests || [];
+      renderRequests();
+      if (data.requestsError) say('요청 목록을 읽지 못했습니다 — ' + data.requestsError);
       if (data.countsError) say('집계를 읽지 못했습니다 — ' + data.countsError);
     } catch (e) {
       if (/로그인/.test(e.message)) { clearAuth(); showLogin(); }
       say(e.message);
     }
+  }
+
+  /* ── 탭 ─────────────────────────────────────────────────────────────────── */
+
+  var TABS = ['subjects', 'requests', 'schedule', 'roster', 'log'];
+  var activeTab = 'subjects';
+
+  function showTab(name) {
+    if (TABS.indexOf(name) < 0) name = 'subjects';
+    activeTab = name;
+    TABS.forEach(function (key) {
+      var pane = document.querySelector('[data-pane="' + key + '"]');
+      if (pane) pane.className = key === name ? 'card' : 'card hide';
+    });
+    Array.prototype.forEach.call($('tabs').querySelectorAll('button'), function (btn) {
+      btn.className = btn.getAttribute('data-tab') === name ? 'on' : '';
+    });
+    // 기록은 자주 볼 것이 아니라 탭을 열 때 부른다 — 새로 읽을 때마다 싣지 않는다.
+    if (name === 'log' && !state.log) loadLog();
+  }
+
+  /* ── 명단 ───────────────────────────────────────────────────────────────── */
+
+  function renderRoster() {
+    [['admin', 'admin-list', state.admins], ['teacher', 'teacher-list', state.teachers]].forEach(function (entry) {
+      var kind = entry[0];
+      var list = $(entry[1]);
+      var rows = (entry[2] || []).slice().sort(function (a, b) {
+        return (a.active === b.active ? 0 : a.active ? -1 : 1)
+          || String(a.name || a.email).localeCompare(String(b.name || b.email), 'ko');
+      });
+      list.innerHTML = '';
+      rows.forEach(function (row) {
+        var item = document.createElement('li');
+        item.className = 'subject';
+        item.setAttribute('data-closed', row.active ? '0' : '1');
+
+        var name = document.createElement('span');
+        name.className = 'name';
+        name.textContent = row.name || row.email;
+        if (String(row.email).toLowerCase() === String(state.me || '').toLowerCase()) {
+          var mine = document.createElement('span');
+          mine.className = 'sem';
+          mine.textContent = '나';
+          name.appendChild(mine);
+        }
+        item.appendChild(name);
+
+        var right = document.createElement('span');
+        right.className = 'row';
+        var mark = document.createElement('span');
+        mark.className = 'count';
+        mark.innerHTML = row.active ? '' : '<span style="color:var(--faint)">꺼짐</span>';
+        right.appendChild(mark);
+        var toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.textContent = row.active ? '끄기' : '켜기';
+        if (!row.active) toggle.className = 'primary';
+        toggle.addEventListener('click', function () {
+          saveRoster(kind, { email: row.email, name: row.name, active: !row.active }, toggle);
+        });
+        right.appendChild(toggle);
+        item.appendChild(right);
+
+        var meta = document.createElement('span');
+        meta.className = 'meta';
+        meta.textContent = row.email;
+        item.appendChild(meta);
+        list.appendChild(item);
+      });
+    });
+  }
+
+  async function saveRoster(kind, entry, button) {
+    if (button) button.disabled = true;
+    say('');
+    try {
+      var data = await post({
+        action: 'setRosterEntry', sessionToken: auth.sessionToken,
+        kind: kind, email: entry.email, name: entry.name || '', active: entry.active,
+      });
+      if (kind === 'admin') state.admins = data.roster || [];
+      else state.teachers = data.roster || [];
+      renderRoster();
+      say((kind === 'admin' ? '관리자' : '교직원') + ' 명단을 고쳤습니다.', 'ok');
+    } catch (e) {
+      say(e.message);
+    } finally {
+      if (button) button.disabled = false;
+    }
+  }
+
+  /* ── 최종 확정 ──────────────────────────────────────────────────────────── */
+
+  function renderFinalized() {
+    var done = !!(state.schedule && state.schedule.finalized);
+    var at = state.schedule && state.schedule.finalizedAt;
+    $('fin-state').textContent = done
+      ? '확정되었습니다' + (at ? ' · ' + String(at).slice(0, 10) : '') + '. 아무도 제출할 수 없습니다.'
+      : '아직 확정하지 않았습니다. 기간 안이면 제출을 받습니다.';
+    var button = $('fin-toggle');
+    button.textContent = done ? '확정 풀기' : '최종 확정';
+    button.className = done ? '' : 'primary';
+  }
+
+  /* ── 기록 ───────────────────────────────────────────────────────────────── */
+
+  async function loadLog() {
+    try {
+      var data = await post({ action: 'adminLog', sessionToken: auth.sessionToken, limit: 100 });
+      state.log = data.entries || [];
+    } catch (e) {
+      state.log = [];
+      say(e.message);
+    }
+    var list = $('log-list');
+    list.innerHTML = '';
+    $('log-empty').className = state.log.length ? 'empty hide' : 'empty';
+    state.log.forEach(function (row) {
+      var item = document.createElement('li');
+      item.className = 'subject';
+      var name = document.createElement('span');
+      name.className = 'name';
+      name.textContent = row.detail || row.kind;
+      item.appendChild(name);
+      var meta = document.createElement('span');
+      meta.className = 'meta';
+      meta.textContent = String(row.at || '').replace('T', ' ').slice(0, 16) + ' · ' + (row.email || '');
+      item.appendChild(meta);
+      list.appendChild(item);
+    });
   }
 
   /**
@@ -555,7 +754,11 @@
   }
 
   function showLogin() {
-    $('panel').className = 'card hide';
+    $('tabs').className = 'tabs hide';
+    TABS.forEach(function (key) {
+      var pane = document.querySelector('[data-pane="' + key + '"]');
+      if (pane) pane.className = 'card hide';
+    });
     $('login').className = 'card';
     if (config.loginMode === 'google' && config.googleClientId) mountGoogleLogin();
     else $('password-form').className = '';
@@ -571,6 +774,35 @@
       refresh();
     } catch (e) { say(e.message); }
   });
+  Array.prototype.forEach.call($('tabs').querySelectorAll('button'), function (btn) {
+    btn.addEventListener('click', function () { showTab(btn.getAttribute('data-tab')); });
+  });
+  $('fin-toggle').addEventListener('click', async function () {
+    var done = !!(state.schedule && state.schedule.finalized);
+    var ask = done
+      ? '확정을 풀면 기간 안에서 다시 제출을 받습니다. 계속할까요?'
+      : '최종 확정하면 기간과 상관없이 아무도 제출할 수 없습니다. 계속할까요?';
+    if (!window.confirm(ask)) return;
+    $('fin-toggle').disabled = true;
+    say('');
+    try {
+      var data = await post({ action: 'setFinalized', sessionToken: auth.sessionToken, finalized: !done });
+      state.schedule = data.schedule || null;
+      renderSchedule();
+      renderFinalized();
+      state.log = null;
+      say(done ? '확정을 풀었습니다.' : '최종 확정했습니다.', 'ok');
+    } catch (e) { say(e.message); } finally { $('fin-toggle').disabled = false; }
+  });
+  [['admin', 'admin-email', 'admin-name', 'admin-add'], ['teacher', 'teacher-email', 'teacher-name', 'teacher-add']]
+    .forEach(function (entry) {
+      $(entry[3]).addEventListener('click', function () {
+        var email = $(entry[1]).value.trim();
+        if (!email) { say('이메일을 적어 주세요.'); return; }
+        saveRoster(entry[0], { email: email, name: $(entry[2]).value.trim(), active: true }, $(entry[3]))
+          .then(function () { $(entry[1]).value = ''; $(entry[2]).value = ''; state.log = null; });
+      });
+    });
   $('reload').addEventListener('click', function () { refresh(); });
   $('grade').addEventListener('change', function () { refresh(); });
   $('round').addEventListener('change', function () { refresh(); });
