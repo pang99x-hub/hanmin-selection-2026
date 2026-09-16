@@ -22,6 +22,9 @@ const HM_SELECTION = Object.freeze({
   passwordMinLength: Number('8') || 8,
   forceChangeOnFirstLogin: 'true' === 'true',
   finalRound: Math.max(1, Math.min(3, Number('3') || 1)),
+  // 익명 인원 집계(counts)에서 3명 미만인 과목 조합을 숨긴다. 소규모 학년에서 1~2명짜리
+  // 조합은 «누구인지» 되짚을 수 있어서다. 데스크톱 앱의 선택웹 팩 설정이 정하며 기본은 숨김.
+  hideSmallCounts: 'true' !== 'false',
   // 데스크톱 앱·담임 현황 페이지가 «누가 제출했나»를 읽을 때 쓰는 열쇠값. _config.DESKTOP_TOKEN 이 우선.
   desktopToken: 'd682bae0b79e6883562daaa2964f94e5',
   // gender 는 **끝에** 붙인다 — 가운데 끼우면 이미 쓰고 있는 시트의 열 순서와 어긋나
@@ -29,8 +32,20 @@ const HM_SELECTION = Object.freeze({
   // class_no·number 도 끝에 — 담임 현황의 반별 집계용(선택). 비우면 학번(5자리)에서 추정한다.
   studentHeaders: ['student_id', 'email', 'name', 'grade', 'entry_year', 'initial_password', 'active', 'login_id', 'completed_subject_ids', 'gender', 'class_no', 'number'],
   teacherHeaders: ['email', 'name', 'active'],
+  /*
+   * 관리자 — 폐강을 켜고 끄고 과목 오픈 요청을 처리한다. 담임(teacher)보다 좁은 권한이며
+   * 명단은 학교가 직접 적는다. 이 탭이 비어 있으면 아무도 관리자가 아니다(안전한 기본값).
+   */
   adminHeaders: ['email', 'name', 'active'],
+  /*
+   * 폐강 — «과목의 속성»이 아니라 «그 해의 운영 상태»다. 팩을 다시 굽지 않고 여기서 켜고 끈다.
+   * 학생 앱이 팩 위에 이것을 덧씌운다.
+   */
   closureHeaders: ['subject_id', 'subject_name', 'closed', 'reason', 'updated_by', 'updated_at', 'target_grade'],
+  /*
+   * 과목 오픈 요청 — 진로 밖 과목을 듣고 싶은 학생이 사유를 적어 올리고, 관리자가 받아들이면
+   * «그 학생에게만» 열린다. 승인은 서버에만 있으므로 학생이 스스로 만들어 낼 수 없다.
+   */
   // is_test 는 **끝에** 붙인다 — 가운데 끼우면 이미 쓰고 있는 시트의 열 순서와 어긋나
   // ensureSheet_ 가 «제목 순서가 다르다»로 멈춘다. 읽기는 제목으로 하므로 자리는 무관하다.
   openRequestHeaders: ['request_id', 'identity_key', 'student_id', 'student_name', 'target_grade',
@@ -426,12 +441,18 @@ function doPost(event) {
     if (payload.action === 'passwordLogin') return jsonOutput_(passwordLogin_(payload));
     if (payload.action === 'changePassword') return jsonOutput_(changePassword_(payload));
     if (payload.action === 'latest') return jsonOutput_(latestForSession_(payload));
+    if (payload.action === 'status') return jsonOutput_(statusReport_(payload));
+    if (payload.action === 'export') return jsonOutput_(exportSubmissions_(payload));
+    if (payload.action === 'studentDetail') return jsonOutput_(studentDetail_(payload));
+    if (payload.action === 'dashboard') return jsonOutput_(dashboardReport_(payload));
     if (payload.action === 'adminBootstrap') return jsonOutput_(adminBootstrap_(payload));
     if (payload.action === 'adminConsole') return jsonOutput_(adminConsole_(payload));
     if (payload.action === 'setRosterEntry') return jsonOutput_(setRosterEntry_(payload));
     if (payload.action === 'removeRosterEntry') return jsonOutput_(removeRosterEntry_(payload));
     if (payload.action === 'setFinalized') return jsonOutput_(setFinalized_(payload));
     if (payload.action === 'adminLog') return jsonOutput_(adminLog_(payload));
+    if (payload.action === 'testNotify') return jsonOutput_(testNotify_(payload));
+    if (payload.action === 'setNotifyChannels') return jsonOutput_(setNotifyChannels_(payload));
     if (payload.action === 'pushTeachers') return jsonOutput_(pushTeachers_(payload));
     if (payload.action === 'pushStudents') return jsonOutput_(pushStudents_(payload));
     if (payload.action === 'listStudents') return jsonOutput_(listStudents_(payload));
@@ -444,10 +465,6 @@ function doPost(event) {
     if (payload.action === 'myOpenRequests') return jsonOutput_(myOpenRequests_(payload));
     if (payload.action === 'listOpenRequests') return jsonOutput_(listOpenRequests_(payload));
     if (payload.action === 'decideOpenRequest') return jsonOutput_(decideOpenRequest_(payload));
-    if (payload.action === 'status') return jsonOutput_(statusReport_(payload));
-    if (payload.action === 'export') return jsonOutput_(exportSubmissions_(payload));
-    if (payload.action === 'studentDetail') return jsonOutput_(studentDetail_(payload));
-    if (payload.action === 'dashboard') return jsonOutput_(dashboardReport_(payload));
     return jsonOutput_(saveSubmission_(payload));
   } catch (error) {
     return jsonOutput_({ ok: false, err: errorMessage_(error), msg: errorMessage_(error) });
@@ -1450,10 +1467,20 @@ function submittedSubjectIds_(row) {
   } catch (error) { return []; }
 }
 
+var SMALL_COUNT_FLOOR = 3;
+
+/**
+ * 과목 조합별 인원 — 익명(doGet)으로 준다. 이름·학번은 없다.
+ *
+ * hideSmallCounts 가 켜져 있으면(기본) 3명 미만 조합은 byGroup 에서 빼고, 대신 과목별
+ * 합계(bySubject)와 «3명 미만인 과목» 목록(smallSubjects)을 준다. 학생 화면은 과목별로
+ * N명 또는 «3명 미만»만 보여 주면 되고, 1~2명짜리 조합은 어디에도 나가지 않는다.
+ */
 function subjectCounts_(targetGradeValue, roundValue) {
   const targetGrade = integerIn_(targetGradeValue, 2, 3, '대상 학년');
   const round = integerIn_(roundValue, 1, 3, '조사 차수');
   const byGroup = {};
+  const bySubject = {};
   let respondents = 0;
   submissionObjects_(targetGrade).forEach(function (row) {
     if (Number(row.target_grade) !== targetGrade || Number(row.round) !== round || bool_(row.is_test)) return;
@@ -1465,9 +1492,42 @@ function subjectCounts_(targetGradeValue, roundValue) {
       if (!combination) return;
       if (!byGroup[groupId]) byGroup[groupId] = {};
       byGroup[groupId][combination] = (byGroup[groupId][combination] || 0) + 1;
+      if (!bySubject[groupId]) bySubject[groupId] = {};
+      names.forEach(function (name) {
+        bySubject[groupId][name] = (bySubject[groupId][name] || 0) + 1;
+      });
     });
   });
-  return { ok: true, round: round, targetGrade: targetGrade, respondents: respondents, byGroup: byGroup, generatedAt: new Date().toISOString() };
+  const result = { ok: true, round: round, targetGrade: targetGrade, respondents: respondents, byGroup: byGroup, generatedAt: new Date().toISOString() };
+  if (!HM_SELECTION.hideSmallCounts) return result;
+
+  const visibleCombinations = {};
+  Object.keys(byGroup).forEach(function (groupId) {
+    Object.keys(byGroup[groupId]).forEach(function (combination) {
+      if (byGroup[groupId][combination] < SMALL_COUNT_FLOOR) return;
+      if (!visibleCombinations[groupId]) visibleCombinations[groupId] = {};
+      visibleCombinations[groupId][combination] = byGroup[groupId][combination];
+    });
+  });
+  const visibleSubjects = {};
+  const smallSubjects = {};
+  Object.keys(bySubject).forEach(function (groupId) {
+    Object.keys(bySubject[groupId]).forEach(function (name) {
+      const total = bySubject[groupId][name];
+      if (total >= SMALL_COUNT_FLOOR) {
+        if (!visibleSubjects[groupId]) visibleSubjects[groupId] = {};
+        visibleSubjects[groupId][name] = total;
+      } else {
+        if (!smallSubjects[groupId]) smallSubjects[groupId] = [];
+        smallSubjects[groupId].push(name);
+      }
+    });
+  });
+  result.byGroup = visibleCombinations;
+  result.bySubject = visibleSubjects;
+  result.smallSubjects = smallSubjects;
+  result.hiddenBelow = SMALL_COUNT_FLOOR;
+  return result;
 }
 
 /**
@@ -1775,6 +1835,396 @@ function currentSubmissionHeaders_(sheet) {
  * 시트를 서너 번 열면 그 검사도 반복된다. 한 번 확인했으면 그 실행 동안은 믿는다.
  */
 var HM_SHEET_MEMO = {};
+
+/*
+ * 관리자 · 폐강
+ * ─────────────────────────────────────────────────────────────────────────────
+ * 폐강은 팩(정적 파일)이 아니라 여기에 둔다. 과목 하나 닫자고 데스크톱에서 사이트를 다시
+ * 굽고 올리는 것은 과하고, 잘못 닫았을 때 되돌리기도 그만큼 오래 걸린다(2026-09-16 요청).
+ * 과목 카탈로그의 진실원천은 종전대로 데스크톱이고, 여기 있는 것은 «그 해의 운영 상태»다.
+ *
+ * 관리자 명단은 _admins 탭에 학교가 직접 적는다. 비어 있으면 아무도 관리자가 아니다 —
+ * 담임이라고 자동으로 폐강을 건드릴 수 있으면 안 된다.
+ */
+/**
+ * 제출에 폐강 과목이 섞였는지 본다.
+ *
+ * 화면에서 막는 것은 안내다. 오래된 탭을 열어 두었거나 화면을 건드리면 폐강 과목도 올라오는데,
+ * 그대로 받으면 반 편성이 통째로 틀어진다. 실제로 막는 곳은 여기여야 한다(2026-09-16).
+ *
+ * 제출은 과목 «이름»으로 오고 폐강은 «id» 로 기록된다. 같은 이름이 2학년 융합판과 3학년판으로
+ * 나뉘어 있으므로(역학과 에너지·지구시스템과학·행성우주과학) 대상 학년까지 맞춰 본다.
+ * 학년을 적어 두지 않은 폐강은 학년을 가리지 않고 막는다 — 안전한 쪽으로 기운다.
+ */
+function assertNoClosedSubjects_(subjectsByGroup, targetGrade) {
+  const closures = closureList_();
+  if (!closures.length) return;
+  /*
+   * 폐강 한 줄은 «어느 조사의, 어느 학년 과목을» 닫는가를 말한다. 검사가 두 겹이다.
+   *
+   * 1) 제출의 대상 학년과 같은 줄만 본다. 지금 1학년의 대상 학년은 2, 지금 2학년은 3이다.
+   *    역학과 에너지 폐강(대상 3)은 2027학년도 3학년 이야기라 지금 1학년과는 무관하다.
+   * 2) 그 줄을 선택군의 학년에도 맞춘다. 지금 1학년은 2학년과 3학년 과목을 한 번에 올리는데,
+   *    같은 이름이 학년별로 있는 과목이 여럿이다. 이름만 보면 2학년 지구시스템과학 폐강이
+   *    3학년 지구시스템과학까지 막는다(2026-09-16).
+   *
+   * 선택군 id 는 «g2-…»·«g3-…» 로 학년을 달고 온다. 학년을 읽을 수 없으면 제출 대상
+   * 학년으로 본다 — 모를 때는 막는 쪽으로 기운다.
+   */
+  const blocked = {};
+  closures.forEach(function (row) {
+    if (row.targetGrade && Number(row.targetGrade) !== Number(targetGrade)) return;
+    const name = String(row.subjectName || '').trim();
+    if (name) blocked[name] = Number(row.targetGrade) || Number(targetGrade);
+  });
+  const hits = [];
+  Object.keys(subjectsByGroup || {}).forEach(function (groupId) {
+    const names = subjectsByGroup[groupId];
+    if (!Array.isArray(names)) return;
+    const matched = String(groupId).match(/^g(\d)-/);
+    const groupGrade = matched ? Number(matched[1]) : Number(targetGrade);
+    names.forEach(function (name) {
+      const key = String(name || '').trim();
+      if (!key || blocked[key] === undefined) return;
+      if (blocked[key] !== groupGrade) return;
+      if (hits.indexOf(key) === -1) hits.push(key);
+    });
+  });
+  if (!hits.length) return;
+  throw new Error('폐강된 과목이 들어 있습니다: ' + hits.join(', ') + '. 화면을 새로 고친 뒤 다시 골라 주세요.');
+}
+
+/**
+ * 차수 일정 — _config 의 ROUND_n_START·END 와 FINAL_ROUND 를 관리자 화면에서 고친다.
+ *
+ * 시트를 직접 열어 손으로 고치면 오타 하나에 제출 기간이 통째로 어긋난다. 여기서 고치면
+ * 형식을 서버가 확인하고, 누가 바꿨는지도 남는다(2026-09-16).
+ *
+ * 값은 «YYYY-MM-DD HH:MM» 로 적는다 — configDate_ 가 그 모양을 읽는다. 끝나는 날은 그날
+ * 끝까지 받는 것이 보통이므로 화면이 23:59 를 채워 보낸다.
+ */
+function setSchedule_(payload) {
+  const session = requireAdmin_(payload);
+  const round = integerIn_(payload.round, 1, 3, '조사 차수');
+  const start = String(payload.start || '').trim();
+  const end = String(payload.end || '').trim();
+  const pattern = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/;
+  if (!pattern.test(start) || !pattern.test(end)) throw new Error('기간은 YYYY-MM-DD HH:MM 형식으로 적어 주세요.');
+  if (configDate_(start).getTime() >= configDate_(end).getTime()) throw new Error('시작이 종료보다 빠를 수 없습니다.');
+
+  const sheet = ensureSheet_(spreadsheet_(), HM_SELECTION.configSheet, ['key', 'value', '설명']);
+  const values = sheet.getDataRange().getValues();
+  /*
+   * 값은 «글자»로 못박아 넣는다. 그냥 넣으면 시트가 «2026-09-24 00:00» 을 날짜로 바꾸고,
+   * 다시 읽을 때(getDisplayValues) 제 형식으로 돌려줘 시작 시각이 통째로 사라진다.
+   * 자정이라 시각이 안 보이는 시작만 없어지고 23:59 인 종료는 남아 더 헷갈렸다(2026-09-16).
+   */
+  function put(key, value, note) {
+    for (let i = 1; i < values.length; i++) {
+      if (String(values[i][0]).trim() !== key) continue;
+      sheet.getRange(i + 1, 2).setNumberFormat('@').setValue(value);
+      return;
+    }
+    sheet.appendRow([key, value, note]);
+    sheet.getRange(sheet.getLastRow(), 2).setNumberFormat('@').setValue(value);
+  }
+  put('ROUND_' + round + '_START', start, round + '차 시작');
+  put('ROUND_' + round + '_END', end, round + '차 종료');
+  // 차수를 열었으면 그 차수까지 받는다는 뜻이다. 되돌릴 때는 화면에서 낮춰 준다.
+  const finalRound = Math.max(round, Math.min(3, Number(config_().FINAL_ROUND) || 1));
+  put('FINAL_ROUND', String(finalRound), '마지막 조사 차수');
+  put('FINALIZED', 'FALSE', '최종 확정 여부');
+  HM_CONFIG_MEMO = null;
+  logAdminChange_(session, 'schedule', round + '차 ' + start + ' ~ ' + end);
+  return { ok: true, schedule: scheduleStatus_() };
+}
+
+/**
+ * 확인서 제출일 — 학생 첫 화면에 그대로 적힌다.
+ *
+ * 형식을 묶어 두지 않는다. «9월 28일(월)» 처럼 사람이 읽는 말이 그대로 나가야 하고,
+ * 날짜로 계산하는 곳이 없다.
+ */
+function setConfirmationDue_(payload) {
+  const session = requireAdmin_(payload);
+  const text = String(payload.text || '').trim().slice(0, 60);
+  putConfig_('CONFIRMATION_DUE', text, '확인서 제출일(첫 화면 안내)');
+  logAdminChange_(session, 'confirmation-due', text || '(비움)');
+  return { ok: true, schedule: scheduleStatus_() };
+}
+
+/** 관리자가 무엇을 바꿨는지 남긴다. 폐강과 달리 일정은 되돌려도 흔적이 없어서 따로 적어 둔다. */
+function logAdminChange_(session, kind, detail) {
+  try {
+    const sheet = ensureSheet_(spreadsheet_(), '_admin_log', ['at', 'email', 'kind', 'detail']);
+    sheet.appendRow([new Date().toISOString(), String(session.email || ''), String(kind), String(detail).slice(0, 300)]);
+  } catch (error) { /* 기록 실패가 조작을 막지는 않는다 */ }
+}
+
+function openRequestSheet_() { return ensureSheet_(spreadsheet_(), '_open_requests', HM_SELECTION.openRequestHeaders); }
+
+function openRequestRows_() {
+  const rows = openRequestSheet_().getDataRange().getValues().slice(1);
+  const out = [];
+  for (let i = 0; i < rows.length; i++) {
+    const row = objectFromRow_(HM_SELECTION.openRequestHeaders, rows[i]);
+    if (!row.request_id) continue;
+    out.push({ row: row, rowNumber: i + 2 });
+  }
+  return out;
+}
+
+function openRequestView_(row) {
+  return {
+    requestId: String(row.request_id),
+    studentId: String(row.student_id || ''),
+    studentName: String(row.student_name || ''),
+    targetGrade: Number(row.target_grade) || null,
+    subjectId: String(row.subject_id || ''),
+    subjectName: String(row.subject_name || ''),
+    reason: String(row.reason || ''),
+    status: String(row.status || 'pending'),
+    decidedBy: String(row.decided_by || ''),
+    decidedAt: row.decided_at ? String(row.decided_at) : '',
+    decisionNote: String(row.decision_note || ''),
+    createdAt: row.created_at ? String(row.created_at) : '',
+    isTest: bool_(row.is_test),
+  };
+}
+
+/**
+ * 학생이 과목을 열어 달라고 올린다.
+ *
+ * 같은 과목으로 이미 기다리는 요청이나 승인이 있으면 새로 만들지 않는다 — 조급한 마음에
+ * 여러 번 누르면 관리자 목록이 같은 줄로 덮인다. 거절된 뒤에는 다시 올릴 수 있게 둔다.
+ */
+function requestSubjectOpen_(payload) {
+  const session = requireSession_(payload.sessionToken);
+  // 교사는 제출과 마찬가지로 «시험»으로 다룬다. 기간 밖에서도 해 볼 수 있어야 조사 전에
+  // 통로가 도는지 확인한다. 남는 줄은 is_test 로 표시해 실제 학생 요청과 섞이지 않는다.
+  const isTest = String(session.role || 'student') === 'teacher';
+  if (!isTest && String(session.role || 'student') !== 'student') throw new Error('학생 계정만 요청할 수 있습니다.');
+  const subjectId = String(payload.subjectId || '').trim();
+  if (!subjectId || subjectId.length > 200) throw new Error('과목을 확인해 주세요.');
+  const reason = String(payload.reason || '').trim().slice(0, 500);
+  if (reason.length < 5) throw new Error('왜 이 과목을 듣고 싶은지 적어 주세요.');
+  const status = scheduleStatus_();
+  if (!status.currentRound && !isTest) throw new Error('지금은 신청 기간이 아닙니다.');
+
+  const existing = openRequestRows_();
+  for (let i = 0; i < existing.length; i++) {
+    const row = existing[i].row;
+    if (String(row.identity_key) !== String(session.identity_key)) continue;
+    if (String(row.subject_id) !== subjectId) continue;
+    const state = String(row.status || 'pending');
+    if (state === 'pending') throw new Error('이미 신청했습니다. 결과를 기다려 주세요.');
+    if (state === 'approved') throw new Error('이미 열려 있는 과목입니다.');
+  }
+  // 이름은 관리자 목록에서 «누가 냈는지» 보이려고 함께 적어 둔다. 없으면 학번만 남는다.
+  const student = isTest ? null : studentBy_('student_id', session.student_id);
+  const who = student ? String(student.name || '') : (isTest ? String(session.email || '') + ' (시험)' : '');
+  const requestId = Utilities.getUuid();
+  openRequestSheet_().appendRow([requestId, String(session.identity_key), String(session.student_id || ''),
+    who, Number(payload.targetGrade) || '',
+    subjectId, String(payload.subjectName || '').slice(0, 200), reason, 'pending', '', '', '',
+    new Date().toISOString(), isTest ? 'TRUE' : 'FALSE']);
+  // 알림은 저장한 뒤에 보낸다. 알림이 실패해도 요청은 남는다.
+  notifyOpenRequest_({
+    student_name: who, student_id: String(session.student_id || ''),
+    student_email: String((student && student.email) || session.email || ''),
+    subject_name: String(payload.subjectName || ''), subject_id: subjectId,
+    target_grade: Number(payload.targetGrade) || '', reason: reason,
+    is_test: isTest ? 'TRUE' : 'FALSE',
+  });
+  return { ok: true, requestId: requestId, requests: myOpenRequestList_(session.identity_key) };
+}
+
+function myOpenRequestList_(identityKey) {
+  const out = [];
+  openRequestRows_().forEach(function (entry) {
+    if (String(entry.row.identity_key) !== String(identityKey)) return;
+    out.push(openRequestView_(entry.row));
+  });
+  return out;
+}
+
+/** 학생 화면이 «내 요청»과 «열린 과목»을 물을 때. 로그인 응답에 싣지 않는다 — 로그인이 느려진다. */
+function myOpenRequests_(payload) {
+  const session = requireSession_(payload.sessionToken);
+  const mine = myOpenRequestList_(session.identity_key);
+  const grants = [];
+  mine.forEach(function (row) { if (row.status === 'approved') grants.push(row.subjectId); });
+  return { ok: true, requests: mine, grants: grants };
+}
+
+/** 관리자 목록 — 기다리는 것이 위로 온다. */
+function listOpenRequests_(payload) {
+  requireAdmin_(payload);
+  return { ok: true, requests: openRequestsSorted_() };
+}
+
+/**
+ * 받아들이거나 거절한다. 줄을 지우지 않는다 — 학생이 «왜 안 됐는지»를 볼 수 있어야 하고,
+ * 같은 요청이 반복되는 것도 그 기록으로 줄어든다.
+ */
+function decideOpenRequest_(payload) {
+  const session = requireAdmin_(payload);
+  const requestId = String(payload.requestId || '').trim();
+  const approve = bool_(payload.approve);
+  const note = String(payload.note || '').trim().slice(0, 300);
+  if (!approve && !note) throw new Error('거절 사유를 적어 주세요. 학생이 보게 됩니다.');
+  const entries = openRequestRows_();
+  for (let i = 0; i < entries.length; i++) {
+    if (String(entries[i].row.request_id) !== requestId) continue;
+    const sheet = openRequestSheet_();
+    const headers = HM_SELECTION.openRequestHeaders;
+    sheet.getRange(entries[i].rowNumber, headers.indexOf('status') + 1).setValue(approve ? 'approved' : 'rejected');
+    sheet.getRange(entries[i].rowNumber, headers.indexOf('decided_by') + 1).setValue(String(session.email || ''));
+    sheet.getRange(entries[i].rowNumber, headers.indexOf('decided_at') + 1).setValue(new Date().toISOString());
+    sheet.getRange(entries[i].rowNumber, headers.indexOf('decision_note') + 1).setValue(note);
+    return listOpenRequests_(payload);
+  }
+  throw new Error('요청을 찾지 못했습니다.');
+}
+
+function adminSheet_() { return ensureSheet_(spreadsheet_(), '_admins', HM_SELECTION.adminHeaders); }
+function closureSheet_() { return ensureSheet_(spreadsheet_(), '_closures', HM_SELECTION.closureHeaders); }
+
+function isAdminEmail_(email) {
+  const target = String(email || '').trim().toLowerCase();
+  if (!target) return false;
+  const rows = adminSheet_().getDataRange().getValues().slice(1);
+  for (let i = 0; i < rows.length; i++) {
+    const row = objectFromRow_(HM_SELECTION.adminHeaders, rows[i]);
+    if (String(row.email || '').trim().toLowerCase() !== target) continue;
+    return row.active === '' || row.active === undefined || bool_(row.active);
+  }
+  return false;
+}
+
+/** 관리자 세션을 확인해 돌려준다. 관리자가 아니면 여기서 멈춘다. */
+function requireAdmin_(payload) {
+  const session = requireSession_(payload.sessionToken || payload.token);
+  if (!isAdminEmail_(session.email)) throw new Error('관리자로 지정된 계정만 쓸 수 있습니다.');
+  return session;
+}
+
+/** 폐강 목록. 학생 앱이 팩 위에 덧씌우므로 닫힌 것만 돌려준다. */
+function closureList_() {
+  const rows = closureSheet_().getDataRange().getValues().slice(1);
+  const out = [];
+  for (let i = 0; i < rows.length; i++) {
+    const row = objectFromRow_(HM_SELECTION.closureHeaders, rows[i]);
+    if (!row.subject_id || !bool_(row.closed)) continue;
+    out.push({
+      subjectId: String(row.subject_id),
+      subjectName: String(row.subject_name || ''),
+      targetGrade: Number(row.target_grade) || null,
+      reason: String(row.reason || ''),
+      updatedAt: row.updated_at ? String(row.updated_at) : '',
+    });
+  }
+  return out;
+}
+
+/** 관리자 화면이 처음 열릴 때 필요한 것 — 자기 권한과 현재 폐강 상태. */
+/** 폐강 표의 모든 줄 — 닫힌 것만이 아니라 되돌린 것도 함께. 관리자 화면이 상태를 그린다. */
+function closureRows_() {
+  const rows = closureSheet_().getDataRange().getValues().slice(1);
+  const all = [];
+  for (let i = 0; i < rows.length; i++) {
+    const row = objectFromRow_(HM_SELECTION.closureHeaders, rows[i]);
+    if (!row.subject_id) continue;
+    all.push({
+      subjectId: String(row.subject_id),
+      subjectName: String(row.subject_name || ''),
+      targetGrade: Number(row.target_grade) || null,
+      closed: bool_(row.closed),
+      reason: String(row.reason || ''),
+      updatedBy: String(row.updated_by || ''),
+      updatedAt: row.updated_at ? String(row.updated_at) : '',
+    });
+  }
+  return all;
+}
+
+/** 기다리는 요청이 위로 오게. 관리자는 처리할 것부터 본다. */
+function openRequestsSorted_() {
+  const rows = openRequestRows_().map(function (entry) { return openRequestView_(entry.row); });
+  rows.sort(function (a, b) {
+    const rank = function (row) { return row.status === 'pending' ? 0 : 1; };
+    return rank(a) - rank(b) || String(b.createdAt).localeCompare(String(a.createdAt));
+  });
+  return rows;
+}
+
+function adminBootstrap_(payload) {
+  const session = requireAdmin_(payload);
+  return { ok: true, admin: { email: session.email, name: session.name || '' }, closures: closureRows_(), schedule: scheduleStatus_() };
+}
+
+/**
+ * 관리자 화면이 한 번에 받아 가는 묶음.
+ *
+ * 이 스크립트는 호출 하나에 2~3초가 고정으로 든다 — 245바이트를 돌려주는 호출도 그렇다.
+ * 내용이 아니라 «부른다»는 것 자체의 값이라 화면이 세 번 부르면 10초가 된다. 한 번에 싣는다.
+ *
+ * 집계나 요청 목록이 실패해도 폐강·기간은 쓸 수 있어야 한다. 실패한 쪽만 사유를 담아
+ * 돌려주고 나머지는 그대로 보낸다 — 하나 때문에 화면 전체가 멈추면 안 된다.
+ */
+function adminConsole_(payload) {
+  const session = requireAdmin_(payload);
+  const result = {
+    ok: true,
+    admin: { email: session.email, name: session.name || '' },
+    schedule: scheduleStatus_(),
+    closures: closureRows_(),
+    // 명단은 작아서 같이 싣는다 — 탭을 열 때마다 2~3초를 또 쓰지 않는다.
+    notify: notifyChannels_(),
+    teachers: rosterView_('teacher'),
+    admins: rosterView_('admin'),
+  };
+  try {
+    result.counts = subjectCounts_(payload.grade, payload.round);
+  } catch (error) {
+    result.counts = null;
+    result.countsError = errorMessage_(error);
+  }
+  try {
+    result.requests = openRequestsSorted_();
+  } catch (error) {
+    result.requests = null;
+    result.requestsError = errorMessage_(error);
+  }
+  return result;
+}
+
+/**
+ * 폐강을 켜거나 끈다. 줄을 지우지 않고 closed 를 바꿔 둔다 — 누가 언제 왜 닫았는지,
+ * 그리고 되돌렸는지가 남아야 나중에 «왜 이 과목이 없어졌나»를 답할 수 있다.
+ */
+function setClosure_(payload) {
+  const session = requireAdmin_(payload);
+  const subjectId = String(payload.subjectId || '').trim();
+  if (!subjectId || subjectId.length > 200) throw new Error('과목을 확인해 주세요.');
+  const closed = bool_(payload.closed);
+  const reason = String(payload.reason || '').trim().slice(0, 300);
+  if (closed && !reason) throw new Error('폐강 사유를 적어 주세요.');
+  const sheet = closureSheet_();
+  const values = sheet.getDataRange().getValues();
+  const stamp = new Date().toISOString();
+  const targetGrade = payload.targetGrade === undefined || payload.targetGrade === null || payload.targetGrade === ''
+    ? '' : integerIn_(payload.targetGrade, 2, 3, '대상 학년');
+  const record = [subjectId, String(payload.subjectName || '').slice(0, 200), closed ? 'TRUE' : 'FALSE',
+    reason, String(session.email || ''), stamp, targetGrade];
+  for (let i = 1; i < values.length; i++) {
+    if (String(values[i][0]) !== subjectId) continue;
+    sheet.getRange(i + 1, 1, 1, HM_SELECTION.closureHeaders.length).setValues([record]);
+    return { ok: true, closed: closed, closures: closureList_() };
+  }
+  sheet.appendRow(record);
+  return { ok: true, closed: closed, closures: closureList_() };
+}
 
 /* ─────────────────────────────────────────────────────────────────────────────
  * 명단 · 확정 · 기록
@@ -2209,6 +2659,237 @@ function pushStudents_(payload) {
   };
 }
 
+/* ─────────────────────────────────────────────────────────────────────────────
+ * 알림 — 과목 오픈 요청이 들어오면
+ * ─────────────────────────────────────────────────────────────────────────────
+ * 조사 기간 나흘 동안 관리자 화면을 계속 열어 둘 수는 없다. 요청이 들어오는 즉시
+ * 관리자에게 알린다(2026-09-16 요청).
+ *
+ * 알림이 실패해도 요청은 저장된다 — 학생이 다시 눌러야 하는 일은 만들지 않는다.
+ */
+
+/**
+ * 알림이 실제로 오는지 지금 확인한다.
+ *
+ * 알림은 조사 기간에 처음 도는데, 그때 안 오면 이미 늦다. 설정을 마친 뒤 한 번 눌러
+ * 메일과 카카오워크가 닿는지 보는 자리다. 어디로 갔고 어디가 막혔는지 돌려준다.
+ */
+function testNotify_(payload) {
+  const session = requireAdmin_(payload);
+  const targets = notifyTargets_();
+  if (!targets.length) throw new Error('관리자 명단에 켜진 계정이 없습니다.');
+  const title = '[알림 시험] 과목 오픈 요청';
+  const text = [
+    '이 메시지가 보이면 알림이 닿는 것입니다.',
+    '',
+    '조사 기간에 학생이 과목을 열어 달라고 요청하면 이런 모양으로 옵니다.',
+    '',
+    '보낸 사람: ' + String(session.email || ''),
+  ].join('\n');
+
+  const channels = notifyChannels_();
+  let mail = '꺼 둠';
+  if (channels.mail) {
+    mail = notifyMail_(targets, title, text);
+    try {
+      mail += ' · 오늘 남은 통수 ' + MailApp.getRemainingDailyQuota();
+    } catch (error) {
+      mail += ' · 남은 통수를 읽지 못함';
+    }
+  }
+
+  const props = PropertiesService.getScriptProperties();
+  const hasKakao = channels.kakaoWork
+    && Boolean(String(props.getProperty('NOTIFY_URL') || '').trim())
+    && Boolean(String(props.getProperty('NOTIFY_TOKEN') || '').trim());
+
+  let kakao = hasKakao ? 'ok' : (channels.kakaoWork ? '통로 설정 없음' : '꺼 둠');
+  if (hasKakao) {
+    try {
+      const response = UrlFetchApp.fetch(String(props.getProperty('NOTIFY_URL')).trim(), {
+        method: 'post',
+        contentType: 'application/json',
+        muteHttpExceptions: true,
+        payload: JSON.stringify({
+          token: String(props.getProperty('NOTIFY_TOKEN')).trim(),
+          title: title, text: text,
+          emails: targets.map(function (t) { return t.email; }),
+        }),
+      });
+      kakao = response.getResponseCode() + ' ' + String(response.getContentText()).slice(0, 200);
+    } catch (error) { kakao = errorMessage_(error); }
+  }
+  /*
+   * 열쇠가 안 맞을 때 «무엇이 다른지»를 알려 준다. 값 자체는 내보내지 않는다 —
+   * 길이와 앞뒤 몇 글자만 보면 붙여넣다 공백이 딸려 왔는지, 아예 다른 값인지 가려진다.
+   */
+  const raw = String(props.getProperty('NOTIFY_TOKEN') || '');
+  const trimmed = raw.trim();
+  return {
+    ok: true, to: targets.map(function (t) { return t.email; }),
+    mail: mail, kakaoWork: kakao,
+    tokenShape: {
+      length: raw.length,
+      trimmedLength: trimmed.length,
+      head: trimmed.slice(0, 4),
+      tail: trimmed.slice(-4),
+      urlLength: String(props.getProperty('NOTIFY_URL') || '').length,
+    },
+  };
+}
+
+/**
+ * 메일 보내기 권한을 승인하는 자리 — 편집기에서 한 번 실행한다.
+ *
+ * MailApp 은 «메일 보내기» 권한을 따로 요구하는데, 웹앱은 배포 시점의 권한으로 도는
+ * 터라 나중에 이 기능이 붙어도 저절로 열리지 않는다. 주인이 편집기에서 한 번
+ * 승인해 주어야 한다(2026-09-17).
+ *
+ * 이름에 밑줄을 붙이지 않는다 — 밑줄로 끝나는 함수는 편집기의 실행 목록에 안 뜬다.
+ * 찾지 못해 한참 헤맸다.
+ *
+ * 관리자 명단의 켜진 계정으로 시험 메일 한 통을 보낸다.
+ */
+function 메일권한승인() {
+  const targets = notifyTargets_();
+  if (!targets.length) throw new Error('관리자 명단(_admins)에 켜진 계정이 없습니다.');
+  /*
+   * 여기서는 오류를 잡지 않는다. 구글은 권한이 없다는 오류가 **밖으로 터져 나와야**
+   * 승인 창을 띄운다 — notifyMail_ 처럼 try/catch 로 감싸면 «보내지 못했습니다» 만
+   * 기록에 남고 창은 영영 안 뜬다. 승인이 목적인 자리라 그대로 터뜨린다(2026-09-17).
+   */
+  MailApp.sendEmail({
+    to: targets.map(function (t) { return t.email; }).join(','),
+    subject: '[알림 시험] 메일 권한 승인',
+    body: '이 메일이 보이면 메일 알림이 닿는 것입니다.\n\n'
+      + '조사 기간에 학생이 과목을 열어 달라고 요청하면 이런 모양으로 옵니다.',
+  });
+  const message = targets.map(function (t) { return t.email; }).join(', ') + ' 로 보냈습니다.';
+  console.log(message);
+  return message;
+}
+
+/**
+ * 메일로 보낸다. 하루 한도가 있으므로 한 통에 여러 명을 받는 사람으로 넣는다.
+ *
+ * 오류를 삼키지 않고 돌려준다. 종전에는 try/catch 로 조용히 덮어 두어, «보냈다» 고
+ * 나오는데 받은 편지함에는 없는 일이 있었다 — 무엇이 막혔는지 알 길이 없었다
+ * (2026-09-16). 보내기 실패가 요청 접수를 막지 않는 것은 그대로다.
+ *
+ * MailApp 은 «메일 보내기» 권한을 따로 요구한다. 스크립트 주인이 편집기에서 한 번
+ * 승인해야 돌고, 승인 전에는 여기서 그 사정을 그대로 돌려준다.
+ *
+ * noReply 는 쓰지 않는다 — 회사 계정 전용이라 권한이 하나 더 필요하고, 그만큼 막힐
+ * 구석이 는다. 보내는 사람은 스크립트 주인 계정이 된다.
+ */
+function notifyMail_(targets, title, text) {
+  if (!targets.length) return '받을 사람 없음';
+  try {
+    MailApp.sendEmail({
+      to: targets.map(function (t) { return t.email; }).join(','),
+      subject: title,
+      body: text,
+    });
+    return 'ok';
+  } catch (error) {
+    return errorMessage_(error);
+  }
+}
+
+/*
+ * 어느 길로 알릴지 — 관리자 화면에서 켜고 끈다.
+ *
+ * 메일은 «메일 보내기» 권한을 따로 승인해야 돌고, 카카오워크는 통로 설정이 있어야
+ * 돈다. 학교마다 사정이 다르고 한 학교 안에서도 때에 따라 다르다 — 코드에 박지 않고
+ * _config 에 둔다. 적어 둔 값이 없으면 둘 다 켜진 것으로 본다(2026-09-17).
+ */
+function notifyChannels_() {
+  const config = config_();
+  const on = function (key) {
+    const raw = String(config[key] === undefined ? '' : config[key]).trim();
+    return raw === '' ? true : bool_(raw);
+  };
+  return { mail: on('NOTIFY_MAIL'), kakaoWork: on('NOTIFY_KAKAOWORK') };
+}
+
+/** 어느 길로 알릴지 고친다. 둘 다 꺼 두면 아무 데도 안 간다 — 그것도 선택이다. */
+function setNotifyChannels_(payload) {
+  const session = requireAdmin_(payload);
+  const mail = bool_(payload.mail);
+  const kakaoWork = bool_(payload.kakaoWork);
+  putConfig_('NOTIFY_MAIL', mail ? 'TRUE' : 'FALSE', '과목 오픈 요청 알림 · 메일');
+  putConfig_('NOTIFY_KAKAOWORK', kakaoWork ? 'TRUE' : 'FALSE', '과목 오픈 요청 알림 · 카카오워크');
+  logAdminChange_(session, 'notify', '메일 ' + (mail ? '켬' : '끔') + ' · 카카오워크 ' + (kakaoWork ? '켬' : '끔'));
+  return { ok: true, channels: notifyChannels_() };
+}
+
+/** 알림 받을 사람 — 관리자 명단에서 켜져 있는 계정. */
+function notifyTargets_() {
+  try {
+    return rosterRows_('admin').filter(function (row) { return row.active; })
+      .map(function (row) { return { email: row.email, name: row.name }; });
+  } catch (error) { return []; }
+}
+
+/**
+ * 카카오워크로 보낸다 — 앱 키는 이 스크립트에 두지 않는다.
+ *
+ * 앱 키 하나면 회사 전체에 말을 걸 수 있다. 공개 주소로 열려 있는 이 스크립트에 둘
+ * 값이 아니다. 대신 «이 알림만 보낼 수 있는» 좁은 통로(Edge Function)를 두고, 그
+ * 통로의 열쇠만 스크립트 속성에 둔다.
+ *
+ * 통로가 설정돼 있지 않으면 아무 일도 하지 않는다 — 메일만으로도 알림은 간다.
+ */
+function notifyKakaoWork_(targets, title, text) {
+  const props = PropertiesService.getScriptProperties();
+  const url = String(props.getProperty('NOTIFY_URL') || '').trim();
+  const token = String(props.getProperty('NOTIFY_TOKEN') || '').trim();
+  if (!url || !token || !targets.length) return;
+  try {
+    UrlFetchApp.fetch(url, {
+      method: 'post',
+      contentType: 'application/json',
+      muteHttpExceptions: true,
+      payload: JSON.stringify({
+        token: token,
+        title: title,
+        text: text,
+        emails: targets.map(function (t) { return t.email; }),
+      }),
+    });
+  } catch (error) { /* 알림 실패가 요청 접수를 막지 않는다 */ }
+}
+
+
+/**
+ * 과목 오픈 요청이 들어왔다고 알린다.
+ *
+ * 교사가 통로를 확인해 본 시험 요청은 알리지 않는다 — 진짜 요청과 섞이면 알림을
+ * 믿지 않게 된다.
+ */
+function notifyOpenRequest_(row) {
+  if (bool_(row.is_test)) return;
+  const targets = notifyTargets_();
+  if (!targets.length) return;
+  // 학번·이름·이메일 순으로 적는다 — 알림만 보고 누구인지 바로 찾을 수 있어야 한다.
+  const who = [String(row.student_id || ''), String(row.student_name || ''), String(row.student_email || '')]
+    .map(function (part) { return part.trim(); })
+    .filter(Boolean).join(' ');
+  const title = '[과목 오픈 요청] ' + String(row.subject_name || row.subject_id || '');
+  const lines = [
+    '보낸 사람: ' + (who || '(알 수 없음)'),
+    '',
+    '과목: ' + String(row.subject_name || '') + (row.target_grade ? ' (' + row.target_grade + '학년)' : ''),
+    '사유: ' + String(row.reason || ''),
+    '',
+    '관리자 화면 「과목 오픈 요청」 탭에서 받아들이거나 거절할 수 있습니다.',
+  ];
+  const text = lines.join('\n');
+  const channels = notifyChannels_();
+  if (channels.mail) notifyMail_(targets, title, text);
+  if (channels.kakaoWork) notifyKakaoWork_(targets, title, text);
+}
+
 function ensureSheet_(spreadsheet, name, headers) {
   if (HM_SHEET_MEMO[name]) return HM_SHEET_MEMO[name];
   let sheet = spreadsheet.getSheetByName(name);
@@ -2412,385 +3093,4 @@ function axCourseLogin_(payload) {
  var teacher=teacherByEmail_(email);
  if(!teacher||!bool_(teacher.active))throw new Error('과목선택 시스템의 교사 명단에 등록되지 않은 계정입니다.');
  return {ok:true,auth:issueAuth_({identityKey:'teacher:'+email,studentNo:'',email:email,name:String(teacher.name||identity.name),grade:null,entryYear:null,role:'teacher',isTest:true},false,'')};
-}
-
-/*
- * 관리자 · 폐강
- * ─────────────────────────────────────────────────────────────────────────────
- * 폐강은 팩(정적 파일)이 아니라 여기에 둔다. 과목 하나 닫자고 데스크톱에서 사이트를 다시
- * 굽고 올리는 것은 과하고, 잘못 닫았을 때 되돌리기도 그만큼 오래 걸린다(2026-09-16 요청).
- * 과목 카탈로그의 진실원천은 종전대로 데스크톱이고, 여기 있는 것은 «그 해의 운영 상태»다.
- *
- * 관리자 명단은 _admins 탭에 학교가 직접 적는다. 비어 있으면 아무도 관리자가 아니다 —
- * 담임이라고 자동으로 폐강을 건드릴 수 있으면 안 된다.
- */
-/**
- * 제출에 폐강 과목이 섞였는지 본다.
- *
- * 화면에서 막는 것은 안내다. 오래된 탭을 열어 두었거나 화면을 건드리면 폐강 과목도 올라오는데,
- * 그대로 받으면 반 편성이 통째로 틀어진다. 실제로 막는 곳은 여기여야 한다(2026-09-16).
- *
- * 제출은 과목 «이름»으로 오고 폐강은 «id» 로 기록된다. 같은 이름이 2학년 융합판과 3학년판으로
- * 나뉘어 있으므로(역학과 에너지·지구시스템과학·행성우주과학) 대상 학년까지 맞춰 본다.
- * 학년을 적어 두지 않은 폐강은 학년을 가리지 않고 막는다 — 안전한 쪽으로 기운다.
- */
-function assertNoClosedSubjects_(subjectsByGroup, targetGrade) {
-  const closures = closureList_();
-  if (!closures.length) return;
-  /*
-   * 폐강 한 줄은 «어느 조사의, 어느 학년 과목을» 닫는가를 말한다. 검사가 두 겹이다.
-   *
-   * 1) 제출의 대상 학년과 같은 줄만 본다. 지금 1학년의 대상 학년은 2, 지금 2학년은 3이다.
-   *    역학과 에너지 폐강(대상 3)은 2027학년도 3학년 이야기라 지금 1학년과는 무관하다.
-   * 2) 그 줄을 선택군의 학년에도 맞춘다. 지금 1학년은 2학년과 3학년 과목을 한 번에 올리는데,
-   *    같은 이름이 학년별로 있는 과목이 여럿이다. 이름만 보면 2학년 지구시스템과학 폐강이
-   *    3학년 지구시스템과학까지 막는다(2026-09-16).
-   *
-   * 선택군 id 는 «g2-…»·«g3-…» 로 학년을 달고 온다. 학년을 읽을 수 없으면 제출 대상
-   * 학년으로 본다 — 모를 때는 막는 쪽으로 기운다.
-   */
-  const blocked = {};
-  closures.forEach(function (row) {
-    if (row.targetGrade && Number(row.targetGrade) !== Number(targetGrade)) return;
-    const name = String(row.subjectName || '').trim();
-    if (name) blocked[name] = Number(row.targetGrade) || Number(targetGrade);
-  });
-  const hits = [];
-  Object.keys(subjectsByGroup || {}).forEach(function (groupId) {
-    const names = subjectsByGroup[groupId];
-    if (!Array.isArray(names)) return;
-    const matched = String(groupId).match(/^g(\d)-/);
-    const groupGrade = matched ? Number(matched[1]) : Number(targetGrade);
-    names.forEach(function (name) {
-      const key = String(name || '').trim();
-      if (!key || blocked[key] === undefined) return;
-      if (blocked[key] !== groupGrade) return;
-      if (hits.indexOf(key) === -1) hits.push(key);
-    });
-  });
-  if (!hits.length) return;
-  throw new Error('폐강된 과목이 들어 있습니다: ' + hits.join(', ') + '. 화면을 새로 고친 뒤 다시 골라 주세요.');
-}
-
-/**
- * 차수 일정 — _config 의 ROUND_n_START·END 와 FINAL_ROUND 를 관리자 화면에서 고친다.
- *
- * 시트를 직접 열어 손으로 고치면 오타 하나에 제출 기간이 통째로 어긋난다. 여기서 고치면
- * 형식을 서버가 확인하고, 누가 바꿨는지도 남는다(2026-09-16).
- *
- * 값은 «YYYY-MM-DD HH:MM» 로 적는다 — configDate_ 가 그 모양을 읽는다. 끝나는 날은 그날
- * 끝까지 받는 것이 보통이므로 화면이 23:59 를 채워 보낸다.
- */
-function setSchedule_(payload) {
-  const session = requireAdmin_(payload);
-  const round = integerIn_(payload.round, 1, 3, '조사 차수');
-  const start = String(payload.start || '').trim();
-  const end = String(payload.end || '').trim();
-  const pattern = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/;
-  if (!pattern.test(start) || !pattern.test(end)) throw new Error('기간은 YYYY-MM-DD HH:MM 형식으로 적어 주세요.');
-  if (configDate_(start).getTime() >= configDate_(end).getTime()) throw new Error('시작이 종료보다 빠를 수 없습니다.');
-
-  const sheet = ensureSheet_(spreadsheet_(), HM_SELECTION.configSheet, ['key', 'value', '설명']);
-  const values = sheet.getDataRange().getValues();
-  /*
-   * 값은 «글자»로 못박아 넣는다. 그냥 넣으면 시트가 «2026-09-24 00:00» 을 날짜로 바꾸고,
-   * 다시 읽을 때(getDisplayValues) 제 형식으로 돌려줘 시작 시각이 통째로 사라진다.
-   * 자정이라 시각이 안 보이는 시작만 없어지고 23:59 인 종료는 남아 더 헷갈렸다(2026-09-16).
-   */
-  function put(key, value, note) {
-    for (let i = 1; i < values.length; i++) {
-      if (String(values[i][0]).trim() !== key) continue;
-      sheet.getRange(i + 1, 2).setNumberFormat('@').setValue(value);
-      return;
-    }
-    sheet.appendRow([key, value, note]);
-    sheet.getRange(sheet.getLastRow(), 2).setNumberFormat('@').setValue(value);
-  }
-  put('ROUND_' + round + '_START', start, round + '차 시작');
-  put('ROUND_' + round + '_END', end, round + '차 종료');
-  // 차수를 열었으면 그 차수까지 받는다는 뜻이다. 되돌릴 때는 화면에서 낮춰 준다.
-  const finalRound = Math.max(round, Math.min(3, Number(config_().FINAL_ROUND) || 1));
-  put('FINAL_ROUND', String(finalRound), '마지막 조사 차수');
-  put('FINALIZED', 'FALSE', '최종 확정 여부');
-  HM_CONFIG_MEMO = null;
-  logAdminChange_(session, 'schedule', round + '차 ' + start + ' ~ ' + end);
-  return { ok: true, schedule: scheduleStatus_() };
-}
-
-/**
- * 확인서 제출일 — 학생 첫 화면에 그대로 적힌다.
- *
- * 형식을 묶어 두지 않는다. «9월 28일(월)» 처럼 사람이 읽는 말이 그대로 나가야 하고,
- * 날짜로 계산하는 곳이 없다.
- */
-function setConfirmationDue_(payload) {
-  const session = requireAdmin_(payload);
-  const text = String(payload.text || '').trim().slice(0, 60);
-  putConfig_('CONFIRMATION_DUE', text, '확인서 제출일(첫 화면 안내)');
-  logAdminChange_(session, 'confirmation-due', text || '(비움)');
-  return { ok: true, schedule: scheduleStatus_() };
-}
-
-/** 관리자가 무엇을 바꿨는지 남긴다. 폐강과 달리 일정은 되돌려도 흔적이 없어서 따로 적어 둔다. */
-function logAdminChange_(session, kind, detail) {
-  try {
-    const sheet = ensureSheet_(spreadsheet_(), '_admin_log', ['at', 'email', 'kind', 'detail']);
-    sheet.appendRow([new Date().toISOString(), String(session.email || ''), String(kind), String(detail).slice(0, 300)]);
-  } catch (error) { /* 기록 실패가 조작을 막지는 않는다 */ }
-}
-
-function openRequestSheet_() { return ensureSheet_(spreadsheet_(), '_open_requests', HM_SELECTION.openRequestHeaders); }
-
-function openRequestRows_() {
-  const rows = openRequestSheet_().getDataRange().getValues().slice(1);
-  const out = [];
-  for (let i = 0; i < rows.length; i++) {
-    const row = objectFromRow_(HM_SELECTION.openRequestHeaders, rows[i]);
-    if (!row.request_id) continue;
-    out.push({ row: row, rowNumber: i + 2 });
-  }
-  return out;
-}
-
-function openRequestView_(row) {
-  return {
-    requestId: String(row.request_id),
-    studentId: String(row.student_id || ''),
-    studentName: String(row.student_name || ''),
-    targetGrade: Number(row.target_grade) || null,
-    subjectId: String(row.subject_id || ''),
-    subjectName: String(row.subject_name || ''),
-    reason: String(row.reason || ''),
-    status: String(row.status || 'pending'),
-    decidedBy: String(row.decided_by || ''),
-    decidedAt: row.decided_at ? String(row.decided_at) : '',
-    decisionNote: String(row.decision_note || ''),
-    createdAt: row.created_at ? String(row.created_at) : '',
-    isTest: bool_(row.is_test),
-  };
-}
-
-/**
- * 학생이 과목을 열어 달라고 올린다.
- *
- * 같은 과목으로 이미 기다리는 요청이나 승인이 있으면 새로 만들지 않는다 — 조급한 마음에
- * 여러 번 누르면 관리자 목록이 같은 줄로 덮인다. 거절된 뒤에는 다시 올릴 수 있게 둔다.
- */
-function requestSubjectOpen_(payload) {
-  const session = requireSession_(payload.sessionToken);
-  // 교사는 제출과 마찬가지로 «시험»으로 다룬다. 기간 밖에서도 해 볼 수 있어야 조사 전에
-  // 통로가 도는지 확인한다. 남는 줄은 is_test 로 표시해 실제 학생 요청과 섞이지 않는다.
-  const isTest = String(session.role || 'student') === 'teacher';
-  if (!isTest && String(session.role || 'student') !== 'student') throw new Error('학생 계정만 요청할 수 있습니다.');
-  const subjectId = String(payload.subjectId || '').trim();
-  if (!subjectId || subjectId.length > 200) throw new Error('과목을 확인해 주세요.');
-  const reason = String(payload.reason || '').trim().slice(0, 500);
-  if (reason.length < 5) throw new Error('왜 이 과목을 듣고 싶은지 적어 주세요.');
-  const status = scheduleStatus_();
-  if (!status.currentRound && !isTest) throw new Error('지금은 신청 기간이 아닙니다.');
-
-  const existing = openRequestRows_();
-  for (let i = 0; i < existing.length; i++) {
-    const row = existing[i].row;
-    if (String(row.identity_key) !== String(session.identity_key)) continue;
-    if (String(row.subject_id) !== subjectId) continue;
-    const state = String(row.status || 'pending');
-    if (state === 'pending') throw new Error('이미 신청했습니다. 결과를 기다려 주세요.');
-    if (state === 'approved') throw new Error('이미 열려 있는 과목입니다.');
-  }
-  // 이름은 관리자 목록에서 «누가 냈는지» 보이려고 함께 적어 둔다. 없으면 학번만 남는다.
-  const student = isTest ? null : studentBy_('student_id', session.student_id);
-  const who = student ? String(student.name || '') : (isTest ? String(session.email || '') + ' (시험)' : '');
-  const requestId = Utilities.getUuid();
-  openRequestSheet_().appendRow([requestId, String(session.identity_key), String(session.student_id || ''),
-    who, Number(payload.targetGrade) || '',
-    subjectId, String(payload.subjectName || '').slice(0, 200), reason, 'pending', '', '', '',
-    new Date().toISOString(), isTest ? 'TRUE' : 'FALSE']);
-  return { ok: true, requestId: requestId, requests: myOpenRequestList_(session.identity_key) };
-}
-
-function myOpenRequestList_(identityKey) {
-  const out = [];
-  openRequestRows_().forEach(function (entry) {
-    if (String(entry.row.identity_key) !== String(identityKey)) return;
-    out.push(openRequestView_(entry.row));
-  });
-  return out;
-}
-
-/** 학생 화면이 «내 요청»과 «열린 과목»을 물을 때. 로그인 응답에 싣지 않는다 — 로그인이 느려진다. */
-function myOpenRequests_(payload) {
-  const session = requireSession_(payload.sessionToken);
-  const mine = myOpenRequestList_(session.identity_key);
-  const grants = [];
-  mine.forEach(function (row) { if (row.status === 'approved') grants.push(row.subjectId); });
-  return { ok: true, requests: mine, grants: grants };
-}
-
-/** 관리자 목록 — 기다리는 것이 위로 온다. */
-function listOpenRequests_(payload) {
-  requireAdmin_(payload);
-  return { ok: true, requests: openRequestsSorted_() };
-}
-
-/**
- * 받아들이거나 거절한다. 줄을 지우지 않는다 — 학생이 «왜 안 됐는지»를 볼 수 있어야 하고,
- * 같은 요청이 반복되는 것도 그 기록으로 줄어든다.
- */
-function decideOpenRequest_(payload) {
-  const session = requireAdmin_(payload);
-  const requestId = String(payload.requestId || '').trim();
-  const approve = bool_(payload.approve);
-  const note = String(payload.note || '').trim().slice(0, 300);
-  if (!approve && !note) throw new Error('거절 사유를 적어 주세요. 학생이 보게 됩니다.');
-  const entries = openRequestRows_();
-  for (let i = 0; i < entries.length; i++) {
-    if (String(entries[i].row.request_id) !== requestId) continue;
-    const sheet = openRequestSheet_();
-    const headers = HM_SELECTION.openRequestHeaders;
-    sheet.getRange(entries[i].rowNumber, headers.indexOf('status') + 1).setValue(approve ? 'approved' : 'rejected');
-    sheet.getRange(entries[i].rowNumber, headers.indexOf('decided_by') + 1).setValue(String(session.email || ''));
-    sheet.getRange(entries[i].rowNumber, headers.indexOf('decided_at') + 1).setValue(new Date().toISOString());
-    sheet.getRange(entries[i].rowNumber, headers.indexOf('decision_note') + 1).setValue(note);
-    return listOpenRequests_(payload);
-  }
-  throw new Error('요청을 찾지 못했습니다.');
-}
-
-function adminSheet_() { return ensureSheet_(spreadsheet_(), '_admins', HM_SELECTION.adminHeaders); }
-function closureSheet_() { return ensureSheet_(spreadsheet_(), '_closures', HM_SELECTION.closureHeaders); }
-
-function isAdminEmail_(email) {
-  const target = String(email || '').trim().toLowerCase();
-  if (!target) return false;
-  const rows = adminSheet_().getDataRange().getValues().slice(1);
-  for (let i = 0; i < rows.length; i++) {
-    const row = objectFromRow_(HM_SELECTION.adminHeaders, rows[i]);
-    if (String(row.email || '').trim().toLowerCase() !== target) continue;
-    return row.active === '' || row.active === undefined || bool_(row.active);
-  }
-  return false;
-}
-
-/** 관리자 세션을 확인해 돌려준다. 관리자가 아니면 여기서 멈춘다. */
-function requireAdmin_(payload) {
-  const session = requireSession_(payload.sessionToken || payload.token);
-  if (!isAdminEmail_(session.email)) throw new Error('관리자로 지정된 계정만 쓸 수 있습니다.');
-  return session;
-}
-
-/** 폐강 목록. 학생 앱이 팩 위에 덧씌우므로 닫힌 것만 돌려준다. */
-function closureList_() {
-  const rows = closureSheet_().getDataRange().getValues().slice(1);
-  const out = [];
-  for (let i = 0; i < rows.length; i++) {
-    const row = objectFromRow_(HM_SELECTION.closureHeaders, rows[i]);
-    if (!row.subject_id || !bool_(row.closed)) continue;
-    out.push({
-      subjectId: String(row.subject_id),
-      subjectName: String(row.subject_name || ''),
-      targetGrade: Number(row.target_grade) || null,
-      reason: String(row.reason || ''),
-      updatedAt: row.updated_at ? String(row.updated_at) : '',
-    });
-  }
-  return out;
-}
-
-/** 관리자 화면이 처음 열릴 때 필요한 것 — 자기 권한과 현재 폐강 상태. */
-/** 폐강 표의 모든 줄 — 닫힌 것만이 아니라 되돌린 것도 함께. 관리자 화면이 상태를 그린다. */
-function closureRows_() {
-  const rows = closureSheet_().getDataRange().getValues().slice(1);
-  const all = [];
-  for (let i = 0; i < rows.length; i++) {
-    const row = objectFromRow_(HM_SELECTION.closureHeaders, rows[i]);
-    if (!row.subject_id) continue;
-    all.push({
-      subjectId: String(row.subject_id),
-      subjectName: String(row.subject_name || ''),
-      targetGrade: Number(row.target_grade) || null,
-      closed: bool_(row.closed),
-      reason: String(row.reason || ''),
-      updatedBy: String(row.updated_by || ''),
-      updatedAt: row.updated_at ? String(row.updated_at) : '',
-    });
-  }
-  return all;
-}
-
-/** 기다리는 요청이 위로 오게. 관리자는 처리할 것부터 본다. */
-function openRequestsSorted_() {
-  const rows = openRequestRows_().map(function (entry) { return openRequestView_(entry.row); });
-  rows.sort(function (a, b) {
-    const rank = function (row) { return row.status === 'pending' ? 0 : 1; };
-    return rank(a) - rank(b) || String(b.createdAt).localeCompare(String(a.createdAt));
-  });
-  return rows;
-}
-
-function adminBootstrap_(payload) {
-  const session = requireAdmin_(payload);
-  return { ok: true, admin: { email: session.email, name: session.name || '' }, closures: closureRows_(), schedule: scheduleStatus_() };
-}
-
-/**
- * 관리자 화면이 한 번에 받아 가는 묶음.
- *
- * 이 스크립트는 호출 하나에 2~3초가 고정으로 든다 — 245바이트를 돌려주는 호출도 그렇다.
- * 내용이 아니라 «부른다»는 것 자체의 값이라 화면이 세 번 부르면 10초가 된다. 한 번에 싣는다.
- *
- * 집계나 요청 목록이 실패해도 폐강·기간은 쓸 수 있어야 한다. 실패한 쪽만 사유를 담아
- * 돌려주고 나머지는 그대로 보낸다 — 하나 때문에 화면 전체가 멈추면 안 된다.
- */
-function adminConsole_(payload) {
-  const session = requireAdmin_(payload);
-  const result = {
-    ok: true,
-    admin: { email: session.email, name: session.name || '' },
-    schedule: scheduleStatus_(),
-    closures: closureRows_(),
-    // 명단은 작아서 같이 싣는다 — 탭을 열 때마다 2~3초를 또 쓰지 않는다.
-    teachers: rosterView_('teacher'),
-    admins: rosterView_('admin'),
-  };
-  try {
-    result.counts = subjectCounts_(payload.grade, payload.round);
-  } catch (error) {
-    result.counts = null;
-    result.countsError = errorMessage_(error);
-  }
-  try {
-    result.requests = openRequestsSorted_();
-  } catch (error) {
-    result.requests = null;
-    result.requestsError = errorMessage_(error);
-  }
-  return result;
-}
-
-/**
- * 폐강을 켜거나 끈다. 줄을 지우지 않고 closed 를 바꿔 둔다 — 누가 언제 왜 닫았는지,
- * 그리고 되돌렸는지가 남아야 나중에 «왜 이 과목이 없어졌나»를 답할 수 있다.
- */
-function setClosure_(payload) {
-  const session = requireAdmin_(payload);
-  const subjectId = String(payload.subjectId || '').trim();
-  if (!subjectId || subjectId.length > 200) throw new Error('과목을 확인해 주세요.');
-  const closed = bool_(payload.closed);
-  const reason = String(payload.reason || '').trim().slice(0, 300);
-  if (closed && !reason) throw new Error('폐강 사유를 적어 주세요.');
-  const sheet = closureSheet_();
-  const values = sheet.getDataRange().getValues();
-  const stamp = new Date().toISOString();
-  const targetGrade = payload.targetGrade === undefined || payload.targetGrade === null || payload.targetGrade === ''
-    ? '' : integerIn_(payload.targetGrade, 2, 3, '대상 학년');
-  const record = [subjectId, String(payload.subjectName || '').slice(0, 200), closed ? 'TRUE' : 'FALSE',
-    reason, String(session.email || ''), stamp, targetGrade];
-  for (let i = 1; i < values.length; i++) {
-    if (String(values[i][0]) !== subjectId) continue;
-    sheet.getRange(i + 1, 1, 1, HM_SELECTION.closureHeaders.length).setValues([record]);
-    return { ok: true, closed: closed, closures: closureList_() };
-  }
-  sheet.appendRow(record);
-  return { ok: true, closed: closed, closures: closureList_() };
 }
