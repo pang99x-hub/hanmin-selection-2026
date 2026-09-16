@@ -412,8 +412,15 @@ function doGet(event) {
 function doPost(event) {
   try {
     const raw = String(event && event.postData && event.postData.contents || '');
-    if (!raw || raw.length > 100000) throw new Error('제출 데이터가 비어 있거나 너무 큽니다.');
+    if (!raw || raw.length > 4000000) throw new Error('제출 데이터가 비어 있거나 너무 큽니다.');
     const payload = JSON.parse(raw);
+    /*
+     * 학생 한 명이 보내는 제출은 10만 자를 넘을 일이 없다. 그 한도가 잘못 만든 요청과
+     * 장난을 걸러 준다. 다만 데스크톱이 명렬을 통째로 밀어 넣을 때는 기이수 과목까지
+     * 실려 수십만 자가 된다 — 그 두 길만 한도를 푼다(열쇠값은 바로 다음에서 본다).
+     */
+    const bulkPush = payload.action === 'pushStudents' || payload.action === 'pushTeachers';
+    if (!bulkPush && raw.length > 100000) throw new Error('제출 데이터가 비어 있거나 너무 큽니다.');
     if (payload.action === 'axLogin') return jsonOutput_(axCourseLogin_(payload));
     if (payload.action === 'googleLogin') return jsonOutput_(googleLogin_(payload));
     if (payload.action === 'passwordLogin') return jsonOutput_(passwordLogin_(payload));
@@ -2003,6 +2010,9 @@ function studentView_(row) {
     number: row.number === '' || row.number === undefined ? null : Number(row.number),
     gender: String(row.gender || ''),
     active: row.active === '' || row.active === undefined ? true : bool_(row.active),
+    // 기이수 과목 수 — 3학년 고급과목 선수이수 확인이 이 값을 쓴다. 0 이면 밀어넣기가
+    // 잘못 들어간 것이라 화면에서 바로 보여야 한다.
+    completedCount: parseArray_(row.completed_subject_ids).length,
   };
 }
 

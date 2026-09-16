@@ -706,7 +706,8 @@
 
       var meta = document.createElement('span');
       meta.className = 'meta';
-      meta.textContent = row.studentId + (row.email ? ' · ' + row.email : '');
+      meta.textContent = row.studentId + (row.email ? ' · ' + row.email : '')
+        + ' · 기이수 ' + (row.completedCount || 0) + '과목';
       item.appendChild(meta);
       list.appendChild(item);
     });
