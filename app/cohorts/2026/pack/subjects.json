@@ -1606,7 +1606,9 @@
         "targetStudent": "환경과학, 해양학, 지질학 분야에서 시스템적 문제 해결을 원하는 학생",
         "relatedCareers": "기후변화대응학, 해양학, 지질환경과학"
       },
-      "difficulty": "중"
+      "difficulty": "중",
+      "closed": true,
+      "closedReason": "2차 수요조사 결과 미개설"
     },
     {
       "id": "g2-fusion-planetary",
@@ -1647,7 +1649,9 @@
         "targetStudent": "항공우주공학, 천문학, 물리학 분야로 진로를 넓히고 싶은 학생",
         "relatedCareers": "천문학과, 항공우주공학과"
       },
-      "difficulty": "상"
+      "difficulty": "상",
+      "closed": true,
+      "closedReason": "2차 수요조사 결과 미개설"
     },
     {
       "id": "g2-fusion-data-science",

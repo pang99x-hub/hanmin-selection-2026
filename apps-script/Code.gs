@@ -26,6 +26,10 @@ const HM_SELECTION = Object.freeze({
   // ensureSheet_ 가 «제목 순서가 다르다»로 멈춘다. 읽기는 제목으로 하므로 자리는 무관하다.
   studentHeaders: ['student_id', 'email', 'name', 'grade', 'entry_year', 'initial_password', 'active', 'login_id', 'completed_subject_ids', 'gender'],
   teacherHeaders: ['email', 'name', 'active'],
+  adminHeaders: ['email', 'name', 'active'],
+  closureHeaders: ['subject_id', 'subject_name', 'closed', 'reason', 'updated_by', 'updated_at', 'target_grade'],
+  openRequestHeaders: ['request_id', 'identity_key', 'student_id', 'student_name', 'target_grade',
+    'subject_id', 'subject_name', 'reason', 'status', 'decided_by', 'decided_at', 'decision_note', 'created_at'],
   accountHeaders: ['student_id', 'salt', 'password_hash', 'must_change', 'updated_at', 'login_id'],
   sessionHeaders: ['token_hash', 'identity_key', 'student_id', 'email', 'role', 'expires_at', 'created_at'],
   loginAttemptHeaders: ['login_key', 'window_started_at', 'failures', 'blocked_until', 'updated_at'],
@@ -355,6 +359,7 @@ function doGet(event) {
     if (query.schedule === '1') return jsonOutput_(Object.assign({ ok: true }, scheduleStatus_()));
     if (query.gradeOverride === '1') return jsonOutput_({ ok: false, err: '로그인 후 조회하세요.' });
     if (query.counts === '1') return jsonOutput_(subjectCounts_(query.grade, query.round));
+    if (query.closures === '1') return jsonOutput_({ ok: true, closures: closureList_() });
     if (query.email) return jsonOutput_({ ok: false, err: '로그인 후 조회하세요.' });
     return jsonOutput_({ ok: true, service: 'selection-submissions', school: '한민고등학교' });
   } catch (error) {
@@ -372,6 +377,13 @@ function doPost(event) {
     if (payload.action === 'passwordLogin') return jsonOutput_(passwordLogin_(payload));
     if (payload.action === 'changePassword') return jsonOutput_(changePassword_(payload));
     if (payload.action === 'latest') return jsonOutput_(latestForSession_(payload));
+    if (payload.action === 'adminBootstrap') return jsonOutput_(adminBootstrap_(payload));
+    if (payload.action === 'setClosure') return jsonOutput_(setClosure_(payload));
+    if (payload.action === 'setSchedule') return jsonOutput_(setSchedule_(payload));
+    if (payload.action === 'requestSubjectOpen') return jsonOutput_(requestSubjectOpen_(payload));
+    if (payload.action === 'myOpenRequests') return jsonOutput_(myOpenRequests_(payload));
+    if (payload.action === 'listOpenRequests') return jsonOutput_(listOpenRequests_(payload));
+    if (payload.action === 'decideOpenRequest') return jsonOutput_(decideOpenRequest_(payload));
     return jsonOutput_(saveSubmission_(payload));
   } catch (error) {
     return jsonOutput_({ ok: false, err: errorMessage_(error), msg: errorMessage_(error) });
@@ -771,6 +783,7 @@ function saveSubmission_(payload) {
   if (!status.currentRound && !isTest) throw new Error('현재는 제출 기간이 아닙니다.');
   const round = status.currentRound || status.finalRound;
   const subjectsByGroup = normalizedGroups_(payload.subjectsByGroup);
+  if (!isTest) assertNoClosedSubjects_(subjectsByGroup, targetGrade);
   const lockedByTrack = normalizedStringList_(payload.lockedByTrack, 60);
   const credits = payload.credits && typeof payload.credits === 'object' ? payload.credits : {};
   const now = new Date().toISOString();
@@ -1412,4 +1425,298 @@ function axCourseLogin_(payload) {
  var teacher=teacherByEmail_(email);
  if(!teacher||!bool_(teacher.active))throw new Error('과목선택 시스템의 교사 명단에 등록되지 않은 계정입니다.');
  return {ok:true,auth:issueAuth_({identityKey:'teacher:'+email,studentNo:'',email:email,name:String(teacher.name||identity.name),grade:null,entryYear:null,role:'teacher',isTest:true},false,'')};
+}
+
+/*
+ * 관리자 · 폐강
+ * ─────────────────────────────────────────────────────────────────────────────
+ * 폐강은 팩(정적 파일)이 아니라 여기에 둔다. 과목 하나 닫자고 데스크톱에서 사이트를 다시
+ * 굽고 올리는 것은 과하고, 잘못 닫았을 때 되돌리기도 그만큼 오래 걸린다(2026-09-16 요청).
+ * 과목 카탈로그의 진실원천은 종전대로 데스크톱이고, 여기 있는 것은 «그 해의 운영 상태»다.
+ *
+ * 관리자 명단은 _admins 탭에 학교가 직접 적는다. 비어 있으면 아무도 관리자가 아니다 —
+ * 담임이라고 자동으로 폐강을 건드릴 수 있으면 안 된다.
+ */
+/**
+ * 제출에 폐강 과목이 섞였는지 본다.
+ *
+ * 화면에서 막는 것은 안내다. 오래된 탭을 열어 두었거나 화면을 건드리면 폐강 과목도 올라오는데,
+ * 그대로 받으면 반 편성이 통째로 틀어진다. 실제로 막는 곳은 여기여야 한다(2026-09-16).
+ *
+ * 제출은 과목 «이름»으로 오고 폐강은 «id» 로 기록된다. 같은 이름이 2학년 융합판과 3학년판으로
+ * 나뉘어 있으므로(역학과 에너지·지구시스템과학·행성우주과학) 대상 학년까지 맞춰 본다.
+ * 학년을 적어 두지 않은 폐강은 학년을 가리지 않고 막는다 — 안전한 쪽으로 기운다.
+ */
+function assertNoClosedSubjects_(subjectsByGroup, targetGrade) {
+  const closures = closureList_();
+  if (!closures.length) return;
+  const blocked = {};
+  closures.forEach(function (row) {
+    if (row.targetGrade && Number(row.targetGrade) !== Number(targetGrade)) return;
+    const name = String(row.subjectName || '').trim();
+    if (name) blocked[name] = row.reason || '';
+  });
+  const hits = [];
+  Object.keys(subjectsByGroup || {}).forEach(function (groupId) {
+    const names = subjectsByGroup[groupId];
+    if (!Array.isArray(names)) return;
+    names.forEach(function (name) {
+      const key = String(name || '').trim();
+      if (key && blocked[key] !== undefined && hits.indexOf(key) === -1) hits.push(key);
+    });
+  });
+  if (!hits.length) return;
+  throw new Error('폐강된 과목이 들어 있습니다: ' + hits.join(', ') + '. 화면을 새로 고친 뒤 다시 골라 주세요.');
+}
+
+/**
+ * 차수 일정 — _config 의 ROUND_n_START·END 와 FINAL_ROUND 를 관리자 화면에서 고친다.
+ *
+ * 시트를 직접 열어 손으로 고치면 오타 하나에 제출 기간이 통째로 어긋난다. 여기서 고치면
+ * 형식을 서버가 확인하고, 누가 바꿨는지도 남는다(2026-09-16).
+ *
+ * 값은 «YYYY-MM-DD HH:MM» 로 적는다 — configDate_ 가 그 모양을 읽는다. 끝나는 날은 그날
+ * 끝까지 받는 것이 보통이므로 화면이 23:59 를 채워 보낸다.
+ */
+function setSchedule_(payload) {
+  const session = requireAdmin_(payload);
+  const round = integerIn_(payload.round, 1, 3, '조사 차수');
+  const start = String(payload.start || '').trim();
+  const end = String(payload.end || '').trim();
+  const pattern = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/;
+  if (!pattern.test(start) || !pattern.test(end)) throw new Error('기간은 YYYY-MM-DD HH:MM 형식으로 적어 주세요.');
+  if (configDate_(start).getTime() >= configDate_(end).getTime()) throw new Error('시작이 종료보다 빠를 수 없습니다.');
+
+  const sheet = ensureSheet_(spreadsheet_(), HM_SELECTION.configSheet, ['key', 'value', '설명']);
+  const values = sheet.getDataRange().getValues();
+  function put(key, value, note) {
+    for (let i = 1; i < values.length; i++) {
+      if (String(values[i][0]).trim() !== key) continue;
+      sheet.getRange(i + 1, 2).setValue(value);
+      return;
+    }
+    sheet.appendRow([key, value, note]);
+  }
+  put('ROUND_' + round + '_START', start, round + '차 시작');
+  put('ROUND_' + round + '_END', end, round + '차 종료');
+  // 차수를 열었으면 그 차수까지 받는다는 뜻이다. 되돌릴 때는 화면에서 낮춰 준다.
+  const finalRound = Math.max(round, Math.min(3, Number(config_().FINAL_ROUND) || 1));
+  put('FINAL_ROUND', String(finalRound), '마지막 조사 차수');
+  put('FINALIZED', 'FALSE', '최종 확정 여부');
+  logAdminChange_(session, 'schedule', round + '차 ' + start + ' ~ ' + end);
+  return { ok: true, schedule: scheduleStatus_() };
+}
+
+/** 관리자가 무엇을 바꿨는지 남긴다. 폐강과 달리 일정은 되돌려도 흔적이 없어서 따로 적어 둔다. */
+function logAdminChange_(session, kind, detail) {
+  try {
+    const sheet = ensureSheet_(spreadsheet_(), '_admin_log', ['at', 'email', 'kind', 'detail']);
+    sheet.appendRow([new Date().toISOString(), String(session.email || ''), String(kind), String(detail).slice(0, 300)]);
+  } catch (error) { /* 기록 실패가 조작을 막지는 않는다 */ }
+}
+
+function openRequestSheet_() { return ensureSheet_(spreadsheet_(), '_open_requests', HM_SELECTION.openRequestHeaders); }
+
+function openRequestRows_() {
+  const rows = openRequestSheet_().getDataRange().getValues().slice(1);
+  const out = [];
+  for (let i = 0; i < rows.length; i++) {
+    const row = objectFromRow_(HM_SELECTION.openRequestHeaders, rows[i]);
+    if (!row.request_id) continue;
+    out.push({ row: row, rowNumber: i + 2 });
+  }
+  return out;
+}
+
+function openRequestView_(row) {
+  return {
+    requestId: String(row.request_id),
+    studentId: String(row.student_id || ''),
+    studentName: String(row.student_name || ''),
+    targetGrade: Number(row.target_grade) || null,
+    subjectId: String(row.subject_id || ''),
+    subjectName: String(row.subject_name || ''),
+    reason: String(row.reason || ''),
+    status: String(row.status || 'pending'),
+    decidedBy: String(row.decided_by || ''),
+    decidedAt: row.decided_at ? String(row.decided_at) : '',
+    decisionNote: String(row.decision_note || ''),
+    createdAt: row.created_at ? String(row.created_at) : '',
+  };
+}
+
+/**
+ * 학생이 과목을 열어 달라고 올린다.
+ *
+ * 같은 과목으로 이미 기다리는 요청이나 승인이 있으면 새로 만들지 않는다 — 조급한 마음에
+ * 여러 번 누르면 관리자 목록이 같은 줄로 덮인다. 거절된 뒤에는 다시 올릴 수 있게 둔다.
+ */
+function requestSubjectOpen_(payload) {
+  const session = requireSession_(payload.sessionToken);
+  if (String(session.role || 'student') !== 'student') throw new Error('학생 계정만 요청할 수 있습니다.');
+  const subjectId = String(payload.subjectId || '').trim();
+  if (!subjectId || subjectId.length > 200) throw new Error('과목을 확인해 주세요.');
+  const reason = String(payload.reason || '').trim().slice(0, 500);
+  if (reason.length < 5) throw new Error('왜 이 과목을 듣고 싶은지 적어 주세요.');
+  const status = scheduleStatus_();
+  if (!status.currentRound) throw new Error('지금은 신청 기간이 아닙니다.');
+
+  const existing = openRequestRows_();
+  for (let i = 0; i < existing.length; i++) {
+    const row = existing[i].row;
+    if (String(row.identity_key) !== String(session.identity_key)) continue;
+    if (String(row.subject_id) !== subjectId) continue;
+    const state = String(row.status || 'pending');
+    if (state === 'pending') throw new Error('이미 신청했습니다. 결과를 기다려 주세요.');
+    if (state === 'approved') throw new Error('이미 열려 있는 과목입니다.');
+  }
+  // 이름은 관리자 목록에서 «누가 냈는지» 보이려고 함께 적어 둔다. 없으면 학번만 남는다.
+  const student = studentBy_('student_id', session.student_id);
+  const requestId = Utilities.getUuid();
+  openRequestSheet_().appendRow([requestId, String(session.identity_key), String(session.student_id || ''),
+    student ? String(student.name || '') : '', Number(payload.targetGrade) || '',
+    subjectId, String(payload.subjectName || '').slice(0, 200), reason, 'pending', '', '', '',
+    new Date().toISOString()]);
+  return { ok: true, requestId: requestId, requests: myOpenRequestList_(session.identity_key) };
+}
+
+function myOpenRequestList_(identityKey) {
+  const out = [];
+  openRequestRows_().forEach(function (entry) {
+    if (String(entry.row.identity_key) !== String(identityKey)) return;
+    out.push(openRequestView_(entry.row));
+  });
+  return out;
+}
+
+/** 학생 화면이 «내 요청»과 «열린 과목»을 물을 때. 로그인 응답에 싣지 않는다 — 로그인이 느려진다. */
+function myOpenRequests_(payload) {
+  const session = requireSession_(payload.sessionToken);
+  const mine = myOpenRequestList_(session.identity_key);
+  const grants = [];
+  mine.forEach(function (row) { if (row.status === 'approved') grants.push(row.subjectId); });
+  return { ok: true, requests: mine, grants: grants };
+}
+
+/** 관리자 목록 — 기다리는 것이 위로 온다. */
+function listOpenRequests_(payload) {
+  requireAdmin_(payload);
+  const rows = openRequestRows_().map(function (entry) { return openRequestView_(entry.row); });
+  rows.sort(function (a, b) {
+    const rank = function (row) { return row.status === 'pending' ? 0 : 1; };
+    return rank(a) - rank(b) || String(b.createdAt).localeCompare(String(a.createdAt));
+  });
+  return { ok: true, requests: rows };
+}
+
+/**
+ * 받아들이거나 거절한다. 줄을 지우지 않는다 — 학생이 «왜 안 됐는지»를 볼 수 있어야 하고,
+ * 같은 요청이 반복되는 것도 그 기록으로 줄어든다.
+ */
+function decideOpenRequest_(payload) {
+  const session = requireAdmin_(payload);
+  const requestId = String(payload.requestId || '').trim();
+  const approve = bool_(payload.approve);
+  const note = String(payload.note || '').trim().slice(0, 300);
+  if (!approve && !note) throw new Error('거절 사유를 적어 주세요. 학생이 보게 됩니다.');
+  const entries = openRequestRows_();
+  for (let i = 0; i < entries.length; i++) {
+    if (String(entries[i].row.request_id) !== requestId) continue;
+    const sheet = openRequestSheet_();
+    const headers = HM_SELECTION.openRequestHeaders;
+    sheet.getRange(entries[i].rowNumber, headers.indexOf('status') + 1).setValue(approve ? 'approved' : 'rejected');
+    sheet.getRange(entries[i].rowNumber, headers.indexOf('decided_by') + 1).setValue(String(session.email || ''));
+    sheet.getRange(entries[i].rowNumber, headers.indexOf('decided_at') + 1).setValue(new Date().toISOString());
+    sheet.getRange(entries[i].rowNumber, headers.indexOf('decision_note') + 1).setValue(note);
+    return listOpenRequests_(payload);
+  }
+  throw new Error('요청을 찾지 못했습니다.');
+}
+
+function adminSheet_() { return ensureSheet_(spreadsheet_(), '_admins', HM_SELECTION.adminHeaders); }
+function closureSheet_() { return ensureSheet_(spreadsheet_(), '_closures', HM_SELECTION.closureHeaders); }
+
+function isAdminEmail_(email) {
+  const target = String(email || '').trim().toLowerCase();
+  if (!target) return false;
+  const rows = adminSheet_().getDataRange().getValues().slice(1);
+  for (let i = 0; i < rows.length; i++) {
+    const row = objectFromRow_(HM_SELECTION.adminHeaders, rows[i]);
+    if (String(row.email || '').trim().toLowerCase() !== target) continue;
+    return row.active === '' || row.active === undefined || bool_(row.active);
+  }
+  return false;
+}
+
+/** 관리자 세션을 확인해 돌려준다. 관리자가 아니면 여기서 멈춘다. */
+function requireAdmin_(payload) {
+  const session = requireSession_(payload.sessionToken || payload.token);
+  if (!isAdminEmail_(session.email)) throw new Error('관리자로 지정된 계정만 쓸 수 있습니다.');
+  return session;
+}
+
+/** 폐강 목록. 학생 앱이 팩 위에 덧씌우므로 닫힌 것만 돌려준다. */
+function closureList_() {
+  const rows = closureSheet_().getDataRange().getValues().slice(1);
+  const out = [];
+  for (let i = 0; i < rows.length; i++) {
+    const row = objectFromRow_(HM_SELECTION.closureHeaders, rows[i]);
+    if (!row.subject_id || !bool_(row.closed)) continue;
+    out.push({
+      subjectId: String(row.subject_id),
+      subjectName: String(row.subject_name || ''),
+      targetGrade: Number(row.target_grade) || null,
+      reason: String(row.reason || ''),
+      updatedAt: row.updated_at ? String(row.updated_at) : '',
+    });
+  }
+  return out;
+}
+
+/** 관리자 화면이 처음 열릴 때 필요한 것 — 자기 권한과 현재 폐강 상태. */
+function adminBootstrap_(payload) {
+  const session = requireAdmin_(payload);
+  const rows = closureSheet_().getDataRange().getValues().slice(1);
+  const all = [];
+  for (let i = 0; i < rows.length; i++) {
+    const row = objectFromRow_(HM_SELECTION.closureHeaders, rows[i]);
+    if (!row.subject_id) continue;
+    all.push({
+      subjectId: String(row.subject_id),
+      subjectName: String(row.subject_name || ''),
+      targetGrade: Number(row.target_grade) || null,
+      closed: bool_(row.closed),
+      reason: String(row.reason || ''),
+      updatedBy: String(row.updated_by || ''),
+      updatedAt: row.updated_at ? String(row.updated_at) : '',
+    });
+  }
+  return { ok: true, admin: { email: session.email, name: session.name || '' }, closures: all, schedule: scheduleStatus_() };
+}
+
+/**
+ * 폐강을 켜거나 끈다. 줄을 지우지 않고 closed 를 바꿔 둔다 — 누가 언제 왜 닫았는지,
+ * 그리고 되돌렸는지가 남아야 나중에 «왜 이 과목이 없어졌나»를 답할 수 있다.
+ */
+function setClosure_(payload) {
+  const session = requireAdmin_(payload);
+  const subjectId = String(payload.subjectId || '').trim();
+  if (!subjectId || subjectId.length > 200) throw new Error('과목을 확인해 주세요.');
+  const closed = bool_(payload.closed);
+  const reason = String(payload.reason || '').trim().slice(0, 300);
+  if (closed && !reason) throw new Error('폐강 사유를 적어 주세요.');
+  const sheet = closureSheet_();
+  const values = sheet.getDataRange().getValues();
+  const stamp = new Date().toISOString();
+  const targetGrade = payload.targetGrade === undefined || payload.targetGrade === null || payload.targetGrade === ''
+    ? '' : integerIn_(payload.targetGrade, 2, 3, '대상 학년');
+  const record = [subjectId, String(payload.subjectName || '').slice(0, 200), closed ? 'TRUE' : 'FALSE',
+    reason, String(session.email || ''), stamp, targetGrade];
+  for (let i = 1; i < values.length; i++) {
+    if (String(values[i][0]) !== subjectId) continue;
+    sheet.getRange(i + 1, 1, 1, HM_SELECTION.closureHeaders.length).setValues([record]);
+    return { ok: true, closed: closed, closures: closureList_() };
+  }
+  sheet.appendRow(record);
+  return { ok: true, closed: closed, closures: closureList_() };
 }

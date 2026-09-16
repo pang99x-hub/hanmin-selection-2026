@@ -41,6 +41,7 @@ jobs:
           cp index.html slides.html site-manifest.json .nojekyll _site/
           cp -R app _site/app
           if [ -d teacher ]; then cp -R teacher _site/teacher; fi
+          if [ -d admin ]; then cp -R admin _site/admin; fi
 
       - name: GitHub Pages 준비
         uses: actions/configure-pages@v5

@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>과목 운영</title>
+<!--
+  과목 운영 — 폐강을 켜고 끈다.
+
+  담임 현황 페이지(site/teacher/)와 같은 자리·같은 로그인 방식을 쓴다. 다른 점은 권한이다:
+  담임이라고 폐강을 건드릴 수 있으면 안 되므로, Apps Script 의 _admins 탭에 적힌 계정만
+  통과한다(비어 있으면 아무도 통과하지 못한다).
+
+  폐강은 팩이 아니라 시트에 있다. 그래서 여기서 누르면 학생 앱에 바로 반영되고, 잘못 닫았을 때
+  되돌리기도 한 번이다 — 데스크톱에서 사이트를 다시 굽지 않는다(2026-09-16).
+-->
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #fff; --ink: #14171c; --muted: #5b6270; --faint: #878ea0;
+    --line: #e2e5ec; --line-2: #c9cedb; --accent: #2b4eff; --accent-bg: #eef1ff;
+    --danger: #b3261e; --danger-bg: #fdecea; --ok: #136c48; --ok-bg: #e7f3ee;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #11131a; --card: #181b23; --ink: #e8eaf0; --muted: #9aa1b2; --faint: #7b8295;
+      --line: #262a35; --line-2: #39404f; --accent: #8fa0ff; --accent-bg: #1b2140;
+      --danger: #f2b8b5; --danger-bg: #2a1614; --ok: #7ddaae; --ok-bg: #12241c;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 15px/1.6 -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 20px 16px 72px; }
+  header { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+  h1 { font-size: 20px; margin: 0; }
+  .who { margin-left: auto; font-size: 12.5px; color: var(--muted); }
+  .sub { color: var(--muted); font-size: 13.5px; margin: 0 0 18px; }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+  .card h2 { font-size: 15px; margin: 0 0 12px; }
+
+  label { display: block; font-size: 12.5px; color: var(--muted); margin-bottom: 5px; }
+  input[type=text], input[type=password], select, textarea {
+    width: 100%; font: inherit; color: var(--ink); background: var(--bg);
+    border: 1px solid var(--line-2); border-radius: 8px; padding: 9px 11px;
+  }
+  button { font: inherit; font-weight: 600; border-radius: 8px; padding: 8px 14px; cursor: pointer;
+    border: 1px solid var(--line-2); background: var(--card); color: var(--ink); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .msg { padding: 10px 13px; border-radius: 8px; font-size: 13.5px; margin-bottom: 12px; }
+  .msg.err { background: var(--danger-bg); color: var(--danger); }
+  .msg.ok { background: var(--ok-bg); color: var(--ok); }
+
+  ul.subjects { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  li.subject { border: 1px solid var(--line); border-radius: 10px; padding: 11px 13px;
+    display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px 12px; align-items: center; }
+  li.subject[data-closed="1"] { background: var(--danger-bg); border-color: var(--danger); }
+  .name { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+  .meta { grid-column: 1 / -1; font-size: 12px; color: var(--faint); overflow-wrap: anywhere; }
+  .count { font-variant-numeric: tabular-nums; font-size: 13px; color: var(--muted); white-space: nowrap; }
+  .count strong { color: var(--ink); font-size: 15px; }
+  .reason { grid-column: 1 / -1; font-size: 12.5px; color: var(--danger); }
+
+  .hide { display: none !important; }
+  .empty { color: var(--faint); font-size: 13.5px; padding: 8px 2px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1 id="brand">과목 운영</h1>
+    <span class="who" id="who"></span>
+  </header>
+  <p class="sub">2차 인원을 보며 폐강을 켜고 끕니다. 누르는 즉시 학생 화면에 반영됩니다.</p>
+
+  <div id="msg" class="msg hide"></div>
+
+  <!-- 로그인 -->
+  <section class="card" id="login">
+    <h2>관리자 로그인</h2>
+    <div id="google-btn" class="hide" style="margin-bottom:10px"></div>
+    <div id="password-form" class="hide">
+      <label for="login-id">아이디</label>
+      <input type="text" id="login-id" autocomplete="username">
+      <label for="login-pw" style="margin-top:10px">비밀번호</label>
+      <input type="password" id="login-pw" autocomplete="current-password">
+      <div class="row" style="margin-top:12px">
+        <button type="button" class="primary" id="login-go">로그인</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 차수 -->
+  <section class="card hide" id="schedule-card">
+    <h2>조사 기간</h2>
+    <p class="sub" style="margin:-6px 0 12px">기간 안에 있을 때만 학생이 제출할 수 있습니다. 종료일은 그날 23:59까지입니다.</p>
+    <div class="row" style="align-items:flex-end">
+      <div style="width:auto"><label for="sc-round">차수</label><select id="sc-round" style="width:auto"></select></div>
+      <div style="flex:1;min-width:150px"><label for="sc-start">시작</label><input type="date" id="sc-start"></div>
+      <div style="flex:1;min-width:150px"><label for="sc-end">종료</label><input type="date" id="sc-end"></div>
+      <button type="button" class="primary" id="sc-save">기간 저장</button>
+    </div>
+    <p class="empty" id="sc-now"></p>
+  </section>
+
+  <!-- 오픈 요청 -->
+  <section class="card hide" id="requests-card">
+    <h2>과목 오픈 요청 <span id="req-badge" class="count"></span></h2>
+    <p class="sub" style="margin:-6px 0 12px">받아들이면 그 학생에게만 열립니다. 거절할 때는 사유를 적어 주세요 — 학생이 봅니다.</p>
+    <ul class="subjects" id="req-list"></ul>
+    <p class="empty hide" id="req-empty">들어온 요청이 없습니다.</p>
+  </section>
+
+  <!-- 본문 -->
+  <section class="card hide" id="panel">
+    <h2>과목 목록</h2>
+    <div class="row" style="margin-bottom:14px">
+      <select id="grade" style="width:auto"></select>
+      <select id="round" style="width:auto"></select>
+      <button type="button" id="reload">다시 읽기</button>
+    </div>
+    <ul class="subjects" id="list"></ul>
+    <p class="empty hide" id="list-empty">과목을 불러오지 못했습니다.</p>
+  </section>
+</div>
+
+<script>
+(async function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var config = {};
+  try { config = await (await fetch('./config.json', { cache: 'no-cache' })).json(); } catch (e) { config = {}; }
+  var SUBMIT_URL = String(config.submitUrl || '');
+  if (config.schoolName) { document.title = config.schoolName + ' 과목 운영'; $('brand').textContent = config.schoolName + ' 과목 운영'; }
+
+  var auth = { sessionToken: '' };
+  try {
+    var saved = JSON.parse(sessionStorage.getItem('selection_admin_auth') || 'null');
+    if (saved && saved.sessionToken) auth = saved;
+  } catch (e) { /* 무시 */ }
+
+  var state = { closures: {}, subjects: [], counts: {}, schedule: null, requests: [] };
+
+  function say(text, kind) {
+    var box = $('msg');
+    if (!text) { box.className = 'msg hide'; box.textContent = ''; return; }
+    box.className = 'msg ' + (kind || 'err');
+    box.textContent = text;
+  }
+  var wait = function (ms) { return new Promise(function (go) { setTimeout(go, ms); }); };
+
+  /*
+   * Apps Script 는 POST 를 script.googleusercontent.com 으로 넘겨 답을 준다. 그 길에서 드물게
+   * JSON 대신 구글의 HTML 이 온다 — 담임 페이지가 겪은 그대로다. 사람 대신 한 번 더 보낸다.
+   */
+  async function post(body, attempt) {
+    attempt = attempt || 0;
+    var res;
+    try {
+      res = await fetch(SUBMIT_URL, {
+        method: 'POST', mode: 'cors', cache: 'no-store',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body),
+      });
+    } catch (e) {
+      if (attempt < 2) { await wait(400 * (attempt + 1)); return post(body, attempt + 1); }
+      throw new Error('서버에 닿지 못했습니다. 잠시 뒤 다시 시도해 주세요.');
+    }
+    var text = await res.text();
+    var data = null;
+    try { data = JSON.parse(text); } catch (e) { data = null; }
+    if (!data) {
+      if (attempt < 2) { await wait(400 * (attempt + 1)); return post(body, attempt + 1); }
+      throw new Error('서버 응답을 읽지 못했습니다. 잠시 뒤 다시 시도해 주세요.');
+    }
+    if (!data.ok) throw new Error(data.err || data.msg || '요청을 처리하지 못했습니다.');
+    return data;
+  }
+
+  function saveAuth() { try { sessionStorage.setItem('selection_admin_auth', JSON.stringify(auth)); } catch (e) { /* 무시 */ } }
+  function clearAuth() { auth = { sessionToken: '' }; try { sessionStorage.removeItem('selection_admin_auth'); } catch (e) { /* 무시 */ } }
+
+  // ── 과목 카탈로그는 학생 앱과 같은 팩에서 읽는다. 이름이 겹치는 과목이 있으므로 id 로 다룬다.
+  //
+  // 팩은 입학년도(코호트)마다 따로 구워진다. 폐강은 한 학교의 운영 상태이므로 코호트를 가리지
+  // 않고 모두 읽어 합친다 — 2학년용 팩에만 있는 과목을 관리자 화면에서 못 보면 안 된다.
+  async function loadSubjects() {
+    var manifest = await fetch('../site-manifest.json', { cache: 'no-cache' });
+    if (!manifest.ok) throw new Error('사이트 정보를 읽지 못했습니다 (HTTP ' + manifest.status + ')');
+    var info = await manifest.json();
+    var years = (info.cohorts || []).map(function (row) { return row.enrollYear; });
+    if (!years.length && info.defaultCohort) years = [info.defaultCohort];
+    if (!years.length) throw new Error('사이트에 등록된 입학년도가 없습니다.');
+    var seen = {};
+    var out = [];
+    for (var i = 0; i < years.length; i++) {
+      var res = await fetch('../app/cohorts/' + years[i] + '/pack/subjects.json', { cache: 'no-cache' });
+      if (!res.ok) continue;
+      var data = await res.json();
+      var rows = Array.isArray(data) ? data : (data.subjects || []);
+      rows.forEach(function (row) {
+        if (!row || !row.id || !row.name || seen[row.id]) return;
+        seen[row.id] = true;
+        out.push(row);
+      });
+    }
+    if (!out.length) throw new Error('과목 목록을 읽지 못했습니다.');
+    return out;
+  }
+
+  async function loadCounts(grade, round) {
+    var url = SUBMIT_URL + '?counts=1&grade=' + encodeURIComponent(grade) + '&round=' + encodeURIComponent(round);
+    var res = await fetch(url, { cache: 'no-store' });
+    var data = await res.json();
+    if (!data.ok) throw new Error(data.err || '집계를 읽지 못했습니다.');
+    // 집계는 과목 «이름» 기준이다. 같은 이름이 학년별로 있으므로 학년을 맞춰 쓴다.
+    var byName = {};
+    Object.keys(data.byGroup || {}).forEach(function (groupId) {
+      Object.keys(data.byGroup[groupId]).forEach(function (combination) {
+        var hits = data.byGroup[groupId][combination];
+        combination.split(';').forEach(function (name) {
+          if (!name) return;
+          byName[name] = (byName[name] || 0) + hits;
+        });
+      });
+    });
+    return byName;
+  }
+
+  function render() {
+    var list = $('list');
+    var grade = Number($('grade').value);
+    list.innerHTML = '';
+    var rows = state.subjects.filter(function (row) { return Number(row.grade) === grade; });
+    $('list-empty').className = rows.length ? 'empty hide' : 'empty';
+    if (!rows.length) { $('list-empty').textContent = grade + '학년 과목이 팩에 없습니다.'; return; }
+
+    rows.sort(function (a, b) { return String(a.name).localeCompare(String(b.name), 'ko'); });
+    rows.forEach(function (row) {
+      var closure = state.closures[row.id];
+      var closed = !!(closure && closure.closed);
+      var item = document.createElement('li');
+      item.className = 'subject';
+      item.setAttribute('data-closed', closed ? '1' : '0');
+
+      var name = document.createElement('span');
+      name.className = 'name';
+      name.textContent = row.name;
+      item.appendChild(name);
+
+      var right = document.createElement('span');
+      right.className = 'row';
+      var count = document.createElement('span');
+      count.className = 'count';
+      var n = state.counts[row.name];
+      count.innerHTML = n === undefined ? '<span style="color:var(--faint)">집계 없음</span>' : '<strong>' + n + '</strong>명';
+      right.appendChild(count);
+
+      var toggle = document.createElement('button');
+      toggle.type = 'button';
+      toggle.textContent = closed ? '폐강 해제' : '폐강';
+      if (!closed) toggle.className = 'primary';
+      toggle.addEventListener('click', function () { decide(row, !closed, toggle); });
+      right.appendChild(toggle);
+      item.appendChild(right);
+
+      var meta = document.createElement('span');
+      meta.className = 'meta';
+      meta.textContent = row.id;
+      item.appendChild(meta);
+
+      if (closed && closure.reason) {
+        var reason = document.createElement('span');
+        reason.className = 'reason';
+        reason.textContent = '폐강 사유 · ' + closure.reason
+          + (closure.updatedBy ? ' (' + closure.updatedBy + ')' : '');
+        item.appendChild(reason);
+      }
+      list.appendChild(item);
+    });
+  }
+
+  function ymd(iso) { return iso ? String(iso).slice(0, 10) : ''; }
+
+  function renderSchedule() {
+    var status = state.schedule || {};
+    var round = Number($('sc-round').value) || 1;
+    var slot = (status.schedule || {})['round' + round] || {};
+    $('sc-start').value = ymd(slot.start);
+    $('sc-end').value = ymd(slot.end);
+    $('sc-now').textContent = status.currentRound
+      ? '지금은 ' + status.currentRound + '차 제출을 받고 있습니다.'
+      : '지금은 제출을 받지 않습니다.';
+  }
+
+  $('sc-round').addEventListener('change', renderSchedule);
+  $('sc-save').addEventListener('click', async function () {
+    var round = Number($('sc-round').value) || 1;
+    var start = $('sc-start').value;
+    var end = $('sc-end').value;
+    if (!start || !end) { say('시작일과 종료일을 골라 주세요.'); return; }
+    say('');
+    $('sc-save').disabled = true;
+    try {
+      // 끝나는 날은 그날 끝까지 받는다. 00:00 으로 보내면 종료일 아침에 닫혀 버린다.
+      var data = await post({ action: 'setSchedule', sessionToken: auth.sessionToken,
+        round: round, start: start + ' 00:00', end: end + ' 23:59' });
+      state.schedule = data.schedule || null;
+      renderSchedule();
+      say(round + '차 기간을 저장했습니다.', 'ok');
+    } catch (e) {
+      say(e.message);
+    } finally {
+      $('sc-save').disabled = false;
+    }
+  });
+
+  function renderRequests() {
+    var list = $('req-list');
+    list.innerHTML = '';
+    var rows = state.requests || [];
+    var waiting = rows.filter(function (row) { return row.status === 'pending'; }).length;
+    $('req-badge').textContent = waiting ? '대기 ' + waiting + '건' : '';
+    $('req-empty').className = rows.length ? 'empty hide' : 'empty';
+
+    rows.forEach(function (row) {
+      var item = document.createElement('li');
+      item.className = 'subject';
+
+      var name = document.createElement('span');
+      name.className = 'name';
+      name.textContent = row.subjectName || row.subjectId;
+      item.appendChild(name);
+
+      var right = document.createElement('span');
+      right.className = 'row';
+      if (row.status === 'pending') {
+        var yes = document.createElement('button');
+        yes.type = 'button'; yes.className = 'primary'; yes.textContent = '열어 주기';
+        yes.addEventListener('click', function () { judge(row, true, item); });
+        var no = document.createElement('button');
+        no.type = 'button'; no.textContent = '거절';
+        no.addEventListener('click', function () { judge(row, false, item); });
+        right.appendChild(yes); right.appendChild(no);
+      } else {
+        var mark = document.createElement('span');
+        mark.className = 'count';
+        mark.textContent = row.status === 'approved' ? '열어 줌' : '거절함';
+        right.appendChild(mark);
+      }
+      item.appendChild(right);
+
+      var meta = document.createElement('span');
+      meta.className = 'meta';
+      meta.textContent = (row.studentName || '') + ' ' + (row.studentId || '')
+        + (row.targetGrade ? ' · ' + row.targetGrade + '학년' : '')
+        + (row.createdAt ? ' · ' + String(row.createdAt).slice(0, 10) : '');
+      item.appendChild(meta);
+
+      var reason = document.createElement('span');
+      reason.className = 'meta';
+      reason.style.color = 'var(--ink)';
+      reason.textContent = '사유 · ' + row.reason;
+      item.appendChild(reason);
+
+      if (row.decisionNote) {
+        var note = document.createElement('span');
+        note.className = 'meta';
+        note.textContent = '처리 · ' + row.decisionNote + (row.decidedBy ? ' (' + row.decidedBy + ')' : '');
+        item.appendChild(note);
+      }
+      list.appendChild(item);
+    });
+  }
+
+  async function judge(row, approve, item) {
+    var note = '';
+    if (!approve) {
+      note = String(window.prompt('«' + (row.subjectName || row.subjectId) + '» 거절 사유를 적어 주세요.\n학생이 봅니다.', '') || '').trim();
+      if (!note) return;
+    } else {
+      note = String(window.prompt('열어 줄 때 남길 말이 있으면 적어 주세요(비워도 됩니다).', '') || '').trim();
+    }
+    item.style.opacity = '.5';
+    say('');
+    try {
+      var data = await post({ action: 'decideOpenRequest', sessionToken: auth.sessionToken,
+        requestId: row.requestId, approve: approve, note: note });
+      state.requests = data.requests || [];
+      renderRequests();
+      say((row.subjectName || row.subjectId) + (approve ? ' 열어 줬습니다.' : ' 거절했습니다.'), 'ok');
+    } catch (e) {
+      say(e.message);
+    } finally {
+      item.style.opacity = '';
+    }
+  }
+
+  async function decide(row, closed, button) {
+    var reason = '';
+    if (closed) {
+      reason = String(window.prompt('«' + row.name + '» 폐강 사유를 적어 주세요.\n학생에게 보일 수 있습니다.', '') || '').trim();
+      if (!reason) return;
+    } else if (!window.confirm('«' + row.name + '» 폐강을 해제할까요?')) {
+      return;
+    }
+    button.disabled = true;
+    say('');
+    try {
+      // 대상 학년까지 실어 보낸다 — 같은 이름이 2학년 융합판과 3학년판으로 나뉘어 있어서,
+      // 제출 서버가 이름으로 대조할 때 학년이 있어야 엉뚱한 쪽을 막지 않는다.
+      var data = await post({ action: 'setClosure', sessionToken: auth.sessionToken,
+        subjectId: row.id, subjectName: row.name, targetGrade: Number(row.grade) || null,
+        closed: closed, reason: reason });
+      applyClosures(data.closures);
+      render();
+      say(row.name + (closed ? ' 폐강했습니다.' : ' 폐강을 해제했습니다.'), 'ok');
+    } catch (e) {
+      say(e.message);
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  function applyClosures(rows) {
+    state.closures = {};
+    (rows || []).forEach(function (row) {
+      state.closures[row.subjectId] = { closed: true, reason: row.reason, updatedBy: row.updatedBy, updatedAt: row.updatedAt };
+    });
+  }
+
+  async function refresh() {
+    say('');
+    try {
+      var boot = await post({ action: 'adminBootstrap', sessionToken: auth.sessionToken });
+      $('who').textContent = boot.admin && boot.admin.email ? boot.admin.email : '';
+      state.closures = {};
+      (boot.closures || []).forEach(function (row) {
+        if (row.closed) state.closures[row.subjectId] = { closed: true, reason: row.reason, updatedBy: row.updatedBy, updatedAt: row.updatedAt };
+      });
+      if (!state.subjects.length) state.subjects = await loadSubjects();
+      state.counts = await loadCounts($('grade').value, $('round').value).catch(function () { return {}; });
+      $('login').className = 'card hide';
+      $('panel').className = 'card';
+      $('schedule-card').className = 'card';
+      state.schedule = boot.schedule || null;
+      renderSchedule();
+      render();
+      // 요청 목록은 따로 부른다 — 못 읽어도 폐강·기간은 쓸 수 있어야 한다.
+      try {
+        var reqData = await post({ action: 'listOpenRequests', sessionToken: auth.sessionToken });
+        state.requests = reqData.requests || [];
+        $('requests-card').className = 'card';
+        renderRequests();
+      } catch (e) { $('requests-card').className = 'card hide'; }
+    } catch (e) {
+      if (/로그인/.test(e.message)) { clearAuth(); showLogin(); }
+      say(e.message);
+    }
+  }
+
+  function showLogin() {
+    $('panel').className = 'card hide';
+    $('login').className = 'card';
+    if (config.loginMode === 'google' && config.googleClientId && window.google && window.google.accounts) {
+      $('google-btn').className = '';
+      window.google.accounts.id.initialize({
+        client_id: config.googleClientId,
+        callback: async function (response) {
+          say('');
+          try {
+            var data = await post({ action: 'googleLogin', credential: response.credential });
+            auth.sessionToken = data.sessionToken || (data.auth && data.auth.sessionToken) || '';
+            if (!auth.sessionToken) throw new Error('로그인 응답을 확인하지 못했습니다.');
+            saveAuth();
+            refresh();
+          } catch (e) { say(e.message); }
+        },
+      });
+      window.google.accounts.id.renderButton($('google-btn'), { theme: 'outline', size: 'large', text: 'signin_with', locale: 'ko' });
+    } else {
+      $('password-form').className = '';
+    }
+  }
+
+  $('login-go').addEventListener('click', async function () {
+    say('');
+    try {
+      var data = await post({ action: 'passwordLogin', loginId: $('login-id').value.trim(), password: $('login-pw').value });
+      auth.sessionToken = data.sessionToken || (data.auth && data.auth.sessionToken) || '';
+      if (!auth.sessionToken) throw new Error('로그인 응답을 확인하지 못했습니다.');
+      saveAuth();
+      refresh();
+    } catch (e) { say(e.message); }
+  });
+  $('reload').addEventListener('click', function () { refresh(); });
+  $('grade').addEventListener('change', function () { refresh(); });
+  $('round').addEventListener('change', function () { refresh(); });
+
+  // 대상 학년과 차수 — 차수는 설정의 마지막 차수까지 보여 준다.
+  [2, 3].forEach(function (grade) {
+    var option = document.createElement('option');
+    option.value = String(grade); option.textContent = grade + '학년';
+    $('grade').appendChild(option);
+  });
+  var finalRound = Math.max(1, Math.min(3, Number(config.finalRound) || 2));
+  for (var r = 1; r <= finalRound; r += 1) {
+    var option = document.createElement('option');
+    option.value = String(r); option.textContent = r + '차';
+    if (r === finalRound) option.selected = true;
+    $('round').appendChild(option);
+  }
+  // 기간 설정은 1~3 을 다 보여 준다 — 아직 열지 않은 차수를 여기서 처음 연다.
+  for (var k = 1; k <= 3; k += 1) {
+    var scOption = document.createElement('option');
+    scOption.value = String(k); scOption.textContent = k + '차';
+    if (k === Math.min(3, finalRound + 1)) scOption.selected = true;
+    $('sc-round').appendChild(scOption);
+  }
+
+  if (!SUBMIT_URL) { say('응답 저장 주소가 설정되지 않은 사이트입니다. 데스크톱 앱에서 사이트를 다시 만들어 올리세요.'); return; }
+  if (auth.sessionToken) refresh(); else showLogin();
+})();
+</script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+</body>
+</html>
