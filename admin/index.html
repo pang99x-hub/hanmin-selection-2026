@@ -66,6 +66,18 @@
   .tabs button.on { background: var(--card); border-color: var(--line); color: var(--ink); }
   .tabs .out { margin-left: auto; font-size: 13px; color: var(--faint); text-decoration: none; white-space: nowrap; }
   .tabs .out:hover { color: var(--ink); text-decoration: underline; }
+  /* 아래 고정 줄 — 목록이 길어도 넣는 자리는 늘 같은 데 있다. */
+  .dock { position: sticky; bottom: 0; z-index: 5;
+    background: var(--card); border-top: 1px solid var(--line);
+    box-shadow: 0 -6px 18px rgba(15, 23, 42, .06); padding: 12px 0 14px; }
+  .dock__inner { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 0 16px; }
+  .dock label { margin: 0; font-size: 12px; color: var(--faint); white-space: nowrap; }
+  .dock input, .dock select { width: auto; margin: 0; height: 38px; }
+  .dock #stu-id { width: 96px; }
+  .dock #stu-name { width: 110px; }
+  .dock #stu-new-grade { width: 92px; }
+  .dock #stu-email { flex: 1; min-width: 200px; }
+  .dock button { width: auto; height: 38px; padding-inline: 18px; }
   .sem { margin-left: .5rem; font-size: 12px; font-weight: 500; color: var(--faint);
     border: 1px solid var(--line); border-radius: 999px; padding: .05rem .4rem; white-space: nowrap; }
   .meta { grid-column: 1 / -1; font-size: 12px; color: var(--faint); overflow-wrap: anywhere; }
@@ -164,7 +176,7 @@
       다음 밀어넣기 때 데스크톱 표에 없으면 다시 빠집니다.
     </p>
     <div class="row" style="margin-bottom:12px">
-      <input type="search" id="stu-q" placeholder="이름·학번 검색" style="flex:1;min-width:160px">
+      <input type="search" id="stu-q" placeholder="이름 · 학번 · 1학년 3반 · 3반" style="flex:1;min-width:180px">
       <select id="stu-grade" style="width:auto">
         <option value="">전체 학년</option>
         <option value="1">1학년</option>
@@ -175,16 +187,8 @@
     </div>
     <ul class="subjects" id="stu-list"></ul>
     <p class="empty hide" id="stu-empty">학생이 없습니다.</p>
-    <div class="row" style="margin-top:14px;align-items:flex-end">
-      <div style="flex:1;min-width:110px"><label for="stu-id">학번</label><input type="text" id="stu-id" autocomplete="off"></div>
-      <div style="flex:1;min-width:100px"><label for="stu-name">이름</label><input type="text" id="stu-name" autocomplete="off"></div>
-      <div style="width:auto"><label for="stu-new-grade">학년</label>
-        <select id="stu-new-grade" style="width:auto"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
-      </div>
-      <div style="flex:2;min-width:180px"><label for="stu-email">이메일</label><input type="email" id="stu-email" autocomplete="off"></div>
-      <button type="button" class="primary" id="stu-add">넣기</button>
-    </div>
   </section>
+
 
   <!-- 명단 -->
   <section class="card hide" id="roster-card" data-pane="roster">
@@ -218,6 +222,20 @@
     <ul class="subjects" id="log-list"></ul>
     <p class="empty hide" id="log-empty">기록이 없습니다.</p>
   </section>
+</div>
+<!--
+  넣는 줄은 화면 맨 아래에 붙여 둔다. 목록이 682줄이라 아래에 두면 끝까지 내려가야
+  하고, 위에 두면 목록을 밀어낸다. 보는 자리와 넣는 자리를 따로 둔다.
+-->
+<div class="dock hide" id="stu-dock">
+  <div class="wrap dock__inner">
+    <label for="stu-id">학번</label><input type="text" id="stu-id" autocomplete="off" placeholder="10101">
+    <label for="stu-name">이름</label><input type="text" id="stu-name" autocomplete="off" placeholder="홍길동">
+    <label for="stu-new-grade">학년</label>
+    <select id="stu-new-grade"><option value="1">1학년</option><option value="2">2학년</option><option value="3">3학년</option></select>
+    <label for="stu-email">이메일</label><input type="email" id="stu-email" autocomplete="off" placeholder="hm26001@hanmin.hs.kr">
+    <button type="button" class="primary" id="stu-add">넣기</button>
+  </div>
 </div>
 
 <script>
@@ -631,6 +649,7 @@
     Array.prototype.forEach.call($('tabs').querySelectorAll('button'), function (btn) {
       btn.className = btn.getAttribute('data-tab') === name ? 'on' : '';
     });
+    $('stu-dock').className = name === 'students' ? 'dock' : 'dock hide';
     // 기록은 자주 볼 것이 아니라 탭을 열 때 부른다 — 새로 읽을 때마다 싣지 않는다.
     if (name === 'log' && !state.log) loadLog();
     // 학생은 많아서 따로 부른다 — 화면을 새로 읽을 때마다 싣지 않는다.
@@ -655,10 +674,27 @@
     var rows = state.students || [];
     var q = $('stu-q').value.trim().toLowerCase();
     var grade = $('stu-grade').value;
+    /*
+     * 검색어는 이름·학번뿐 아니라 «1학년 3반»·«3반»·«2학년» 처럼 학년·반으로도 받는다.
+     * 담임이 자기 반을 찾는 것이 가장 흔한 일이라, 그걸 못 하면 682명을 훑어야 한다.
+     * 숫자만 적으면 학번 앞자리와 겹치므로 «반» 이 붙었을 때만 반으로 읽는다.
+     */
+    var wantGrade = null;
+    var wantClass = null;
+    var text = q;
+    var gradeHit = text.match(/([1-3])\s*학년/);
+    if (gradeHit) { wantGrade = Number(gradeHit[1]); text = text.replace(gradeHit[0], ' '); }
+    var classHit = text.match(/(\d{1,2})\s*반/);
+    if (classHit) { wantClass = Number(classHit[1]); text = text.replace(classHit[0], ' '); }
+    text = text.trim();
+
     var shown = rows.filter(function (row) {
       if (grade && String(row.grade) !== grade) return false;
-      if (!q) return true;
-      return String(row.name).toLowerCase().indexOf(q) >= 0 || String(row.studentId).toLowerCase().indexOf(q) >= 0;
+      if (wantGrade !== null && Number(row.grade) !== wantGrade) return false;
+      if (wantClass !== null && Number(row.classNo) !== wantClass) return false;
+      if (!text) return true;
+      return String(row.name).toLowerCase().indexOf(text) >= 0
+        || String(row.studentId).toLowerCase().indexOf(text) >= 0;
     });
     $('stu-count').textContent = shown.length === rows.length
       ? rows.length + '명'
@@ -911,6 +947,7 @@
 
   function showLogin() {
     $('tabs').className = 'tabs hide';
+    $('stu-dock').className = 'dock hide';
     TABS.forEach(function (key) {
       var pane = document.querySelector('[data-pane="' + key + '"]');
       if (pane) pane.className = 'card hide';
