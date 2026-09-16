@@ -422,8 +422,14 @@ function doPost(event) {
     if (payload.action === 'adminBootstrap') return jsonOutput_(adminBootstrap_(payload));
     if (payload.action === 'adminConsole') return jsonOutput_(adminConsole_(payload));
     if (payload.action === 'setRosterEntry') return jsonOutput_(setRosterEntry_(payload));
+    if (payload.action === 'removeRosterEntry') return jsonOutput_(removeRosterEntry_(payload));
     if (payload.action === 'setFinalized') return jsonOutput_(setFinalized_(payload));
     if (payload.action === 'adminLog') return jsonOutput_(adminLog_(payload));
+    if (payload.action === 'pushTeachers') return jsonOutput_(pushTeachers_(payload));
+    if (payload.action === 'pushStudents') return jsonOutput_(pushStudents_(payload));
+    if (payload.action === 'listStudents') return jsonOutput_(listStudents_(payload));
+    if (payload.action === 'setStudent') return jsonOutput_(setStudent_(payload));
+    if (payload.action === 'removeStudent') return jsonOutput_(removeStudent_(payload));
     if (payload.action === 'setClosure') return jsonOutput_(setClosure_(payload));
     if (payload.action === 'setSchedule') return jsonOutput_(setSchedule_(payload));
     if (payload.action === 'requestSubjectOpen') return jsonOutput_(requestSubjectOpen_(payload));
@@ -1822,6 +1828,36 @@ function setRosterEntry_(payload) {
 }
 
 /**
+ * 명단에서 한 줄을 지운다.
+ *
+ * 켜고 끄기가 아니라 있고 없고로 다룬다 — 교직원 명단은 데스크톱이 통째로 밀어 넣으므로
+ * «꺼진 줄»이 남아 있으면 다음 밀어넣기 때 어차피 사라진다. 두 길의 결과를 같게 맞춘다.
+ *
+ * 자기 자신과 마지막 관리자는 지우지 못한다. 그 순간 아무도 들어올 수 없게 되고,
+ * 되돌리려면 시트를 직접 열어야 한다.
+ */
+function removeRosterEntry_(payload) {
+  const session = requireAdmin_(payload);
+  const kind = String(payload.kind || '');
+  const target = rosterSheetFor_(kind);
+  const email = String(payload.email || '').trim().toLowerCase();
+  const me = String(session.email || '').trim().toLowerCase();
+  if (!email) throw new Error('이메일을 확인해 주세요.');
+  if (email === me) throw new Error('자기 자신을 명단에서 뺄 수 없습니다. 다른 관리자가 해 주어야 합니다.');
+  const rows = rosterRows_(kind);
+  if (kind === 'admin') {
+    const left = rows.filter(function (row) { return row.active && row.email.toLowerCase() !== email; });
+    if (!left.length) throw new Error('관리자가 한 명도 남지 않습니다. 먼저 다른 관리자를 넣어 주세요.');
+  }
+  const kept = rows.filter(function (row) { return row.email.toLowerCase() !== email; })
+    .map(function (row) { return [row.email, row.name, row.active ? 'TRUE' : 'FALSE']; });
+  if (kept.length === rows.length) throw new Error('명단에서 찾지 못했습니다.');
+  replaceSheetBody_(target.sheet, kept, target.headers.length);
+  logAdminChange_(session, 'roster', target.label + ' ' + email + ' 뺌');
+  return { ok: true, kind: kind, roster: rosterView_(kind) };
+}
+
+/**
  * 최종 확정 — 켜면 아무도 제출할 수 없다.
  *
  * 기간이 끝나도 시계만 지날 뿐이라, 뒤늦게 기간을 늘리면 제출이 다시 열린다. 확정은
@@ -1846,6 +1882,293 @@ function adminLog_(payload) {
     return { at: String(row[0] || ''), email: String(row[1] || ''), kind: String(row[2] || ''), detail: String(row[3] || '') };
   });
   return { ok: true, entries: out };
+}
+
+/**
+ * 교직원 명단을 데스크톱이 통째로 밀어 넣는다.
+ *
+ * 명단의 진실원천은 데스크톱의 교사 표다. 사람이 오가는 것을 시트에서 따로 관리하면
+ * 두 곳이 어긋나고, 어느 쪽이 맞는지 아무도 모르게 된다. 보낸 목록에 없는 줄은 지운다 —
+ * 켜고 끄는 것이 아니라 있고 없고로 다룬다(2026-09-16 요청).
+ *
+ * 다만 관리자로 지정된 계정은 목록에 없어도 지우지 않는다. 교직원 명단에서 빠지면
+ * 로그인 자체가 막혀 관리자 화면에 아무도 못 들어간다 — 그 자리를 만들지 않는다.
+ */
+function pushTeachers_(payload) {
+  authorizeStatus_(payload);
+  if (String(payload.token || '') === '') throw new Error('데스크톱에서만 밀어 넣을 수 있습니다.');
+  const incoming = Array.isArray(payload.teachers) ? payload.teachers : null;
+  if (!incoming) throw new Error('보낼 교직원 명단이 없습니다.');
+  if (incoming.length > 2000) throw new Error('한 번에 보낼 수 있는 인원을 넘었습니다.');
+
+  const wanted = {};
+  const order = [];
+  incoming.forEach(function (row) {
+    const email = String(row && row.email || '').trim().toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return;
+    if (wanted[email]) return;
+    wanted[email] = String(row && row.name || '').trim().slice(0, 100);
+    order.push(email);
+  });
+  if (!order.length) throw new Error('이메일이 있는 교직원이 한 명도 없습니다.');
+
+  const keep = {};
+  rosterRows_('admin').forEach(function (row) { if (row.active) keep[row.email.toLowerCase()] = true; });
+
+  const existing = rosterRows_('teacher');
+  const byEmail = {};
+  existing.forEach(function (row) { byEmail[row.email.toLowerCase()] = row; });
+
+  const rows = [];
+  let added = 0;
+  let renamed = 0;
+  order.forEach(function (email) {
+    const old = byEmail[email];
+    if (!old) added += 1;
+    else if (wanted[email] && String(old.name || '') !== wanted[email]) renamed += 1;
+    // 이름이 비어 오면 시트에 적힌 이름을 지우지 않는다 — 데스크톱에 이름이 없을 수도 있다.
+    rows.push([email, wanted[email] || (old ? String(old.name || '') : ''), 'TRUE']);
+  });
+  const kept = [];
+  existing.forEach(function (row) {
+    const email = row.email.toLowerCase();
+    if (wanted[email] !== undefined) return;
+    if (!keep[email]) return;
+    kept.push(row.email);
+    rows.push([row.email, row.name, row.active ? 'TRUE' : 'FALSE']);
+  });
+  const removed = existing.filter(function (row) {
+    const email = row.email.toLowerCase();
+    return wanted[email] === undefined && !keep[email];
+  }).map(function (row) { return row.email; });
+
+  const target = rosterSheetFor_('teacher');
+  replaceSheetBody_(target.sheet, rows, target.headers.length);
+  logAdminChange_({ email: 'desktop' }, 'teachers',
+    '밀어넣기 ' + rows.length + '명 (새로 ' + added + ' · 이름 고침 ' + renamed + ' · 지움 ' + removed.length + ')');
+  return {
+    ok: true, total: rows.length, added: added, renamed: renamed,
+    removed: removed, keptAdmins: kept,
+  };
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * 학생 명렬
+ * ─────────────────────────────────────────────────────────────────────────────
+ * 교직원과 같은 갈래다 — 진실원천은 데스크톱이고 시트는 받아 적는다. 다만 학생 줄은
+ * 제출·계정과 얽혀 있어서 함부로 지우면 안 된다. 제출이 있는 학생은 지우지 않고
+ * active 를 끈다(전출). 명렬이 사라지면 그 제출이 «누군지 모를 학번»이 된다.
+ */
+
+/** 학번 → 제출이 한 번이라도 있었는가. 지워도 되는 줄인지 가르는 기준이다. */
+function studentsWithSubmissions_() {
+  const seen = {};
+  try {
+    allSubmissionObjects_().forEach(function (row) {
+      const id = String(row.student_id || '').trim();
+      if (id) seen[id] = true;
+    });
+  } catch (error) { /* 제출 시트가 아직 없으면 아무도 없는 것이다 */ }
+  return seen;
+}
+
+function studentRows_() {
+  const sheet = ensureSheet_(spreadsheet_(), HM_SELECTION.studentsSheet, HM_SELECTION.studentHeaders);
+  const rows = sheet.getDataRange().getValues().slice(1);
+  const out = [];
+  for (let i = 0; i < rows.length; i++) {
+    const row = objectFromRow_(HM_SELECTION.studentHeaders, rows[i]);
+    const id = String(row.student_id || '').trim();
+    if (!id) continue;
+    out.push({ row: row, id: id, rowNumber: i + 2 });
+  }
+  return out;
+}
+
+function studentRecord_(row) {
+  return HM_SELECTION.studentHeaders.map(function (header) {
+    const value = row[header];
+    return value === undefined || value === null ? '' : value;
+  });
+}
+
+function studentView_(row) {
+  return {
+    studentId: String(row.student_id || ''),
+    email: String(row.email || ''),
+    name: String(row.name || ''),
+    grade: Number(row.grade) || null,
+    entryYear: Number(row.entry_year) || null,
+    classNo: row.class_no === '' || row.class_no === undefined ? null : Number(row.class_no),
+    number: row.number === '' || row.number === undefined ? null : Number(row.number),
+    gender: String(row.gender || ''),
+    active: row.active === '' || row.active === undefined ? true : bool_(row.active),
+  };
+}
+
+/** 관리자 화면의 학생 탭 — 많아서 따로 부른다. 검색은 화면에서 한다. */
+function listStudents_(payload) {
+  requireAdmin_(payload);
+  const submitted = studentsWithSubmissions_();
+  const rows = studentRows_().map(function (entry) {
+    const view = studentView_(entry.row);
+    view.hasSubmission = submitted[entry.id] === true;
+    return view;
+  });
+  return { ok: true, students: rows };
+}
+
+/** 학생 한 명을 넣거나 고친다. 학번이 열쇠다. */
+function setStudent_(payload) {
+  const session = requireAdmin_(payload);
+  const studentId = String(payload.studentId || '').trim();
+  if (!studentId || studentId.length > 40) throw new Error('학번을 확인해 주세요.');
+  const email = String(payload.email || '').trim().toLowerCase();
+  if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) throw new Error('이메일을 확인해 주세요.');
+  const name = String(payload.name || '').trim().slice(0, 50);
+  if (!name) throw new Error('이름을 적어 주세요.');
+  const grade = integerIn_(payload.grade, 1, 3, '학년');
+
+  const rows = studentRows_();
+  const sheet = ensureSheet_(spreadsheet_(), HM_SELECTION.studentsSheet, HM_SELECTION.studentHeaders);
+  for (let i = 0; i < rows.length; i++) {
+    if (rows[i].id !== studentId) continue;
+    const merged = rows[i].row;
+    merged.email = email || merged.email;
+    merged.name = name;
+    merged.grade = grade;
+    if (payload.classNo !== undefined && payload.classNo !== '') merged.class_no = Number(payload.classNo) || '';
+    if (payload.number !== undefined && payload.number !== '') merged.number = Number(payload.number) || '';
+    if (payload.gender !== undefined) merged.gender = String(payload.gender || '');
+    merged.active = 'TRUE';
+    sheet.getRange(rows[i].rowNumber, 1, 1, HM_SELECTION.studentHeaders.length).setValues([studentRecord_(merged)]);
+    logAdminChange_(session, 'student', studentId + ' ' + name + ' 고침');
+    return { ok: true, students: listStudents_(payload).students };
+  }
+  // 새 줄 — 입학연도를 안 주면 «지금 학년도 − (학년 − 1)» 로 본다. 학번에 기대지 않는다.
+  const entryYear = Number(payload.entryYear) || (new Date().getFullYear() - (grade - 1));
+  sheet.appendRow(studentRecord_({
+    student_id: studentId, email: email, name: name, grade: grade, entry_year: entryYear,
+    initial_password: '', active: 'TRUE', login_id: '', completed_subject_ids: '',
+    gender: String(payload.gender || ''),
+    class_no: payload.classNo === undefined || payload.classNo === '' ? '' : Number(payload.classNo) || '',
+    number: payload.number === undefined || payload.number === '' ? '' : Number(payload.number) || '',
+  }));
+  logAdminChange_(session, 'student', studentId + ' ' + name + ' 새로 넣음');
+  return { ok: true, students: listStudents_(payload).students };
+}
+
+/**
+ * 학생 한 명을 뺀다.
+ *
+ * 제출이 있으면 줄을 지우지 않고 active 만 끈다 — 지우면 그 제출이 누구 것인지 알 수 없다.
+ * 제출이 없으면 줄째로 지운다. 어느 쪽을 했는지 돌려주어 화면이 알려 준다.
+ */
+function removeStudent_(payload) {
+  const session = requireAdmin_(payload);
+  const studentId = String(payload.studentId || '').trim();
+  if (!studentId) throw new Error('학번을 확인해 주세요.');
+  const rows = studentRows_();
+  const found = rows.filter(function (entry) { return entry.id === studentId; })[0];
+  if (!found) throw new Error('명렬에서 찾지 못했습니다.');
+  const sheet = ensureSheet_(spreadsheet_(), HM_SELECTION.studentsSheet, HM_SELECTION.studentHeaders);
+  const submitted = studentsWithSubmissions_();
+  if (submitted[studentId]) {
+    const merged = found.row;
+    merged.active = 'FALSE';
+    sheet.getRange(found.rowNumber, 1, 1, HM_SELECTION.studentHeaders.length).setValues([studentRecord_(merged)]);
+    logAdminChange_(session, 'student', studentId + ' 전출 처리(제출 기록 있음)');
+    return { ok: true, deactivated: true, students: listStudents_(payload).students };
+  }
+  const kept = rows.filter(function (entry) { return entry.id !== studentId; })
+    .map(function (entry) { return studentRecord_(entry.row); });
+  replaceSheetBody_(sheet, kept, HM_SELECTION.studentHeaders.length);
+  logAdminChange_(session, 'student', studentId + ' 뺌');
+  return { ok: true, deactivated: false, students: listStudents_(payload).students };
+}
+
+/**
+ * 학생 명렬을 데스크톱이 통째로 밀어 넣는다.
+ *
+ * 보낸 목록에 없는 학생은 뺀다 — 제출이 있으면 지우지 않고 전출로 표시한다.
+ * 비밀번호·로그인 아이디·기이수 과목은 시트에 있던 값을 그대로 둔다. 데스크톱이 모르는
+ * 값이라, 덮어쓰면 계정이 끊긴다.
+ */
+function pushStudents_(payload) {
+  authorizeStatus_(payload);
+  if (String(payload.token || '') === '') throw new Error('데스크톱에서만 밀어 넣을 수 있습니다.');
+  const incoming = Array.isArray(payload.students) ? payload.students : null;
+  if (!incoming) throw new Error('보낼 학생 명렬이 없습니다.');
+  if (incoming.length > 5000) throw new Error('한 번에 보낼 수 있는 인원을 넘었습니다.');
+
+  const wanted = {};
+  const order = [];
+  incoming.forEach(function (row) {
+    const id = String(row && row.studentId || '').trim();
+    if (!id || wanted[id]) return;
+    wanted[id] = row;
+    order.push(id);
+  });
+  if (!order.length) throw new Error('학번이 있는 학생이 한 명도 없습니다.');
+
+  const existing = studentRows_();
+  const byId = {};
+  existing.forEach(function (entry) { byId[entry.id] = entry.row; });
+  const submitted = studentsWithSubmissions_();
+
+  const rows = [];
+  let added = 0;
+  let updated = 0;
+  order.forEach(function (id) {
+    const incomingRow = wanted[id];
+    const old = byId[id];
+    const merged = old || {
+      student_id: id, initial_password: '', login_id: '', completed_subject_ids: '',
+    };
+    const before = old ? JSON.stringify(studentRecord_(old)) : null;
+    merged.student_id = id;
+    if (incomingRow.email !== undefined) merged.email = String(incomingRow.email || '');
+    if (incomingRow.name !== undefined) merged.name = String(incomingRow.name || '');
+    if (incomingRow.grade !== undefined) merged.grade = Number(incomingRow.grade) || '';
+    if (incomingRow.entryYear !== undefined) merged.entry_year = Number(incomingRow.entryYear) || '';
+    if (incomingRow.gender !== undefined) merged.gender = String(incomingRow.gender || '');
+    if (incomingRow.classNo !== undefined) merged.class_no = incomingRow.classNo === null ? '' : Number(incomingRow.classNo) || '';
+    if (incomingRow.number !== undefined) merged.number = incomingRow.number === null ? '' : Number(incomingRow.number) || '';
+    // 기이수 과목은 JSON 배열로 적는다 — parseArray_ 가 JSON 만 읽는다. 쉼표로 이으면
+    // 조용히 빈 배열이 되어 선수과목 확인이 통째로 무너진다. 내보내기 CSV 와 같은 모양이다.
+    if (Array.isArray(incomingRow.completedSubjectIds)) {
+      merged.completed_subject_ids = JSON.stringify(incomingRow.completedSubjectIds.map(String));
+    }
+    merged.active = 'TRUE';
+    const record = studentRecord_(merged);
+    if (!old) added += 1;
+    else if (before !== JSON.stringify(record)) updated += 1;
+    rows.push(record);
+  });
+
+  const removed = [];
+  const deactivated = [];
+  existing.forEach(function (entry) {
+    if (wanted[entry.id] !== undefined) return;
+    if (submitted[entry.id]) {
+      const merged = entry.row;
+      merged.active = 'FALSE';
+      rows.push(studentRecord_(merged));
+      deactivated.push(entry.id);
+      return;
+    }
+    removed.push(entry.id);
+  });
+
+  const sheet = ensureSheet_(spreadsheet_(), HM_SELECTION.studentsSheet, HM_SELECTION.studentHeaders);
+  replaceSheetBody_(sheet, rows, HM_SELECTION.studentHeaders.length);
+  logAdminChange_({ email: 'desktop' }, 'students',
+    '밀어넣기 ' + rows.length + '명 (새로 ' + added + ' · 고침 ' + updated
+    + ' · 전출 ' + deactivated.length + ' · 지움 ' + removed.length + ')');
+  return {
+    ok: true, total: rows.length, added: added, updated: updated,
+    deactivated: deactivated, removed: removed,
+  };
 }
 
 function ensureSheet_(spreadsheet, name, headers) {
@@ -2076,19 +2399,35 @@ function axCourseLogin_(payload) {
 function assertNoClosedSubjects_(subjectsByGroup, targetGrade) {
   const closures = closureList_();
   if (!closures.length) return;
+  /*
+   * 폐강 한 줄은 «어느 조사의, 어느 학년 과목을» 닫는가를 말한다. 검사가 두 겹이다.
+   *
+   * 1) 제출의 대상 학년과 같은 줄만 본다. 지금 1학년의 대상 학년은 2, 지금 2학년은 3이다.
+   *    역학과 에너지 폐강(대상 3)은 2027학년도 3학년 이야기라 지금 1학년과는 무관하다.
+   * 2) 그 줄을 선택군의 학년에도 맞춘다. 지금 1학년은 2학년과 3학년 과목을 한 번에 올리는데,
+   *    같은 이름이 학년별로 있는 과목이 여럿이다. 이름만 보면 2학년 지구시스템과학 폐강이
+   *    3학년 지구시스템과학까지 막는다(2026-09-16).
+   *
+   * 선택군 id 는 «g2-…»·«g3-…» 로 학년을 달고 온다. 학년을 읽을 수 없으면 제출 대상
+   * 학년으로 본다 — 모를 때는 막는 쪽으로 기운다.
+   */
   const blocked = {};
   closures.forEach(function (row) {
     if (row.targetGrade && Number(row.targetGrade) !== Number(targetGrade)) return;
     const name = String(row.subjectName || '').trim();
-    if (name) blocked[name] = row.reason || '';
+    if (name) blocked[name] = Number(row.targetGrade) || Number(targetGrade);
   });
   const hits = [];
   Object.keys(subjectsByGroup || {}).forEach(function (groupId) {
     const names = subjectsByGroup[groupId];
     if (!Array.isArray(names)) return;
+    const matched = String(groupId).match(/^g(\d)-/);
+    const groupGrade = matched ? Number(matched[1]) : Number(targetGrade);
     names.forEach(function (name) {
       const key = String(name || '').trim();
-      if (key && blocked[key] !== undefined && hits.indexOf(key) === -1) hits.push(key);
+      if (!key || blocked[key] === undefined) return;
+      if (blocked[key] !== groupGrade) return;
+      if (hits.indexOf(key) === -1) hits.push(key);
     });
   });
   if (!hits.length) return;

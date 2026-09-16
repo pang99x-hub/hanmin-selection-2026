@@ -106,6 +106,7 @@
     <button type="button" role="tab" data-tab="subjects" class="on">과목</button>
     <button type="button" role="tab" data-tab="requests">오픈 요청 <span id="req-badge" class="count"></span></button>
     <button type="button" role="tab" data-tab="schedule">기간·확정</button>
+    <button type="button" role="tab" data-tab="students">학생</button>
     <button type="button" role="tab" data-tab="roster">명단</button>
     <button type="button" role="tab" data-tab="log">기록</button>
     <a class="out" id="to-teacher" href="../teacher/" target="_blank" rel="noopener">제출 현황·결과 내려받기 ↗</a>
@@ -155,6 +156,36 @@
     </div>
   </section>
 
+  <!-- 학생 -->
+  <section class="card hide" id="students-card" data-pane="students">
+    <h2>학생 명렬 <span id="stu-count" class="count"></span></h2>
+    <p class="sub" style="margin:-6px 0 12px">
+      평소에는 데스크톱 앱에서 학생 표를 통째로 보내 맞춥니다. 여기서는 전입·전출처럼 급한 것만 손봅니다 —
+      다음 밀어넣기 때 데스크톱 표에 없으면 다시 빠집니다.
+    </p>
+    <div class="row" style="margin-bottom:12px">
+      <input type="search" id="stu-q" placeholder="이름·학번 검색" style="flex:1;min-width:160px">
+      <select id="stu-grade" style="width:auto">
+        <option value="">전체 학년</option>
+        <option value="1">1학년</option>
+        <option value="2">2학년</option>
+        <option value="3">3학년</option>
+      </select>
+      <button type="button" id="stu-load">불러오기</button>
+    </div>
+    <ul class="subjects" id="stu-list"></ul>
+    <p class="empty hide" id="stu-empty">학생이 없습니다.</p>
+    <div class="row" style="margin-top:14px;align-items:flex-end">
+      <div style="flex:1;min-width:110px"><label for="stu-id">학번</label><input type="text" id="stu-id" autocomplete="off"></div>
+      <div style="flex:1;min-width:100px"><label for="stu-name">이름</label><input type="text" id="stu-name" autocomplete="off"></div>
+      <div style="width:auto"><label for="stu-new-grade">학년</label>
+        <select id="stu-new-grade" style="width:auto"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+      </div>
+      <div style="flex:2;min-width:180px"><label for="stu-email">이메일</label><input type="email" id="stu-email" autocomplete="off"></div>
+      <button type="button" class="primary" id="stu-add">넣기</button>
+    </div>
+  </section>
+
   <!-- 명단 -->
   <section class="card hide" id="roster-card" data-pane="roster">
     <h2>관리자</h2>
@@ -167,7 +198,11 @@
     </div>
 
     <h2 style="margin-top:26px">교직원</h2>
-    <p class="sub" style="margin:-6px 0 12px">제출 현황을 볼 수 있는 계정입니다. 학생 앱에서는 시험 제출이 됩니다.</p>
+    <p class="sub" style="margin:-6px 0 12px">
+      제출 현황을 볼 수 있는 계정입니다. 학생 앱에서는 시험 제출이 됩니다.
+      평소에는 데스크톱 앱에서 교사 표를 통째로 보내 맞춥니다 — 여기서 넣은 줄도 다음 밀어넣기 때
+      교사 표에 없으면 사라집니다.
+    </p>
     <ul class="subjects" id="teacher-list"></ul>
     <div class="row" style="margin-top:12px">
       <input type="email" id="teacher-email" placeholder="이메일" autocomplete="off" style="flex:2;min-width:180px">
@@ -200,7 +235,7 @@
   } catch (e) { /* 무시 */ }
 
   var state = { closures: {}, subjects: [], counts: {}, schedule: null, requests: [], cohorts: [],
-    teachers: [], admins: [], me: '', log: null };
+    teachers: [], admins: [], me: '', log: null, students: null };
 
   function say(text, kind) {
     var box = $('msg');
@@ -583,7 +618,7 @@
 
   /* ── 탭 ─────────────────────────────────────────────────────────────────── */
 
-  var TABS = ['subjects', 'requests', 'schedule', 'roster', 'log'];
+  var TABS = ['subjects', 'requests', 'schedule', 'students', 'roster', 'log'];
   var activeTab = 'subjects';
 
   function showTab(name) {
@@ -598,6 +633,107 @@
     });
     // 기록은 자주 볼 것이 아니라 탭을 열 때 부른다 — 새로 읽을 때마다 싣지 않는다.
     if (name === 'log' && !state.log) loadLog();
+    // 학생은 많아서 따로 부른다 — 화면을 새로 읽을 때마다 싣지 않는다.
+    if (name === 'students' && !state.students) loadStudents();
+  }
+
+  /* ── 학생 명렬 ──────────────────────────────────────────────────────────── */
+
+  async function loadStudents() {
+    say('');
+    try {
+      var data = await post({ action: 'listStudents', sessionToken: auth.sessionToken });
+      state.students = data.students || [];
+    } catch (e) {
+      state.students = [];
+      say(e.message);
+    }
+    renderStudents();
+  }
+
+  function renderStudents() {
+    var rows = state.students || [];
+    var q = $('stu-q').value.trim().toLowerCase();
+    var grade = $('stu-grade').value;
+    var shown = rows.filter(function (row) {
+      if (grade && String(row.grade) !== grade) return false;
+      if (!q) return true;
+      return String(row.name).toLowerCase().indexOf(q) >= 0 || String(row.studentId).toLowerCase().indexOf(q) >= 0;
+    });
+    $('stu-count').textContent = shown.length === rows.length
+      ? rows.length + '명'
+      : shown.length + ' / ' + rows.length + '명';
+    var list = $('stu-list');
+    list.innerHTML = '';
+    $('stu-empty').className = shown.length ? 'empty hide' : 'empty';
+    // 한 번에 다 그리면 천 줄이 넘어 화면이 멈춘다. 검색으로 좁혀 보게 한다.
+    var LIMIT = 200;
+    shown.slice(0, LIMIT).forEach(function (row) {
+      var item = document.createElement('li');
+      item.className = 'subject';
+      item.setAttribute('data-closed', row.active ? '0' : '1');
+
+      var name = document.createElement('span');
+      name.className = 'name';
+      name.textContent = row.name;
+      var tag = document.createElement('span');
+      tag.className = 'sem';
+      tag.textContent = row.grade + '학년' + (row.classNo ? ' ' + row.classNo + '반' : '') + (row.number ? ' ' + row.number + '번' : '');
+      name.appendChild(tag);
+      item.appendChild(name);
+
+      var right = document.createElement('span');
+      right.className = 'row';
+      var mark = document.createElement('span');
+      mark.className = 'count';
+      mark.innerHTML = row.active
+        ? (row.hasSubmission ? '<span style="color:var(--faint)">제출함</span>' : '')
+        : '<span style="color:var(--faint)">전출</span>';
+      right.appendChild(mark);
+      var drop = document.createElement('button');
+      drop.type = 'button';
+      drop.textContent = '빼기';
+      drop.disabled = !row.active;
+      drop.addEventListener('click', function () {
+        var warn = row.hasSubmission
+          ? '«' + row.name + '» 은(는) 제출한 적이 있어 줄을 지우지 않고 전출로 표시합니다. 계속할까요?'
+          : '«' + row.name + '» 을(를) 명렬에서 뺄까요?';
+        if (!window.confirm(warn)) return;
+        removeStudent(row, drop);
+      });
+      right.appendChild(drop);
+      item.appendChild(right);
+
+      var meta = document.createElement('span');
+      meta.className = 'meta';
+      meta.textContent = row.studentId + (row.email ? ' · ' + row.email : '');
+      item.appendChild(meta);
+      list.appendChild(item);
+    });
+    if (shown.length > LIMIT) {
+      var more = document.createElement('li');
+      more.className = 'subject';
+      var text = document.createElement('span');
+      text.className = 'name';
+      text.textContent = '앞의 ' + LIMIT + '명만 보입니다 — 검색으로 좁혀 주세요.';
+      more.appendChild(text);
+      list.appendChild(more);
+    }
+  }
+
+  async function removeStudent(row, button) {
+    button.disabled = true;
+    say('');
+    try {
+      var data = await post({ action: 'removeStudent', sessionToken: auth.sessionToken, studentId: row.studentId });
+      state.students = data.students || [];
+      state.log = null;
+      renderStudents();
+      say(row.name + (data.deactivated ? ' 을(를) 전출로 표시했습니다.' : ' 을(를) 명렬에서 뺐습니다.'), 'ok');
+    } catch (e) {
+      say(e.message);
+      button.disabled = false;
+    }
   }
 
   /* ── 명단 ───────────────────────────────────────────────────────────────── */
@@ -633,14 +769,16 @@
         mark.className = 'count';
         mark.innerHTML = row.active ? '' : '<span style="color:var(--faint)">꺼짐</span>';
         right.appendChild(mark);
-        var toggle = document.createElement('button');
-        toggle.type = 'button';
-        toggle.textContent = row.active ? '끄기' : '켜기';
-        if (!row.active) toggle.className = 'primary';
-        toggle.addEventListener('click', function () {
-          saveRoster(kind, { email: row.email, name: row.name, active: !row.active }, toggle);
+        // 켜고 끄기가 아니라 있고 없고로 다룬다 — 교직원은 데스크톱이 통째로 밀어 넣으므로
+        // 꺼진 줄이 남아 있어도 다음 밀어넣기 때 사라진다. 두 길의 결과를 같게 맞춘다.
+        var drop = document.createElement('button');
+        drop.type = 'button';
+        drop.textContent = '빼기';
+        drop.addEventListener('click', function () {
+          if (!window.confirm('«' + (row.name || row.email) + '» 을(를) 명단에서 뺄까요?')) return;
+          removeRoster(kind, row.email, drop);
         });
-        right.appendChild(toggle);
+        right.appendChild(drop);
         item.appendChild(right);
 
         var meta = document.createElement('span');
@@ -650,6 +788,23 @@
         list.appendChild(item);
       });
     });
+  }
+
+  async function removeRoster(kind, email, button) {
+    if (button) button.disabled = true;
+    say('');
+    try {
+      var data = await post({ action: 'removeRosterEntry', sessionToken: auth.sessionToken, kind: kind, email: email });
+      if (kind === 'admin') state.admins = data.roster || [];
+      else state.teachers = data.roster || [];
+      state.log = null;
+      renderRoster();
+      say(email + ' 을(를) 뺐습니다.', 'ok');
+    } catch (e) {
+      say(e.message);
+    } finally {
+      if (button) button.disabled = false;
+    }
   }
 
   async function saveRoster(kind, entry, button) {
@@ -803,6 +958,28 @@
           .then(function () { $(entry[1]).value = ''; $(entry[2]).value = ''; state.log = null; });
       });
     });
+  $('stu-load').addEventListener('click', function () { state.students = null; loadStudents(); });
+  $('stu-q').addEventListener('input', function () { if (state.students) renderStudents(); });
+  $('stu-grade').addEventListener('change', function () { if (state.students) renderStudents(); });
+  $('stu-add').addEventListener('click', async function () {
+    var studentId = $('stu-id').value.trim();
+    var name = $('stu-name').value.trim();
+    if (!studentId || !name) { say('학번과 이름을 적어 주세요.'); return; }
+    $('stu-add').disabled = true;
+    say('');
+    try {
+      var data = await post({
+        action: 'setStudent', sessionToken: auth.sessionToken,
+        studentId: studentId, name: name, email: $('stu-email').value.trim(),
+        grade: Number($('stu-new-grade').value),
+      });
+      state.students = data.students || [];
+      state.log = null;
+      renderStudents();
+      ['stu-id', 'stu-name', 'stu-email'].forEach(function (id) { $(id).value = ''; });
+      say(name + ' 을(를) 넣었습니다.', 'ok');
+    } catch (e) { say(e.message); } finally { $('stu-add').disabled = false; }
+  });
   $('reload').addEventListener('click', function () { refresh(); });
   $('grade').addEventListener('change', function () { refresh(); });
   $('round').addEventListener('change', function () { refresh(); });
