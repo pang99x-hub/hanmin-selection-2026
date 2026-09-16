@@ -499,7 +499,20 @@ function googleLogin_(payload) {
     };
   }
   const auth = issueAuth_(identity, false, String(token.picture || ''), config);
-  return { ok: true, auth: auth, bootstrap: loginBootstrap_(identity) };
+  const result = { ok: true, auth: auth, bootstrap: loginBootstrap_(identity) };
+  /*
+   * 관리자면 운영 화면 자료를 같이 실어 보낸다. 로그인 한 번, 화면 자료 한 번 —
+   * 두 왕복이 곧 6~8초였다. 이 요청은 이미 시트를 열어 둔 참이라 훨씬 싸다.
+   */
+  if (identity.role === 'teacher' && isAdminEmail_(email)) {
+    try {
+      const session = { email: email, name: identity.name, role: 'teacher', identity_key: identity.identityKey };
+      result.console = adminConsolePayload_(session, payload.grade, payload.round);
+    } catch (error) {
+      result.console = null;
+    }
+  }
+  return result;
 }
 
 function passwordLogin_(payload) {
@@ -2173,7 +2186,15 @@ function adminBootstrap_(payload) {
  * 돌려주고 나머지는 그대로 보낸다 — 하나 때문에 화면 전체가 멈추면 안 된다.
  */
 function adminConsole_(payload) {
-  const session = requireAdmin_(payload);
+  return adminConsolePayload_(requireAdmin_(payload), payload.grade, payload.round);
+}
+
+/*
+ * 로그인 다음에 또 한 번 왕복하지 않으려고 세션을 받아서 짓는다. Apps Script 는 요청
+ * 하나가 통째로 3~4초라, 들어오자마자 화면을 그리려면 왕복 수를 줄이는 수밖에 없다.
+ */
+function adminConsolePayload_(session, grade, round) {
+  const payload = { grade: grade, round: round };
   const result = {
     ok: true,
     admin: { email: session.email, name: session.name || '' },
