@@ -227,11 +227,7 @@
     });
   }
 
-  async function loadCounts(grade, round) {
-    var url = SUBMIT_URL + '?counts=1&grade=' + encodeURIComponent(grade) + '&round=' + encodeURIComponent(round);
-    var res = await fetch(url, { cache: 'no-store' });
-    var data = await res.json();
-    if (!data.ok) throw new Error(data.err || '집계를 읽지 못했습니다.');
+  function countsFromReport(data) {
     /*
      * 제출은 «선택군 → 고른 과목 이름»으로 온다. 이름만 보고 합치면 같은 이름이 1학기와
      * 2학기에 있는 과목(전문 수학·인공지능 수학 등)의 인원이 두 학기 것으로 합쳐진다.
@@ -475,31 +471,40 @@
     });
   }
 
+  /*
+   * 새로 읽기 — 서버는 한 번만 부른다.
+   *
+   * 이 스크립트는 호출 하나에 2~3초가 고정으로 든다. 내용이 아니라 «부른다»는 것 자체의
+   * 값이라, 종전처럼 세 번 부르면(설정·집계·요청) 화면이 뜨는 데 10초가 걸렸다.
+   * 팩은 깃허브 페이지의 정적 파일이라 값이 거의 안 들고, 한 번 읽으면 캐시에 남는다.
+   */
   async function refresh() {
     say('');
     try {
-      var boot = await post({ action: 'adminBootstrap', sessionToken: auth.sessionToken });
-      $('who').textContent = boot.admin && boot.admin.email ? boot.admin.email : '';
-      state.closures = {};
-      (boot.closures || []).forEach(function (row) {
-        if (row.closed) state.closures[row.subjectId] = { closed: true, reason: row.reason, updatedBy: row.updatedBy, updatedAt: row.updatedAt };
-      });
       if (!state.cohorts.length) state.cohorts = await loadCohorts();
+      var data = await post({
+        action: 'adminConsole', sessionToken: auth.sessionToken,
+        grade: Number($('grade').value), round: Number($('round').value),
+      });
+      $('who').textContent = data.admin && data.admin.email ? data.admin.email : '';
+      applyClosures((data.closures || []).filter(function (row) { return row.closed; }));
       state.subjects = await loadSubjects($('grade').value);
-      state.counts = await loadCounts($('grade').value, $('round').value).catch(function () { return {}; });
+      state.counts = data.counts ? countsFromReport(data.counts) : {};
       $('login').className = 'card hide';
       $('panel').className = 'card';
       $('schedule-card').className = 'card';
-      state.schedule = boot.schedule || null;
+      state.schedule = data.schedule || null;
       renderSchedule();
       render();
-      // 요청 목록은 따로 부른다 — 못 읽어도 폐강·기간은 쓸 수 있어야 한다.
-      try {
-        var reqData = await post({ action: 'listOpenRequests', sessionToken: auth.sessionToken });
-        state.requests = reqData.requests || [];
+      // 요청 목록을 못 읽어도 폐강·기간은 쓸 수 있어야 한다. 그 칸만 접는다.
+      if (data.requests) {
+        state.requests = data.requests;
         $('requests-card').className = 'card';
         renderRequests();
-      } catch (e) { $('requests-card').className = 'card hide'; }
+      } else {
+        $('requests-card').className = 'card hide';
+      }
+      if (data.countsError) say('집계를 읽지 못했습니다 — ' + data.countsError);
     } catch (e) {
       if (/로그인/.test(e.message)) { clearAuth(); showLogin(); }
       say(e.message);

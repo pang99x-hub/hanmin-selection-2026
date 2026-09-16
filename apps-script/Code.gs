@@ -417,6 +417,7 @@ function doPost(event) {
     if (payload.action === 'changePassword') return jsonOutput_(changePassword_(payload));
     if (payload.action === 'latest') return jsonOutput_(latestForSession_(payload));
     if (payload.action === 'adminBootstrap') return jsonOutput_(adminBootstrap_(payload));
+    if (payload.action === 'adminConsole') return jsonOutput_(adminConsole_(payload));
     if (payload.action === 'setClosure') return jsonOutput_(setClosure_(payload));
     if (payload.action === 'setSchedule') return jsonOutput_(setSchedule_(payload));
     if (payload.action === 'requestSubjectOpen') return jsonOutput_(requestSubjectOpen_(payload));
@@ -2114,12 +2115,7 @@ function myOpenRequests_(payload) {
 /** 관리자 목록 — 기다리는 것이 위로 온다. */
 function listOpenRequests_(payload) {
   requireAdmin_(payload);
-  const rows = openRequestRows_().map(function (entry) { return openRequestView_(entry.row); });
-  rows.sort(function (a, b) {
-    const rank = function (row) { return row.status === 'pending' ? 0 : 1; };
-    return rank(a) - rank(b) || String(b.createdAt).localeCompare(String(a.createdAt));
-  });
-  return { ok: true, requests: rows };
+  return { ok: true, requests: openRequestsSorted_() };
 }
 
 /**
@@ -2187,8 +2183,8 @@ function closureList_() {
 }
 
 /** 관리자 화면이 처음 열릴 때 필요한 것 — 자기 권한과 현재 폐강 상태. */
-function adminBootstrap_(payload) {
-  const session = requireAdmin_(payload);
+/** 폐강 표의 모든 줄 — 닫힌 것만이 아니라 되돌린 것도 함께. 관리자 화면이 상태를 그린다. */
+function closureRows_() {
   const rows = closureSheet_().getDataRange().getValues().slice(1);
   const all = [];
   for (let i = 0; i < rows.length; i++) {
@@ -2204,7 +2200,54 @@ function adminBootstrap_(payload) {
       updatedAt: row.updated_at ? String(row.updated_at) : '',
     });
   }
-  return { ok: true, admin: { email: session.email, name: session.name || '' }, closures: all, schedule: scheduleStatus_() };
+  return all;
+}
+
+/** 기다리는 요청이 위로 오게. 관리자는 처리할 것부터 본다. */
+function openRequestsSorted_() {
+  const rows = openRequestRows_().map(function (entry) { return openRequestView_(entry.row); });
+  rows.sort(function (a, b) {
+    const rank = function (row) { return row.status === 'pending' ? 0 : 1; };
+    return rank(a) - rank(b) || String(b.createdAt).localeCompare(String(a.createdAt));
+  });
+  return rows;
+}
+
+function adminBootstrap_(payload) {
+  const session = requireAdmin_(payload);
+  return { ok: true, admin: { email: session.email, name: session.name || '' }, closures: closureRows_(), schedule: scheduleStatus_() };
+}
+
+/**
+ * 관리자 화면이 한 번에 받아 가는 묶음.
+ *
+ * 이 스크립트는 호출 하나에 2~3초가 고정으로 든다 — 245바이트를 돌려주는 호출도 그렇다.
+ * 내용이 아니라 «부른다»는 것 자체의 값이라 화면이 세 번 부르면 10초가 된다. 한 번에 싣는다.
+ *
+ * 집계나 요청 목록이 실패해도 폐강·기간은 쓸 수 있어야 한다. 실패한 쪽만 사유를 담아
+ * 돌려주고 나머지는 그대로 보낸다 — 하나 때문에 화면 전체가 멈추면 안 된다.
+ */
+function adminConsole_(payload) {
+  const session = requireAdmin_(payload);
+  const result = {
+    ok: true,
+    admin: { email: session.email, name: session.name || '' },
+    schedule: scheduleStatus_(),
+    closures: closureRows_(),
+  };
+  try {
+    result.counts = subjectCounts_(payload.grade, payload.round);
+  } catch (error) {
+    result.counts = null;
+    result.countsError = errorMessage_(error);
+  }
+  try {
+    result.requests = openRequestsSorted_();
+  } catch (error) {
+    result.requests = null;
+    result.requestsError = errorMessage_(error);
+  }
+  return result;
 }
 
 /**
