@@ -394,7 +394,9 @@
 
       var meta = document.createElement('span');
       meta.className = 'meta';
-      meta.textContent = (row.studentName || '') + ' ' + (row.studentId || '')
+      // 교사가 통로를 확인해 본 줄은 실제 학생 요청과 섞이면 안 된다. 앞에 표시한다.
+      meta.textContent = (row.isTest ? '[시험] ' : '')
+        + (row.studentName || '') + ' ' + (row.studentId || '')
         + (row.targetGrade ? ' · ' + row.targetGrade + '학년' : '')
         + (row.createdAt ? ' · ' + String(row.createdAt).slice(0, 10) : '');
       item.appendChild(meta);

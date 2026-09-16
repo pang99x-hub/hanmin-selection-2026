@@ -31,8 +31,11 @@ const HM_SELECTION = Object.freeze({
   teacherHeaders: ['email', 'name', 'active'],
   adminHeaders: ['email', 'name', 'active'],
   closureHeaders: ['subject_id', 'subject_name', 'closed', 'reason', 'updated_by', 'updated_at', 'target_grade'],
+  // is_test 는 **끝에** 붙인다 — 가운데 끼우면 이미 쓰고 있는 시트의 열 순서와 어긋나
+  // ensureSheet_ 가 «제목 순서가 다르다»로 멈춘다. 읽기는 제목으로 하므로 자리는 무관하다.
   openRequestHeaders: ['request_id', 'identity_key', 'student_id', 'student_name', 'target_grade',
-    'subject_id', 'subject_name', 'reason', 'status', 'decided_by', 'decided_at', 'decision_note', 'created_at'],
+    'subject_id', 'subject_name', 'reason', 'status', 'decided_by', 'decided_at', 'decision_note', 'created_at',
+    'is_test'],
   accountHeaders: ['student_id', 'salt', 'password_hash', 'must_change', 'updated_at', 'login_id'],
   sessionHeaders: ['token_hash', 'identity_key', 'student_id', 'email', 'role', 'expires_at', 'created_at'],
   loginAttemptHeaders: ['login_key', 'window_started_at', 'failures', 'blocked_until', 'updated_at'],
@@ -2056,6 +2059,7 @@ function openRequestView_(row) {
     decidedAt: row.decided_at ? String(row.decided_at) : '',
     decisionNote: String(row.decision_note || ''),
     createdAt: row.created_at ? String(row.created_at) : '',
+    isTest: bool_(row.is_test),
   };
 }
 
@@ -2067,13 +2071,16 @@ function openRequestView_(row) {
  */
 function requestSubjectOpen_(payload) {
   const session = requireSession_(payload.sessionToken);
-  if (String(session.role || 'student') !== 'student') throw new Error('학생 계정만 요청할 수 있습니다.');
+  // 교사는 제출과 마찬가지로 «시험»으로 다룬다. 기간 밖에서도 해 볼 수 있어야 조사 전에
+  // 통로가 도는지 확인한다. 남는 줄은 is_test 로 표시해 실제 학생 요청과 섞이지 않는다.
+  const isTest = String(session.role || 'student') === 'teacher';
+  if (!isTest && String(session.role || 'student') !== 'student') throw new Error('학생 계정만 요청할 수 있습니다.');
   const subjectId = String(payload.subjectId || '').trim();
   if (!subjectId || subjectId.length > 200) throw new Error('과목을 확인해 주세요.');
   const reason = String(payload.reason || '').trim().slice(0, 500);
   if (reason.length < 5) throw new Error('왜 이 과목을 듣고 싶은지 적어 주세요.');
   const status = scheduleStatus_();
-  if (!status.currentRound) throw new Error('지금은 신청 기간이 아닙니다.');
+  if (!status.currentRound && !isTest) throw new Error('지금은 신청 기간이 아닙니다.');
 
   const existing = openRequestRows_();
   for (let i = 0; i < existing.length; i++) {
@@ -2085,12 +2092,13 @@ function requestSubjectOpen_(payload) {
     if (state === 'approved') throw new Error('이미 열려 있는 과목입니다.');
   }
   // 이름은 관리자 목록에서 «누가 냈는지» 보이려고 함께 적어 둔다. 없으면 학번만 남는다.
-  const student = studentBy_('student_id', session.student_id);
+  const student = isTest ? null : studentBy_('student_id', session.student_id);
+  const who = student ? String(student.name || '') : (isTest ? String(session.email || '') + ' (시험)' : '');
   const requestId = Utilities.getUuid();
   openRequestSheet_().appendRow([requestId, String(session.identity_key), String(session.student_id || ''),
-    student ? String(student.name || '') : '', Number(payload.targetGrade) || '',
+    who, Number(payload.targetGrade) || '',
     subjectId, String(payload.subjectName || '').slice(0, 200), reason, 'pending', '', '', '',
-    new Date().toISOString()]);
+    new Date().toISOString(), isTest ? 'TRUE' : 'FALSE']);
   return { ok: true, requestId: requestId, requests: myOpenRequestList_(session.identity_key) };
 }
 
