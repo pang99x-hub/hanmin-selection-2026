@@ -1,7 +1,7 @@
 {
   "version": 1,
   "schoolName": "한민고등학교",
-  "createdAt": "2026-09-16T06:14:21.840Z",
+  "createdAt": "2026-09-16T12:34:36.235Z",
   "defaultCohort": 2026,
   "cohorts": [
     {
@@ -20,5 +20,5 @@
       "currentGrade": 2
     }
   ],
-  "bundleSha256": "dc523d556d31bfcef742101b01077b26c042ec4f6e48d6498946b2f6c5de93ad"
+  "bundleSha256": "99c5887a14f02cc60633731dd3e8a23b8a21aab296345d096a8547cde2c9577e"
 }
