@@ -1,5 +1,121 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>한민고등학교 교육과정 설계</title><meta http-equiv="refresh" content="0;url=./app/">
-<script>(function(){var u=new URL("./app/",window.location.href);if(window.location.search)u.search=window.location.search;if(window.location.hash)u.hash=window.location.hash;window.location.replace(u.href)})()</script></head>
-<body><p>이동 중입니다… <a href="./app/">자동으로 이동하지 않으면 여기를 누르세요.</a></p></body></html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>한민고등학교 교육과정</title>
+<meta name="description" content="한민고등학교 교육과정 — 설명회 자료와 선택 과목 조사">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #002147; --mint: #7ad7c6; --ink: #1a1c1e; --muted: #55607a;
+    --faint: #78829a; --line: #e3e8ef; --surface: #f7f8fc;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    padding: 2rem 1.25rem;
+    font-family: Inter, 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(48rem 26rem at 12% -6rem, rgba(0, 33, 71, .07), transparent 70%),
+      radial-gradient(52rem 28rem at 92% 108%, rgba(122, 215, 198, .16), transparent 70%),
+      var(--surface);
+  }
+  .cover { width: 100%; max-width: 46rem; text-align: center; }
+  .cover__eyebrow {
+    display: block; font-size: 12px; font-weight: 700; letter-spacing: .3em;
+    text-transform: uppercase; color: var(--mint); margin-bottom: 1.15rem;
+  }
+  .cover__title {
+    margin: 0 0 1.1rem; font-weight: 900; letter-spacing: -.035em; line-height: 1.12;
+    font-size: clamp(2.3rem, 8vw, 4.1rem); color: var(--navy);
+  }
+  .cover__lead {
+    margin: 0 auto 1.4rem; max-width: 34rem; line-height: 1.7;
+    font-size: clamp(1rem, 2.4vw, 1.15rem); color: var(--muted);
+  }
+  /* 지금 조사를 받는지 — 서버에서 읽어 채운다. 못 읽으면 자리를 비워 둔다. */
+  .cover__state {
+    display: none; margin: 0 auto 2.4rem;
+    padding: .35rem .95rem; border-radius: 999px;
+    font-size: 13.5px; font-weight: 700;
+    background: #e7ebf2; color: var(--muted);
+  }
+  .cover__state.is-on { display: inline-block; }
+  .cover__state.is-open { background: rgba(16, 122, 92, .1); color: #0d7a5c; }
+  .cover__actions { display: flex; gap: .8rem; justify-content: center; flex-wrap: wrap; }
+  .cover__btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    padding: 1rem 2rem; border-radius: 12px; text-decoration: none;
+    font-size: 1.02rem; font-weight: 800; letter-spacing: -.01em;
+    transition: opacity .15s, background-color .15s, transform .15s;
+  }
+  .cover__btn:hover { transform: translateY(-1px); }
+  .cover__btn--guide { background: var(--navy); color: #fff; box-shadow: 0 10px 26px rgba(0, 33, 71, .2); }
+  .cover__btn--guide:hover { background: #12325c; }
+  .cover__btn--app { background: var(--mint); color: var(--navy); box-shadow: 0 10px 26px rgba(122, 215, 198, .34); }
+  .cover__btn--app:hover { background: #8ee2d3; }
+  .cover__foot { margin: 2.2rem 0 0; font-size: 12.5px; color: var(--faint); }
+  @media (max-width: 560px) {
+    .cover__btn { width: 100%; }
+    .cover__actions { gap: .65rem; }
+  }
+</style>
+</head>
+<body>
+<main class="cover">
+  <span class="cover__eyebrow">The Scholarly Horizon</span>
+  <h1 class="cover__title">한민고등학교<br>교육과정</h1>
+  <p class="cover__lead">나와 세상을 잇는 3년의 설계</p>
+  <p class="cover__state" id="state"></p>
+  <div class="cover__actions">
+    <a class="cover__btn cover__btn--guide" href="./slides.html#1">교육과정 안내 →</a>
+    <a class="cover__btn cover__btn--app" id="app-link" href="./app/">내 선택 과목 확인 →</a>
+  </div>
+  <p class="cover__foot">선택 과목 조사는 학교 계정으로 로그인한 뒤 시작합니다</p>
+</main>
+<script>
+/*
+ * 조사를 지금 받는지 서버에서 읽어 단추 문구를 맞춘다.
+ *
+ * 기간 밖에는 «내 선택 과목 확인» 이 맞지만, 기간 안에는 «3차 과목 선택하기» 라고
+ * 적어야 학생이 여기가 조사 자리인 줄 안다. 못 읽으면 종전 문구를 그대로 둔다 —
+ * 표지는 조사와 무관하게도 열리는 자리라 여기서 막히면 안 된다(2026-09-16).
+ */
+(function () {
+  var SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbx8r66SmJkTOjgxF-n_LTgd833ZQhqQW1hynjpDg6xsfDWgf9mM6x5u_3fCkEn3HL6f/exec';
+  if (!/^https:\/\//.test(SUBMIT_URL)) return;
+  fetch(SUBMIT_URL + '?schedule=1', { cache: 'no-store' })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (!d || !d.ok) return;
+      var state = document.getElementById('state');
+      var link = document.getElementById('app-link');
+      if (d.finalized) {
+        state.textContent = '조사가 끝났습니다 — 확인서는 계속 출력할 수 있습니다';
+        state.className = 'cover__state is-on';
+        return;
+      }
+      if (d.currentRound) {
+        state.textContent = '지금 ' + d.currentRound + '차 조사를 받고 있습니다';
+        state.className = 'cover__state is-on is-open';
+        link.textContent = d.currentRound + '차 과목 선택하기 →';
+        return;
+      }
+      var next = d.schedule && d.schedule['round' + (d.finalRound || 1)];
+      if (next && next.start) {
+        var s = new Date(next.start);
+        if (!isNaN(s.getTime())) {
+          state.textContent = (s.getMonth() + 1) + '월 ' + s.getDate() + '일부터 조사를 받습니다';
+          state.className = 'cover__state is-on';
+        }
+      }
+    })
+    .catch(function () { /* 표지는 조사와 무관하게도 열린다 */ });
+})();
+</script>
+</body>
+</html>
