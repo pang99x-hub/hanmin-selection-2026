@@ -214,14 +214,14 @@
         headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body),
       });
     } catch (error) {
-      if (attempt < 2) { await wait(400 * (attempt + 1)); return postJsonUncached(body, attempt + 1); }
+      if (attempt < RETRY_WAITS.length) { await wait(retryWait(attempt)); return postJsonUncached(body, attempt + 1); }
       throw new Error('서버에 닿지 못했습니다. 잠시 뒤 다시 시도해 주세요.');
     }
     const text = await res.text();
     let data = null;
     try { data = JSON.parse(text); } catch { data = null; }
     if (!data) {
-      if (attempt < 2) { await wait(400 * (attempt + 1)); return postJsonUncached(body, attempt + 1); }
+      if (attempt < RETRY_WAITS.length) { await wait(retryWait(attempt)); return postJsonUncached(body, attempt + 1); }
       throw new Error('서버 응답을 읽지 못했습니다. 잠시 뒤 다시 시도해 주세요.');
     }
     if (!data.ok) throw new Error(data.err || data.msg || '요청을 처리하지 못했습니다.');

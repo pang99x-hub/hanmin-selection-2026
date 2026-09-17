@@ -733,14 +733,23 @@ function revokeStudentSessions_(studentId) {
 }
 
 function studentBy_(field, value) {
+  const needleRaw = String(value || '').trim();
+  // 학번으로 찾는 길은 제출·조회마다 지나간다 — 한 줄만 따로 담아 둔다.
+  const cacheKey = field === 'student_id' && needleRaw ? studentCacheKey_(needleRaw) : '';
+  if (cacheKey) {
+    const cached = cacheRead_(cacheKey);
+    if (cached) return cached;
+  }
   const sheet = ensureSheet_(spreadsheet_(), HM_SELECTION.studentsSheet, HM_SELECTION.studentHeaders);
   const index = HM_SELECTION.studentHeaders.indexOf(field);
-  const needle = String(value || '').trim().toLowerCase();
+  const needle = needleRaw.toLowerCase();
   if (index < 0 || !needle) return null;
   const rows = sheet.getDataRange().getValues();
   for (let i = 1; i < rows.length; i += 1) {
     if (String(rows[i][index] || '').trim().toLowerCase() === needle) {
-      return objectFromRow_(HM_SELECTION.studentHeaders, rows[i]);
+      const found = objectFromRow_(HM_SELECTION.studentHeaders, rows[i]);
+      if (cacheKey) cacheWrite_(cacheKey, found, HM_CACHE_TTL.student);
+      return found;
     }
   }
   return null;
@@ -2148,6 +2157,8 @@ function closureList_() {
 /** 관리자 화면이 처음 열릴 때 필요한 것 — 자기 권한과 현재 폐강 상태. */
 /** 폐강 표의 모든 줄 — 닫힌 것만이 아니라 되돌린 것도 함께. 관리자 화면이 상태를 그린다. */
 function closureRows_() {
+  const cached = cacheRead_('hm_closures');
+  if (cached) return cached;
   const rows = closureSheet_().getDataRange().getValues().slice(1);
   const all = [];
   for (let i = 0; i < rows.length; i++) {
@@ -2163,6 +2174,7 @@ function closureRows_() {
       updatedAt: row.updated_at ? String(row.updated_at) : '',
     });
   }
+  cacheWrite_('hm_closures', all, HM_CACHE_TTL.closures);
   return all;
 }
 
@@ -2246,9 +2258,11 @@ function setClosure_(payload) {
   for (let i = 1; i < values.length; i++) {
     if (String(values[i][0]) !== subjectId) continue;
     sheet.getRange(i + 1, 1, 1, HM_SELECTION.closureHeaders.length).setValues([record]);
+    cacheDrop_('hm_closures');
     return { ok: true, closed: closed, closures: closureList_() };
   }
   sheet.appendRow(record);
+  cacheDrop_('hm_closures');
   return { ok: true, closed: closed, closures: closureList_() };
 }
 
@@ -2272,6 +2286,7 @@ function putConfig_(key, value, note) {
   sheet.appendRow([key, value, note]);
   sheet.getRange(sheet.getLastRow(), 2).setNumberFormat('@').setValue(value);
   HM_CONFIG_MEMO = null;
+  cacheDrop_('hm_config');
 }
 
 function rosterSheetFor_(kind) {
@@ -2557,6 +2572,7 @@ function setStudent_(payload) {
     merged.active = 'TRUE';
     sheet.getRange(rows[i].rowNumber, 1, 1, HM_SELECTION.studentHeaders.length).setValues([studentRecord_(merged)]);
     logAdminChange_(session, 'student', studentId + ' ' + name + ' 고침');
+    cacheDrop_(studentCacheKey_(studentId));
     return { ok: true, students: listStudents_(payload).students };
   }
   // 새 줄 — 입학연도를 안 주면 «지금 학년도 − (학년 − 1)» 로 본다. 학번에 기대지 않는다.
@@ -2568,6 +2584,7 @@ function setStudent_(payload) {
     class_no: payload.classNo === undefined || payload.classNo === '' ? '' : Number(payload.classNo) || '',
     number: payload.number === undefined || payload.number === '' ? '' : Number(payload.number) || '',
   }));
+  cacheDrop_(studentCacheKey_(studentId));
   logAdminChange_(session, 'student', studentId + ' ' + name + ' 새로 넣음');
   return { ok: true, students: listStudents_(payload).students };
 }
@@ -2592,11 +2609,13 @@ function removeStudent_(payload) {
     merged.active = 'FALSE';
     sheet.getRange(found.rowNumber, 1, 1, HM_SELECTION.studentHeaders.length).setValues([studentRecord_(merged)]);
     logAdminChange_(session, 'student', studentId + ' 전출 처리(제출 기록 있음)');
+    cacheDrop_(studentCacheKey_(studentId));
     return { ok: true, deactivated: true, students: listStudents_(payload).students };
   }
   const kept = rows.filter(function (entry) { return entry.id !== studentId; })
     .map(function (entry) { return studentRecord_(entry.row); });
   replaceSheetBody_(sheet, kept, HM_SELECTION.studentHeaders.length);
+  cacheDrop_(studentCacheKey_(studentId));
   logAdminChange_(session, 'student', studentId + ' 뺌');
   return { ok: true, deactivated: false, students: listStudents_(payload).students };
 }
@@ -2679,6 +2698,7 @@ function pushStudents_(payload) {
   logAdminChange_({ email: 'desktop' }, 'students',
     '밀어넣기 ' + rows.length + '명 (새로 ' + added + ' · 고침 ' + updated
     + ' · 전출 ' + deactivated.length + ' · 지움 ' + removed.length + ')');
+  bumpStudentCache_();
   return {
     ok: true, total: rows.length, added: added, updated: updated,
     deactivated: deactivated, removed: removed,
@@ -2995,15 +3015,65 @@ function submissionObjectsAllGrades_() {
  * 실측으로 한 번에 0.5~0.8초다. 실행 단위 기억이라 담당자가 시트에서 기간을 고치면
  * 다음 요청부터 곧바로 반영된다 — 캐시로 두면 그 반영이 늦어져 위험하다.
  */
+/*
+ * 시트를 덜 두드리려고 둔 자리.
+ *
+ * 마감 직전에 몰리면 구글이 «동시 호출이 너무 많음: 스프레드시트»로 끊는다. 실측으로
+ * 동시 80건까지는 멀쩡하고 100건에서 3분의 1이 끊겼다(2026-09-17). 요청 하나가 시트를
+ * 네 번 두드리던 것을 — 설정·폐강·학생 한 줄 — 캐시로 덜어 낸다.
+ *
+ * 값을 쓰는 쪽이 곧바로 캐시를 지우므로 화면에서 누른 것이 늦게 반영되는 일은 없다.
+ * 사람이 시트를 손으로 고치는 경우만 시간이 다 될 때까지 옛 값이 남는다.
+ */
+var HM_CACHE_TTL = { config: 120, closures: 120, student: 300 };
+
+function cacheRead_(key) {
+  try {
+    const raw = CacheService.getScriptCache().get(key);
+    return raw ? JSON.parse(raw) : null;
+  } catch (err) { return null; }
+}
+
+function cacheWrite_(key, value, ttl) {
+  try { CacheService.getScriptCache().put(key, JSON.stringify(value), ttl); } catch (err) { /* 넘치면 그냥 안 담는다 */ }
+}
+
+var HM_STUDENT_CACHE_VER = '';
+
+/*
+ * 학생 한 줄을 담는 열쇠에는 판 번호를 붙인다. 데스크톱이 명단을 통째로 밀어 넣으면
+ * 682개를 하나씩 지울 길이 없으므로, 판 번호를 올려 옛 열쇠를 통째로 버린다.
+ */
+function studentCacheKey_(studentId) {
+  if (!HM_STUDENT_CACHE_VER) {
+    HM_STUDENT_CACHE_VER = PropertiesService.getScriptProperties().getProperty('STUDENT_CACHE_VER') || '1';
+  }
+  return 'hm_student:' + HM_STUDENT_CACHE_VER + ':' + String(studentId || '').trim().toLowerCase();
+}
+
+function bumpStudentCache_() {
+  const props = PropertiesService.getScriptProperties();
+  const next = String((Number(props.getProperty('STUDENT_CACHE_VER')) || 1) + 1);
+  props.setProperty('STUDENT_CACHE_VER', next);
+  HM_STUDENT_CACHE_VER = next;
+}
+
+function cacheDrop_(keys) {
+  try { CacheService.getScriptCache().removeAll(Array.isArray(keys) ? keys : [keys]); } catch (err) { /* 무시 */ }
+}
+
 var HM_CONFIG_MEMO = null;
 
 function config_() {
   if (HM_CONFIG_MEMO) return HM_CONFIG_MEMO;
+  const cached = cacheRead_('hm_config');
+  if (cached) { HM_CONFIG_MEMO = cached; return cached; }
   const sheet = ensureSheet_(spreadsheet_(), HM_SELECTION.configSheet, ['key', 'value', '설명']);
   const rows = sheet.getDataRange().getDisplayValues();
   const result = {};
   rows.slice(1).forEach(function (row) { if (row[0]) result[String(row[0]).trim()] = String(row[1] || '').trim(); });
   HM_CONFIG_MEMO = result;
+  cacheWrite_('hm_config', result, HM_CACHE_TTL.config);
   return result;
 }
 
