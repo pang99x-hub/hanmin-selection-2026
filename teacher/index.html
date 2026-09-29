@@ -89,6 +89,49 @@
 .ax-embedded {--navy:#4f46e5;--navy-deep:#4338ca;--mint:#e0e7ff}
 .ax-embedded[data-ax-theme=dark] {color-scheme:dark;--surface:#111827;--surface-low:#1f2937;--surface-mid:#273244;--line:#374151;--ink:#e5e7eb;--ink-2:#aebbd0;--outline:#94a3b8;--navy:#a5b4fc;--navy-deep:#818cf8;--error:#fca5a5}
 .ax-embedded[data-ax-theme=dark] .card,.ax-embedded[data-ax-theme=dark] button,.ax-embedded[data-ax-theme=dark] input,.ax-embedded[data-ax-theme=dark] select {background:var(--surface-low);color:var(--ink)}
+
+  /* 확인서 인쇄(2026-09-29) — 학생 앱 «확인서 출력»과 같은 양식. 담임이 반 학생 것을 한꺼번에 뽑는다.
+     학생이 집에서 인쇄를 못 해 담임 PC로 와서 뽑던 일을 덜려고 만들었다. 화면에는 안 보이고 인쇄할 때만 나온다. */
+  #cf-print { display: none; }
+  @media print {
+    body.printing-cf > *:not(#cf-print) { display: none !important; }
+    body.printing-cf #cf-print { display: block !important; }
+    body.printing-cf { background: #fff !important; }
+    @page { size: A4 portrait; margin: 0; }
+  }
+  .confirmation-form { font-family: '맑은 고딕','Malgun Gothic','Noto Sans KR',sans-serif; color: #111; font-size: 11pt; line-height: 1.45; width: 100%; max-width: 182mm; margin: 0 auto; padding: 14mm 0 12mm; page-break-after: auto; }
+  .confirmation-form + .confirmation-form { page-break-before: always; }
+  .cf-header { text-align: center; border-bottom: 2px solid #111; padding-bottom: 3mm; margin-bottom: 3mm; }
+  .cf-school { font-size: 11pt; letter-spacing: .15em; color: #555; margin-bottom: 1mm; }
+  .cf-title { font-size: 16pt; font-weight: 800; letter-spacing: -.02em; margin: 0 0 1mm; }
+  .cf-submit-date { font-size: 9.5pt; color: #555; }
+  .cf-student-info { margin-bottom: 3mm; }
+  .cf-student-info table { width: 100%; border-collapse: collapse; border: 1px solid #333; font-size: 10.5pt; }
+  .cf-student-info th, .cf-student-info td { border: 1px solid #999; padding: 1.5mm 3mm; text-align: left; vertical-align: middle; }
+  .cf-student-info th { background: #f0f0f0; font-weight: 700; width: 22mm; white-space: nowrap; }
+  .cf-subjects { margin-bottom: 3mm; }
+  .cf-subjects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2mm; }
+  .cf-semester { border: 1px solid #333; page-break-inside: avoid; }
+  .cf-semester-head { display: flex; justify-content: space-between; align-items: center; background: #e8edf2; border-bottom: 1px solid #333; padding: 2mm 3mm; font-weight: 700; }
+  .cf-semester-label { font-size: 11pt; } .cf-semester-credits { font-size: 10pt; color: #333; }
+  .cf-subject-group { border-top: 1px solid #bbb; } .cf-subject-group:first-of-type { border-top: none; }
+  .cf-subject-group-head { font-size: 9pt; font-weight: 700; letter-spacing: .05em; color: #333; background: #f6f8fa; padding: .8mm 3mm; border-bottom: 1px dotted #999; }
+  .cf-subject-group--common .cf-subject-group-head { color: #002147; } .cf-subject-group--elective .cf-subject-group-head { color: #0a6b54; }
+  .cf-subject-list { list-style: none; margin: 0; padding: 1.2mm 3mm; }
+  .cf-subject-list li { display: flex; justify-content: space-between; font-size: 10pt; padding: .4mm 0; border-bottom: 1px dotted #bbb; }
+  .cf-subject-list li:last-child { border-bottom: none; }
+  .cf-subject-name { flex: 1; } .cf-subject-credits { color: #555; font-size: 9.5pt; margin-left: 3mm; } .cf-empty { color: #999; font-size: 10pt; text-align: center; justify-content: center !important; }
+  .cf-notice { margin-bottom: 3mm; border: 1px solid #999; padding: 2mm 3mm; background: #fafafa; }
+  .cf-notice h3 { margin: 0 0 1mm; font-size: 10pt; } .cf-notice ul { margin: 0; padding-left: 5mm; } .cf-notice li { font-size: 9.5pt; margin-bottom: .5mm; }
+  .cf-consent { margin-top: 3mm; padding: 3mm; border-top: 2px solid #111; }
+  .cf-consent-text { font-size: 10.5pt; line-height: 1.55; margin: 0 0 4mm; text-align: center; }
+  .cf-date-line { text-align: center; font-size: 11pt; font-weight: 600; margin-bottom: 5mm; letter-spacing: .05em; }
+  .cf-signatures { display: flex; flex-direction: column; gap: 4mm; padding: 0 8mm; }
+  .cf-signature-row { display: flex; align-items: baseline; gap: 4mm; font-size: 12pt; }
+  .cf-signature-label { width: 22mm; font-weight: 700; white-space: nowrap; }
+  .cf-signature-line { flex: 1; border-bottom: 1.5px solid #111; min-width: 60mm; }
+  .cf-signature-suffix { font-size: 10pt; color: #666; white-space: nowrap; }
+  .cf-footer { margin-top: 6mm; text-align: center; font-size: 15pt; font-weight: 700; letter-spacing: .25em; color: #111; padding-top: 4mm; border-top: 1px solid #ccc; }
 </style>
 </head>
 <body>
@@ -142,6 +185,7 @@
     <div id="view-stats" class="hidden"></div>
   </div>
 </main>
+<div id="cf-print" aria-hidden="true"></div>
 <script>
 (async function () {
   const $ = (id) => document.getElementById(id);
@@ -475,6 +519,41 @@
       + (t.rows.length ? t.rows.map((r) => '<tr class="student-hit" data-id="' + esc(r.s.student_id) + '"' + (r.s.submitted ? '' : ' style="color:#b91c1c"') + '>' + r.cells.map((cell, i) => '<td' + ((t.wholeGrade ? i === 1 : i === 0) ? ' class="num"' : '') + '>' + esc(cell) + '</td>').join('') + '</tr>').join('') : '<tr><td colspan="' + t.header.length + '" class="note">해당하는 학생이 없습니다.</td></tr>')
       + '</tbody></table></div>';
     box.querySelectorAll('tr.student-hit').forEach((tr) => tr.addEventListener('click', () => showStudent(tr.dataset.id)));
+    // 확인서 인쇄 — 반을 골랐을 때만(학년 전체면 수백 장이 된다). 최종 차수를 낸 학생 가운데 담임이 골라 뽑는다.
+    if (!t.wholeGrade && state.round === FINAL_ROUND) {
+      const done = t.list.filter((s) => s.submitted);
+      const doneIds = new Set(done.map((s) => String(s.student_id)));
+      state.cfPick = new Set([...(state.cfPick || [])].filter((id) => doneIds.has(id)));
+      const bar = document.createElement('div'); bar.className = 'row'; bar.style.margin = '8px 0 0';
+      bar.innerHTML = '<label style="display:inline-flex;align-items:center;gap:6px"><input type="checkbox" id="cf-all"' + (done.length ? '' : ' disabled') + '> 모두 선택</label>'
+        + '<button id="cf-class" class="primary" disabled></button>';
+      box.prepend(bar);
+      // 줄 맨 앞에 고르는 칸 — 줄을 누르면 상세가 열리므로 칸 클릭은 거기까지 가지 않게 막는다
+      box.querySelector('thead tr')?.insertAdjacentHTML('afterbegin', '<th style="width:34px"></th>');
+      box.querySelectorAll('tbody tr').forEach((tr) => {
+        const id = tr.dataset.id;
+        const td = document.createElement('td');
+        if (id && doneIds.has(id)) {
+          td.innerHTML = '<input type="checkbox" class="cf-pick" data-id="' + esc(id) + '"' + (state.cfPick.has(id) ? ' checked' : '') + ' aria-label="확인서 인쇄할 학생">';
+          td.addEventListener('click', (e) => e.stopPropagation());
+        }
+        tr.prepend(td);
+      });
+      const sync = () => {
+        const n = state.cfPick.size;
+        $('cf-class').disabled = n === 0;
+        $('cf-class').textContent = n ? '확인서 인쇄 (' + n + '명)' : '확인서 인쇄';
+        $('cf-all').checked = done.length > 0 && n === done.length;
+      };
+      box.querySelectorAll('input.cf-pick').forEach((c) => c.addEventListener('change', () => { if (c.checked) state.cfPick.add(c.dataset.id); else state.cfPick.delete(c.dataset.id); sync(); }));
+      $('cf-all').addEventListener('change', (e) => {
+        state.cfPick = new Set(e.target.checked ? doneIds : []);
+        box.querySelectorAll('input.cf-pick').forEach((c) => { c.checked = e.target.checked; });
+        sync();
+      });
+      $('cf-class').addEventListener('click', (e) => printClass(done.filter((s) => state.cfPick.has(String(s.student_id))), e.currentTarget));
+      sync();
+    }
   }
   function renderStudentList() {
     const q = ($('student-q').value || '').trim().toLowerCase();
@@ -492,7 +571,8 @@
       const d = await postJson(authBody({ action: 'studentDetail', studentId: id }));
       const head = '<h3>' + esc(d.name) + ' · ' + (d.grade ?? '?') + '학년 ' + (d.class_no ?? '?') + '반 ' + (d.number ?? '?') + '번 <span class="muted">' + esc(d.student_id) + (d.email ? ' · ' + esc(d.email) : '') + '</span></h3>';
       if (!d.rounds.length) { box.innerHTML = head + '<p class="note">제출 기록이 없습니다.</p>'; return; }
-      box.innerHTML = head + d.rounds.slice().reverse().map((r) => {
+      const canPrint = d.rounds.some((r) => r.round === FINAL_ROUND);
+      box.innerHTML = head + (canPrint ? '<div class="row" style="margin:4px 0 6px"><button id="cf-one" class="primary">' + FINAL_ROUND + '차 확인서 인쇄</button></div>' : '') + d.rounds.slice().reverse().map((r) => {
         const gids = Object.keys(r.subjects_by_group || {}).sort((a, b) => groupKey(a).localeCompare(groupKey(b), 'ko'));
         const rows = gids.map((gid) => '<tr><td>' + esc(groupLabel(gid)) + '</td><td>' + esc((r.subjects_by_group[gid] || []).join(', ')) + '</td></tr>').join('');
         const credits = Object.entries(r.credits || {}).sort().map(([k, v]) => k + '학기 ' + v).join(' · ');
@@ -501,7 +581,120 @@
           + (r.locked_by_track && r.locked_by_track.length ? '<p class="note" style="margin:8px 0 0">자동 배정: ' + esc(r.locked_by_track.join(', ')) + '</p>' : '')
           + (credits ? '<p class="note" style="margin:4px 0 0">학점: ' + esc(credits) + '</p>' : '') + '</div>';
       }).join('');
+      if (canPrint) $('cf-one').addEventListener('click', () => printConfirmations([d]).catch((e) => alert(e && e.message ? e.message : String(e))));
     } catch (e) { box.innerHTML = '<p class="err">' + esc(e && e.message ? e.message : e) + '</p>'; }
+  }
+
+
+  /*
+   * 확인서 인쇄(2026-09-29) — 학생 앱 «확인서 출력»(selection-web ConfirmationForm)과 같은 양식.
+   * 3차를 마친 학생이 집에서 인쇄를 못 해 담임 PC로 와서 뽑고 있었다. 담임이 반 학생 것을 한꺼번에 뽑는다.
+   *
+   * 학생 앱은 화면의 판정 결과로 그리지만, 여기서는 서버 기록(studentDetail)과 팩으로 다시 짠다.
+   *  - 공통: 학교지정 선택군(팩 groups.isFixed) 과목 전부 + 계열 자동 배정(locked_by_track)
+   *  - 선택: 선택군별로 고른 과목(subjects_by_group)
+   *  - 학기 학점: 학생 앱이 제출 때 계산해 보낸 값(credits)
+   * 팩은 입학 연도별로 app/cohorts/<입학연도>/pack/ 에 있다.
+   */
+  const packCache = {};
+  function schoolYearOf(date) { return date.getMonth() + 1 >= 3 ? date.getFullYear() : date.getFullYear() - 1; }
+  async function packFor(entryYear) {
+    if (!packCache[entryYear]) {
+      packCache[entryYear] = (async () => {
+        const base = '../app/cohorts/' + entryYear + '/pack/';
+        const [subjects, groups, school] = await Promise.all(['subjects.json', 'groups.json', 'school.json']
+          .map((f) => fetch(base + f, { cache: 'no-cache' }).then((r) => { if (!r.ok) throw new Error(entryYear + '학년도 입학생 교육과정 자료를 찾지 못했습니다.'); return r.json(); })));
+        return { subjects: subjects.subjects || subjects, groups: groups.groups || groups, school: school || {} };
+      })();
+      packCache[entryYear].catch(() => { delete packCache[entryYear]; });
+    }
+    return packCache[entryYear];
+  }
+  function cfDisplayName(s) { return s.pairName ? s.name + '/' + s.pairName + ' 선택' : s.name; }
+  function confirmationHtml(d, r, pack) {
+    const targetGrade = Number(r.target_grade) || (Number(d.grade) + 1);
+    const semesters = [1, 2].map((n) => ({ key: targetGrade + '-' + n, label: targetGrade + '학년 ' + n + '학기' }));
+    const fixed = new Set(pack.groups.filter((g) => g.isFixed === true).map((g) => g.id));
+    const bySem = Object.fromEntries(semesters.map((x) => [x.key, { common: [], elective: [] }]));
+    const place = (s, kind) => { if (s && bySem[s.semester] && !bySem[s.semester].common.concat(bySem[s.semester].elective).some((x) => x.id === s.id)) bySem[s.semester][kind].push(s); };
+    const inGrade = pack.subjects.filter((s) => Number(s.grade) === targetGrade);
+    inGrade.filter((s) => fixed.has(s.groupId)).forEach((s) => place(s, 'common'));
+    // 계열 자동 배정 — 이름으로 적혀 있어, 같은 이름이 두 학기에 있으면 아직 안 쓴 쪽부터 채운다.
+    (r.locked_by_track || []).forEach((name) => {
+      const hit = inGrade.find((s) => s.name === name && !fixed.has(s.groupId) && !bySem[s.semester]?.common.some((x) => x.id === s.id));
+      place(hit, 'common');
+    });
+    Object.entries(r.subjects_by_group || {}).forEach(([gid, names]) => (names || []).forEach((name) => {
+      const hit = inGrade.find((s) => s.groupId === gid && s.name === name) || inGrade.find((s) => s.name === name && s.semester === (/^g(\d)-s(\d)/.exec(gid) || []).slice(1).join('-'));
+      place(hit || { id: gid + ':' + name, name, credits: '', semester: (/^g(\d)-s(\d)/.exec(gid) || []).slice(1).join('-') }, 'elective');
+    }));
+    const when = new Date(r.updated_at); const valid = !isNaN(when);
+    const ymd = valid ? when.getFullYear() + '-' + String(when.getMonth() + 1).padStart(2, '0') + '-' + String(when.getDate()).padStart(2, '0') : '';
+    const year = valid ? when.getFullYear() : new Date().getFullYear();
+    const schoolName = pack.school.schoolName || config.schoolName || '';
+    const roundLabel = r.round === 2 ? '(2차)' : r.round === 1 ? '(1차)' : '';
+    const list = (subs) => '<ul class="cf-subject-list">' + subs.sort((a, b) => (Number(b.credits) || 0) - (Number(a.credits) || 0)).map((s) => '<li><span class="cf-subject-name">' + esc(cfDisplayName(s)) + '</span><span class="cf-subject-credits">' + (s.credits === '' ? '' : esc(s.credits) + '학점') + '</span></li>').join('') + '</ul>';
+    const sems = semesters.map(({ key, label }) => {
+      const b = bySem[key];
+      const sum = [...b.common, ...b.elective].reduce((n, s) => n + (Number(s.credits) || 0), 0);
+      const credits = r.credits && r.credits[key] != null ? r.credits[key] : sum;
+      return '<div class="cf-semester"><div class="cf-semester-head"><span class="cf-semester-label">' + label + '</span><span class="cf-semester-credits">' + esc(credits) + '학점</span></div>'
+        + (b.common.length ? '<div class="cf-subject-group cf-subject-group--common"><div class="cf-subject-group-head">공통</div>' + list(b.common) + '</div>' : '')
+        + (b.elective.length ? '<div class="cf-subject-group cf-subject-group--elective"><div class="cf-subject-group-head">선택</div>' + list(b.elective) + '</div>' : '')
+        + (!b.common.length && !b.elective.length ? '<ul class="cf-subject-list"><li class="cf-empty">—</li></ul>' : '') + '</div>';
+    }).join('');
+    return '<div class="confirmation-form"><header class="cf-header"><div class="cf-school">' + esc(schoolName) + '</div>'
+      + '<h1 class="cf-title">' + (year + 1) + '학년도 ' + targetGrade + '학년 교육과정 선택 확인서 ' + roundLabel + '</h1>'
+      + '<div class="cf-submit-date">제출일: ' + esc(ymd) + '</div></header>'
+      + '<section class="cf-student-info"><table><tbody>'
+      + '<tr><th>학년·반·번호</th><td>' + esc(d.grade ?? '') + '학년 ' + esc(d.class_no ?? '_____') + '반 ' + esc(d.number ?? '_____') + '번</td><th>성명</th><td>' + esc(d.name || '') + '</td></tr>'
+      + '<tr><th>이메일</th><td colspan="3">' + esc(d.email || '') + '</td></tr>'
+      + '<tr><th>선택 계열</th><td>' + esc(r.track_family || '미정') + '</td><th>진로 희망</th><td>' + esc(r.track_major || '______________') + '</td></tr>'
+      + '</tbody></table></section>'
+      + '<section class="cf-subjects"><div class="cf-subjects-grid">' + sems + '</div></section>'
+      + '<section class="cf-notice"><h3>■ 유의사항</h3><ul><li>가정에서 자녀와 충분히 상의해 주시기 바랍니다.</li></ul></section>'
+      + '<section class="cf-consent"><p class="cf-consent-text">학생의 흥미, 적성, 진로 등을 고려하여 위와 같이 교육과정 및 선택과목을 신청하며, 이는 최종 선택으로 추후 변경이 불가능하다는 것에 동의합니다.</p>'
+      + '<div class="cf-date-line">' + year + '년 _____월 _____일</div><div class="cf-signatures">'
+      + '<div class="cf-signature-row"><span class="cf-signature-label">학생 성명</span><span class="cf-signature-line">&nbsp;</span><span class="cf-signature-suffix">(서명 또는 인)</span></div>'
+      + '<div class="cf-signature-row"><span class="cf-signature-label">학부모 성명</span><span class="cf-signature-line">&nbsp;</span><span class="cf-signature-suffix">(서명 또는 인)</span></div></div></section>'
+      + '<footer class="cf-footer"><span>' + esc(schoolName) + '</span></footer></div>';
+  }
+  /** 학생 상세들을 받아 최종 차수 확인서를 한꺼번에 인쇄한다. 최종 차수를 안 낸 학생은 뺀다. */
+  async function printConfirmations(details) {
+    const pages = [];
+    for (const d of details) {
+      const r = (d.rounds || []).find((x) => x.round === FINAL_ROUND);
+      if (!r) continue;
+      const entry = schoolYearOf(new Date(r.updated_at || Date.now())) - (Number(d.grade) || 1) + 1;
+      pages.push(confirmationHtml(d, r, await packFor(entry)));
+    }
+    if (!pages.length) throw new Error(FINAL_ROUND + '차를 제출한 학생이 없습니다.');
+    $('cf-print').innerHTML = pages.join('');
+    document.body.classList.add('printing-cf');
+    const done = () => { document.body.classList.remove('printing-cf'); window.removeEventListener('afterprint', done); };
+    window.addEventListener('afterprint', done);
+    window.print();
+    setTimeout(done, 1500);
+    return pages.length;
+  }
+  /** 반 학생들의 상세를 넷씩 나눠 받는다 — 서버(Apps Script)가 한 번에 많이 받으면 느려진다. */
+  async function printClass(list, button) {
+    const label = button.textContent;
+    const ids = list.map((s) => String(s.student_id));
+    const details = new Array(ids.length); let next = 0; let done = 0;
+    button.disabled = true;
+    try {
+      await Promise.all(Array.from({ length: Math.min(4, ids.length) }, async () => {
+        while (next < ids.length) {
+          const k = next++;
+          details[k] = await postJson(authBody({ action: 'studentDetail', studentId: ids[k] }));
+          button.textContent = '확인서 준비 중 ' + (++done) + '/' + ids.length;
+        }
+      }));
+      await printConfirmations(details);
+    } catch (e) {
+      alert(e && e.message ? e.message : String(e));
+    } finally { button.disabled = false; button.textContent = label; }
   }
 
   $('tabs').addEventListener('click', (e) => { const b = e.target.closest('button[data-tab]'); if (b) showTab(b.dataset.tab); });
