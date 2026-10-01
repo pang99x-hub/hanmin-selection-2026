@@ -48,9 +48,28 @@
   .tbl td { overflow-wrap: anywhere; }
   th.w-cls, td.w-cls { width: 110px; white-space: nowrap; }
   th.w-name, td.w-name { width: 120px; }
-  td.bar-cell { padding-right: 16px; }
-  .bar { height: 8px; background: var(--surface-high); border-radius: 999px; overflow: hidden; min-width: 100px; }
-  .bar > i { display: block; height: 100%; background: var(--navy); border-radius: 999px; }
+  td.miss { color: var(--error); font-weight: 700; }
+  /* 반별 제출 — 막대 대신 반마다 칸 하나. 반 번호 순이라 찾기 쉽고, 덜 낸 반만 붉은 글자로 드러난다(2026-10-01) */
+  .cls-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; }
+  .cls-tile { height: auto; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 10px 12px; border-radius: 10px; text-align: left; font-weight: 500; }
+  .cls-tile b { font-size: 13px; color: var(--ink-2); }
+  .cls-tile strong { font-size: 19px; font-weight: 800; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+  .cls-tile small { font-size: 12px; font-weight: 600; color: var(--error); }
+  .cls-tile.done { border-color: transparent; background: var(--surface-low); }
+  .cls-tile.done strong { color: var(--ink-2); }
+  .cls-tile.done small { color: var(--outline); font-weight: 500; }
+  /* 과목별 인원 — 학기별로 선택군 상자를 나란히 두고, 상자 안은 과목·인원·응답 대비 비율 세 칸 */
+  .sem-title { font-size: 14px; font-weight: 800; color: var(--ink); margin: 18px 0 8px; }
+  .grade-title + .sem-title { margin-top: 4px; }
+  .grp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 10px; }
+  .grp { border: 1px solid var(--surface-high); border-radius: 10px; padding: 10px 14px 4px; }
+  .grp-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 2px; }
+  .grp-head b { font-size: 14px; color: var(--navy); }
+  .grp td { padding: 6px 2px; }
+  .grp tr:last-child td { border-bottom: 0; }
+  .grp td.num { width: 48px; }
+  .grp td.n { font-weight: 700; }
+  .grp td.p { color: var(--outline); font-size: 12.5px; }
   tr.cls { cursor: pointer; }
   tr.cls:hover td { background: var(--surface-low); }
   .chip { display: inline-block; margin: 0 6px 4px 0; padding: 2px 10px; border-radius: 999px; background: var(--error-soft); color: var(--error-ink); font-size: 13px; font-weight: 500; }
@@ -80,7 +99,7 @@
   .divider { display: flex; align-items: center; gap: 12px; color: var(--outline); font-size: 12px; margin: 16px 0 12px; white-space: nowrap; }
   .gsi { display: flex; justify-content: center; min-height: 44px; }
   .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--surface-high); }
-  @media (max-width: 640px) { html { font-size: 14px; } th, td { padding: 7px 5px; font-size: 13px; } .bar { min-width: 60px; } .card { padding: 16px; } h1 { font-size: 22px; } }
+  @media (max-width: 640px) { html { font-size: 14px; } th, td { padding: 7px 5px; font-size: 13px; } .card { padding: 16px; } h1 { font-size: 22px; } }
 
 .ax-embedded header.top,.ax-embedded #logout,.ax-embedded #controls a {display:none!important}
 .ax-embedded main {max-width:none;padding:12px 16px;margin:0}
@@ -292,12 +311,18 @@
     ['summary', 'submit', 'students', 'stats'].forEach((t) => $('view-' + t).classList.toggle('hidden', t !== name));
   }
 
+  /*
+   * 대상 학년의 선택군만 센다. 지금 1학년은 2학년 과목과 함께 3학년 과목까지 미리 내는데,
+   * 그 3학년 과목은 내년에 다시 고르므로 인원으로 쓸 수 없다(2026-10-01).
+   */
+  function gradeOfGroup(gid) { const m = /^g(\d)-/.exec(String(gid)); return m ? Number(m[1]) : null; }
   function countsFromRows(rows, targetGrade) {
     const byGroup = {}; let respondents = 0;
     rows.forEach((row) => {
       if (Number(row.target_grade) !== targetGrade) return;
       respondents += 1;
       Object.entries(row.subjects_by_group || {}).forEach(([gid, arr]) => {
+        const g = gradeOfGroup(gid); if (g != null && g !== targetGrade) return;
         (Array.isArray(arr) ? arr : []).forEach((name) => { byGroup[gid] = byGroup[gid] || {}; byGroup[gid][name] = (byGroup[gid][name] || 0) + 1; });
       });
     });
@@ -370,14 +395,12 @@
     const r = state.report; const grades = byGradeOf(r.students);
     const kpis = ['<div class="kpi"><span>전체</span><b>' + r.submitted + ' / ' + r.total + '</b><span>' + pct(r.submitted, r.total) + '% 제출</span></div>']
       .concat(Object.keys(grades).sort().map((g) => { const l = grades[g]; const s = l.filter((x) => x.submitted).length; return '<div class="kpi"><span>' + esc(g) + '학년</span><b>' + s + ' / ' + l.length + '</b><span>' + pct(s, l.length) + '% 제출 · 미제출 ' + (l.length - s) + '명</span></div>'; }));
-    const worst = [];
-    Object.keys(grades).forEach((g) => byClassOf(grades[g]).forEach(([c, cl]) => { const s = cl.filter((x) => x.submitted).length; worst.push({ g, c, rate: pct(s, cl.length), missing: cl.length - s }); }));
-    worst.sort((a, b) => b.rate - a.rate || a.missing - b.missing || String(a.g + a.c).localeCompare(String(b.g + b.c), 'ko'));
-    const low = worst;
-    $('view-summary').innerHTML = '<section class="card"><div class="kpis">' + kpis.join('') + '</div>'
-      + (low.length ? '<h3>반별 제출률 (높은 순)</h3><div class="tbl"><table><thead><tr><th class="w-cls">반</th><th>제출</th><th class="num">제출률</th><th class="num">미제출</th></tr></thead><tbody>' + low.map((w) => '<tr class="cls" data-go-class="' + esc(w.g) + '|' + esc(w.c) + '"><td class="w-cls">' + esc(w.g) + '학년 ' + esc(w.c) + '</td><td class="bar-cell"><div class="bar"><i style="width:' + w.rate + '%"></i></div></td><td class="num">' + w.rate + '%</td><td class="num">' + w.missing + '</td></tr>').join('') + '</tbody></table></div>' : '')
-      + '</section>';
-    $('view-summary').querySelectorAll('tr[data-go-class]').forEach((tr) => tr.addEventListener('click', () => { showTab('submit'); const [g, c] = tr.dataset.goClass.split('|'); const el = document.getElementById('c-' + g + '-' + c); if (el) { el.classList.remove('hidden'); el.scrollIntoView({ block: 'center' }); } }));
+    const tiles = Object.keys(grades).sort().map((g) => '<h3>' + esc(g) + '학년 반별 제출</h3><div class="cls-grid">' + byClassOf(grades[g]).map(([c, cl]) => {
+      const s = cl.filter((x) => x.submitted).length; const missing = cl.length - s;
+      return '<button class="cls-tile' + (missing ? '' : ' done') + '" data-go-class="' + esc(g) + '|' + esc(c) + '"><b>' + esc(c) + '</b><strong>' + s + '/' + cl.length + '</strong><small>' + (missing ? '미제출 ' + missing + '명' : '전원 제출') + '</small></button>';
+    }).join('') + '</div>').join('');
+    $('view-summary').innerHTML = '<section class="card"><div class="kpis">' + kpis.join('') + '</div>' + tiles + '</section>';
+    $('view-summary').querySelectorAll('[data-go-class]').forEach((tile) => tile.addEventListener('click', () => { showTab('submit'); const [g, c] = tile.dataset.goClass.split('|'); const el = document.getElementById('c-' + g + '-' + c); if (el) { el.classList.remove('hidden'); el.scrollIntoView({ block: 'center' }); } }));
   }
 
   function renderClasses() {
@@ -386,10 +409,10 @@
       const list = grades[g]; const s = list.filter((x) => x.submitted).length; let rows = '';
       byClassOf(list).forEach(([c, cl]) => {
         const done = cl.filter((x) => x.submitted).length; const missing = cl.filter((x) => !x.submitted); const p = pct(done, cl.length); const key = 'c-' + g + '-' + c;
-        rows += '<tr class="cls" data-toggle="' + key + '"><td class="w-cls">' + esc(c) + '</td><td class="num">' + cl.length + '</td><td class="num">' + done + '</td><td class="num">' + missing.length + '</td><td class="bar-cell"><div class="bar"><i style="width:' + p + '%"></i></div></td><td class="num">' + p + '%</td></tr>';
+        rows += '<tr class="cls" data-toggle="' + key + '"><td class="w-cls">' + esc(c) + '</td><td class="num">' + cl.length + '</td><td class="num">' + done + '</td><td class="num' + (missing.length ? ' miss' : ' muted') + '">' + missing.length + '</td><td class="num">' + p + '%</td><td></td></tr>';
         rows += '<tr class="hidden" id="' + key + '"><td colspan="6">' + (missing.length ? '미제출: ' + missing.map((x) => '<span class="chip">' + (x.number || '') + ' ' + esc(x.name) + '</span>').join('') : '<span class="chip ok">전원 제출</span>') + ' <button class="mini" data-go-students="' + esc(g) + '|' + esc(c) + '">이 반 선택 과목 보기</button></td></tr>';
       });
-      out.push('<section class="card"><div class="grade-title"><h2>' + esc(g) + '학년</h2><span class="note">' + s + ' / ' + list.length + '명 제출 · 반을 누르면 미제출 학생이 보입니다</span></div><div class="tbl"><table><thead><tr><th class="w-cls">반</th><th class="num">대상</th><th class="num">제출</th><th class="num">미제출</th><th>비율</th><th class="num"></th></tr></thead><tbody>' + rows + '</tbody></table></div></section>');
+      out.push('<section class="card"><div class="grade-title"><h2>' + esc(g) + '학년</h2><span class="note">' + s + ' / ' + list.length + '명 제출 · 반을 누르면 미제출 학생이 보입니다</span></div><div class="tbl"><table><thead><tr><th class="w-cls">반</th><th class="num">대상</th><th class="num">제출</th><th class="num">미제출</th><th class="num">제출률</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div></section>');
     });
     return out.join('') || '<section class="card"><span class="note">명단에 학생이 없습니다.</span></section>';
   }
@@ -421,18 +444,29 @@
     }));
   }
 
-  function renderSubjects() {
-    const out = [];
+  /** 과목 이름 찾기는 띄어쓰기를 무시한다 — «독서토론» 으로 «독서 토론과 글쓰기» 가 나오게. */
+  const squash = (v) => String(v || '').replace(/\s+/g, '').toLowerCase();
+  function renderSubjects(q) {
+    const out = []; const needle = squash(q); let hits = 0;
     [2, 3].forEach((tg) => {
       const c = state.counts[tg]; if (!c) return;
-      const groups = Object.keys(c.byGroup).sort((a, b) => groupKey(a).localeCompare(groupKey(b), 'ko'));
-      const body = groups.map((gid) => {
-        const rows = Object.entries(c.byGroup[gid]).sort((a, b) => b[1] - a[1]);
-        const max = rows.length ? rows[0][1] : 0;
-        return '<h3>' + esc(groupLabel(gid)) + '</h3><div class="tbl"><table><thead><tr><th style="width:40%">과목</th><th class="num">인원</th><th></th></tr></thead><tbody>' + rows.map(([name, n]) => '<tr><td>' + esc(name) + '</td><td class="num">' + n + '</td><td class="bar-cell"><div class="bar"><i style="width:' + pct(n, max) + '%"></i></div></td></tr>').join('') + '</tbody></table></div>';
-      }).join('');
-      out.push('<section class="card"><div class="grade-title"><h2>' + tg + '학년 과목</h2><span class="note">응답 ' + c.respondents + '명 · ' + state.round + '차 · 한 학생이 여러 과목을 고르므로 합계는 응답 수보다 큽니다</span></div>' + (body || '<p class="note">아직 제출이 없습니다.</p>') + '</section>');
+      const bySem = {};
+      Object.keys(c.byGroup).forEach((gid) => {
+        const rows = Object.entries(c.byGroup[gid]).filter(([name]) => !needle || squash(name).includes(needle)).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ko'));
+        if (!rows.length) return;
+        hits += rows.length;
+        const m = /^g\d-s(\d)-(.+)$/.exec(gid);
+        const sem = m ? m[1] + '학기' : '기타';
+        (bySem[sem] = bySem[sem] || []).push({ name: m ? m[2] : gid, rows });
+      });
+      const body = Object.keys(bySem).sort().map((sem) => '<div class="sem-title">' + tg + '학년 ' + esc(sem) + '</div><div class="grp-grid">'
+        + bySem[sem].sort((a, b) => a.name.localeCompare(b.name, 'ko')).map((grp) => '<div class="grp"><div class="grp-head"><b>' + esc(grp.name) + '</b><span class="note">' + grp.rows.length + '과목</span></div><table><tbody>'
+          + grp.rows.map(([name, n]) => '<tr><td>' + esc(name) + '</td><td class="num n">' + n + '명</td><td class="num p">' + pct(n, c.respondents) + '%</td></tr>').join('')
+          + '</tbody></table></div>').join('') + '</div>').join('');
+      if (needle && !body) return;
+      out.push('<section class="card"><div class="grade-title"><h2>' + tg + '학년 과목</h2><span class="note">지금 ' + (tg - 1) + '학년 ' + c.respondents + '명 응답 · ' + state.round + '차 · 비율은 응답한 학생 중 고른 비율</span></div>' + (body || '<p class="note">아직 제출이 없습니다.</p>') + '</section>');
     });
+    if (needle && !hits) return '<section class="card"><span class="note">«' + esc(q) + '» 과목을 고른 학생이 없습니다.</span></section>';
     return out.join('') || '<section class="card"><span class="note">과목별 인원을 읽지 못했습니다.</span></section>';
   }
 
@@ -449,7 +483,15 @@
     });
     return out.join('');
   }
-  function renderStats() { $('view-stats').innerHTML = '<h3 style="margin-top:0">과목별 인원</h3>' + renderSubjects() + '<h3>계열 분포</h3>' + renderFamily(); }
+  function renderStats() {
+    const v = $('view-stats');
+    if (!$('subject-q')) {
+      v.innerHTML = '<section class="card"><div class="row"><input type="search" id="subject-q" placeholder="과목 찾기 (예: 화학, 독서)" style="flex:1;max-width:320px"><span class="note">과목은 선택군마다 인원 많은 순입니다.</span></div></section><div id="stats-subjects"></div><h3>계열 분포</h3><div id="stats-family"></div>';
+      $('subject-q').addEventListener('input', () => { $('stats-subjects').innerHTML = renderSubjects($('subject-q').value); });
+    }
+    $('stats-subjects').innerHTML = renderSubjects($('subject-q').value);
+    $('stats-family').innerHTML = renderFamily();
+  }
 
   function csvDownload(name, lines) {
     const csv = '\ufeff' + lines.map((l) => l.map((v) => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"').join(',')).join('\r\n');
